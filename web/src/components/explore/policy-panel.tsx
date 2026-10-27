@@ -108,6 +108,42 @@ export function PolicyPanel({
         </p>
       )}
 
+      {(policy.pillars.length > 0 || policy.approach.length > 0) && (
+        <section aria-labelledby="policy-points-title" className="mt-4">
+          <h3 id="policy-points-title" className="text-[13px] font-black tracking-[0.2em] text-teal-deep">
+            主張與做法・{policy.actions} 項
+          </h3>
+          {policy.pillars.length > 0 ? (
+            <ol className="mt-2 space-y-2.5">
+              {policy.pillars.map((x, k) => (
+                <li key={x.title} className="rounded-2xl px-3.5 py-3" style={{ background: island.soft }}>
+                  <p className="flex items-start gap-2 text-[14.5px] font-black leading-snug">
+                    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-paper text-[11px] text-teal-deep">{k + 1}</span>
+                    {x.title}
+                  </p>
+                  {x.tagline && <p className="mt-0.5 pl-7 text-[12.5px] font-bold text-teal-deep">{x.tagline}</p>}
+                  <ul className="mt-1.5 space-y-1 pl-7 text-[13px] leading-relaxed">
+                    {x.items.map((it) => (
+                      <li key={it} className="relative pl-3 before:absolute before:left-0 before:top-[0.7em] before:h-1 before:w-1 before:rounded-full before:bg-teal-deep">
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <ul className="mt-2 space-y-1.5 rounded-2xl px-3.5 py-3 text-[13px] leading-relaxed" style={{ background: island.soft }}>
+              {policy.approach.map((it) => (
+                <li key={it} className="relative pl-3 before:absolute before:left-0 before:top-[0.7em] before:h-1 before:w-1 before:rounded-full before:bg-teal-deep">
+                  {it}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
       <dl className="mt-4 grid grid-cols-[5.2em_1fr] gap-x-3 gap-y-2 rounded-2xl border-2 border-edge px-4 py-3.5 text-[13.5px] leading-relaxed">
         <dt className="font-black">來源類型</dt>
         <dd className="text-ink-soft">{policy.sourceLabel}</dd>

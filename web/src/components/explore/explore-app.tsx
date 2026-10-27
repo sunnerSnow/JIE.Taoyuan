@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Logo } from "@/components/site/logo";
 import { ThreadsFollow } from "@/components/site/threads-follow";
 import { ArrowRight } from "@/components/ui/decor";
@@ -10,8 +10,11 @@ import { IslandLabel } from "@/components/map/island-label";
 import { shortTitle } from "@/data/policies";
 import type { Relation } from "@/data/relations";
 import type { CategorySlug } from "@/data/types";
+import type { WalkMap } from "@/lib/map-data";
 import { liftLabels } from "@/lib/pin-layout";
-import { CITIZEN_HEADING_ID, CitizenMarker, CitizenPanel } from "./citizens";
+import { CityLog, LOG_HEADING_ID } from "./city-log";
+import { CitySim } from "./city-sim";
+import { CITIZEN_HEADING_ID, CitizenPanel } from "./citizens";
 import { intercept } from "./intercept";
 import { IntroDialog } from "./intro-dialog";
 import { IslandPanel } from "./island-panel";
@@ -20,6 +23,7 @@ import { POLICY_HEADING_ID, PolicyPanel, type RelatedItem } from "./policy-panel
 import { PolicyIndex } from "./policy-index";
 import { arc, placeMarkers, RELATIONS_HEADING_ID, RelationLines, RelationMarker, RelationsPanel, spotIndex } from "./relation-map";
 import type { ExploreIsland } from "./types";
+import { Walkers } from "./walkers";
 
 export type { ExploreIsland } from "./types";
 
@@ -32,6 +36,27 @@ const DOT = 10;
 const ISLAND_HEADING_ID = "island-panel-title";
 
 type Box = { w: number; h: number };
+
+type TimeOfDay = "dawn" | "day" | "dusk" | "night";
+const TIME_MODES = ["auto", "dawn", "day", "dusk", "night"] as const;
+type TimeMode = (typeof TIME_MODES)[number];
+const TIME_LABEL: Record<TimeMode, string> = { auto: "自動", dawn: "清晨", day: "白天", dusk: "黃昏", night: "夜晚" };
+const SKY: Record<TimeOfDay, string> = {
+  dawn: "linear-gradient(180deg,#FCEFE6 0%,#F1EEE6 45%,#DCEDEA 100%)",
+  day: "linear-gradient(180deg,#F1FAF9 0%,#E2F4F2 45%,#D3EEEC 100%)",
+  dusk: "linear-gradient(180deg,#F9E3CF 0%,#EFD9CF 45%,#CFDDE0 100%)",
+  night: "linear-gradient(180deg,#22394A 0%,#2B4757 50%,#35545F 100%)",
+};
+
+/** 依台灣時間決定現在是清晨、白天、黃昏還是夜晚 */
+function taipeiTime(): TimeOfDay {
+  const h = Number(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Taipei", hour: "numeric", hourCycle: "h23" }).format(new Date()));
+  return h >= 5 && h < 8 ? "dawn" : h >= 8 && h < 17 ? "day" : h >= 17 && h < 19 ? "dusk" : "night";
+}
+const everyMinute = (cb: () => void) => {
+  const t = setInterval(cb, 60_000);
+  return () => clearInterval(t);
+};
 
 /** 把島與政策寫進網址（?island=&policy=），可以分享、重新整理後還原 */
 function writeUrl(island: string | null, policy: string | null, mode: "push" | "replace") {
@@ -54,11 +79,13 @@ export function ExploreApp({
   islands,
   ratio,
   relations,
+  walk,
   map,
 }: {
   islands: ExploreIsland[];
   ratio: number;
   relations: Relation[];
+  walk: WalkMap;
   map: React.ReactNode;
 }) {
   const [selected, setSelected] = useState<CategorySlug | null>(null);
@@ -69,6 +96,12 @@ export function ExploreApp({
   const [relationId, setRelationId] = useState<string | null>(null);
   /** 選了島之後點的市民（虛構情境） */
   const [citizenId, setCitizenId] = useState<string | null>(null);
+  /** 名牌：市民頭上顯示正在去哪裡 */
+  const [tagsOn, setTagsOn] = useState(false);
+  const [logOpen, setLogOpen] = useState(false);
+  const [timeMode, setTimeMode] = useState<TimeMode>("auto");
+  const autoTime = useSyncExternalStore(everyMinute, taipeiTime, () => "day" as TimeOfDay);
+  const time = timeMode === "auto" ? autoTime : timeMode;
   const [introOpen, setIntroOpen] = useState(false);
   const [motion, setMotion] = useState(true);
   const [stage, setStage] = useState<Box>({ w: 0, h: 0 });
@@ -86,10 +119,33 @@ export function ExploreApp({
   const linksRef = useRef({ on: false, id: null as string | null });
   const linksButtonRef = useRef<HTMLButtonElement>(null);
   const citizenRef = useRef<string | null>(null);
+  const logRef = useRef(false);
 
   const current = islands.find((i) => i.pin.slug === selected) ?? null;
   const currentPolicy = current?.policies.find((p) => p.slug === policySlug) ?? null;
   const currentCitizen = current?.citizens.find((c) => c.id === citizenId) ?? null;
+  /** 全部市民（順序和 CitySim 裡的一樣） */
+  const allCitizens = useMemo(() => islands.flatMap((i) => i.citizens), [islands]);
+  const sim = useMemo(
+    () =>
+      new CitySim(
+        islands.flatMap((i) => i.citizens.map((c) => ({ id: c.id, island: i.pin.slug, policySlug: c.policySlug }))),
+        islands.flatMap((i) => i.policies.map((p) => ({ slug: p.slug, island: i.pin.slug, door: walk.islands[i.pin.slug].doors[p.spot] }))),
+        relations,
+        walk,
+        ratio,
+      ),
+    [islands, relations, walk, ratio],
+  );
+  const policyTitle = useMemo(() => new Map(islands.flatMap((i) => i.policies.map((p) => [p.slug, shortTitle(p.title)] as const))), [islands]);
+  /** 名牌文字：只標正在走路的人要去哪（停在建築前的人不標，避免名牌疊在一起） */
+  const tagOf = useCallback(
+    (id: string) => {
+      const st = sim.statusOf(id);
+      return st?.walking ? `→ ${policyTitle.get(st.to ?? "") ?? ""}` : "";
+    },
+    [sim, policyTitle],
+  );
   const spots = useMemo(() => spotIndex(islands), [islands]);
   /** 開著的政策有哪些關聯（另一端的政策與島） */
   const related = useMemo<RelatedItem[]>(() => {
@@ -106,7 +162,8 @@ export function ExploreApp({
     selectedRef.current = selected;
     linksRef.current = { on: linksOn, id: relationId };
     citizenRef.current = citizenId;
-  }, [policySlug, selected, linksOn, relationId, citizenId]);
+    logRef.current = logOpen;
+  }, [policySlug, selected, linksOn, relationId, citizenId, logOpen]);
 
   const ownerOf = useCallback((slug: string) => islands.find((i) => i.policies.some((p) => p.slug === slug)) ?? null, [islands]);
 
@@ -233,6 +290,24 @@ export function ExploreApp({
     focusLater(CITIZEN_HEADING_ID);
   }, []);
 
+  /** 點地圖上走動的市民：不在他住的島時，先拉近到那座島 */
+  const pickCitizen = useCallback(
+    (id: string) => {
+      const owner = islands.find((i) => i.citizens.some((c) => c.id === id));
+      if (!owner) return;
+      if (selectedRef.current !== owner.pin.slug || linksRef.current.on) select(owner.pin.slug);
+      openCitizen(id);
+    },
+    [islands, select, openCitizen],
+  );
+
+  const toggleLog = useCallback(() => {
+    setLogOpen((o) => {
+      if (!o) focusLater(LOG_HEADING_ID);
+      return !o;
+    });
+  }, []);
+
   const closeCitizen = useCallback(() => {
     setCitizenId(null);
     focusLater(ISLAND_HEADING_ID);
@@ -258,6 +333,7 @@ export function ExploreApp({
       else if (linksRef.current.on) toggleLinks();
       else if (citizenRef.current) closeCitizen();
       else if (policyRef.current) closePolicy();
+      else if (logRef.current) setLogOpen(false);
       else if (selectedRef.current) select(null);
     };
     window.addEventListener("keydown", onKey);
@@ -409,8 +485,18 @@ export function ExploreApp({
     ) : null;
   const citizenPanel =
     current && currentCitizen && !currentPolicy ? (
-      <CitizenPanel island={current} citizen={currentCitizen} onClose={closeCitizen} onOpenCitizen={openCitizen} onOpenPolicy={openPolicy} />
+      <CitizenPanel
+        island={current}
+        citizen={currentCitizen}
+        onClose={closeCitizen}
+        onOpenCitizen={openCitizen}
+        onOpenPolicy={openPolicy}
+        live={<CitizenLive sim={sim} id={currentCitizen.id} titles={policyTitle} running={motion} />}
+      />
     ) : null;
+  const cityLog = logOpen ? (
+    <CityLog sim={sim} islands={islands} relationCount={relations.length} running={motion} onOpenCitizen={pickCitizen} onClose={toggleLog} />
+  ) : null;
   const islandPanel = current ? (
     <IslandPanel island={current} onClose={() => select(null)} onOpenPolicy={openPolicy} onOpenCitizen={openCitizen} headingId={ISLAND_HEADING_ID} />
   ) : null;
@@ -444,8 +530,9 @@ export function ExploreApp({
   return (
     <div
       data-motion={motion ? "on" : "off"}
-      className="fixed inset-0 flex bg-sea"
-      style={{ background: "linear-gradient(180deg,#F1FAF9 0%,#E2F4F2 45%,#D3EEEC 100%)" }}
+      data-time={time}
+      className="fixed inset-0 flex bg-sea transition-[background] duration-1000"
+      style={{ background: SKY[time] }}
     >
       <style>{worldCss}</style>
       <div ref={stageRef} className="relative flex-1 overflow-hidden">
@@ -467,7 +554,7 @@ export function ExploreApp({
               : { width: "100%", aspectRatio: ratio, top: "50%", transform: "translateY(-50%)" }
           }
         >
-          {map}
+          <div className="explore-sky absolute inset-0">{map}</div>
           {lines.length > 0 && <RelationLines key={linksOn ? "all" : currentPolicy?.slug} lines={lines} ww={ww} wh={wh} scale={s} activeId={relationId} />}
           <ul aria-label="政策島">
             {islands.map((island) => {
@@ -510,18 +597,19 @@ export function ExploreApp({
             })}
           </ul>
 
-          {current && !linksOn && (
-            <ul aria-label={`${current.pin.name}的市民（虛構）`}>
-              {current.citizens.map((c, i) => (
-                <CitizenMarker
-                  key={c.id}
-                  citizen={c}
-                  index={i}
-                  active={citizenId === c.id}
-                  onClick={() => (citizenId === c.id ? closeCitizen() : openCitizen(c.id))}
-                />
-              ))}
-            </ul>
+          {measured && (
+            <Walkers
+              sim={sim}
+              citizens={allCitizens}
+              ww={ww}
+              wh={wh}
+              running={motion && view === "map"}
+              tags={tagsOn}
+              tagIds={current ? new Set(current.citizens.map((c) => c.id)) : null}
+              activeId={citizenId}
+              tagOf={tagOf}
+              onPick={pickCitizen}
+            />
           )}
 
           {current && (
@@ -647,10 +735,28 @@ export function ExploreApp({
             <circle cx="5" cy="17" r="2" />
             <circle cx="19" cy="17" r="2" />
           </ToolButton>
-          <ToolButton onClick={toggleMotion} label="動畫" pressed={motion} hideLabelOnMobile>
+          <span className="hidden lg:contents">
+            <ToolButton onClick={() => setTagsOn((t) => !t)} label="名牌" pressed={tagsOn} hideLabelBelowXl>
+              <rect x="4" y="7" width="16" height="10" rx="3" />
+              <path d="M8 12h8" />
+            </ToolButton>
+            <ToolButton onClick={toggleLog} label="日誌" pressed={logOpen} hideLabelBelowXl>
+              <rect x="5" y="4" width="14" height="16" rx="2.5" />
+              <path d="M9 9h6M9 13h6M9 17h3" />
+            </ToolButton>
+            <ToolButton
+              onClick={() => setTimeMode((m) => TIME_MODES[(TIME_MODES.indexOf(m) + 1) % TIME_MODES.length])}
+              label={TIME_LABEL[timeMode]}
+              ariaLabel={`日夜：${TIME_LABEL[timeMode]}${timeMode === "auto" ? `（依台灣時間，現在是${TIME_LABEL[time]}）` : ""}，按一下切換`}
+              hideLabelBelowXl
+            >
+              {time === "night" ? <path d="M18 14.5A7 7 0 0 1 9.5 6a7 7 0 1 0 8.5 8.5z" /> : <><circle cx="12" cy="12" r="4" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" /></>}
+            </ToolButton>
+          </span>
+          <ToolButton onClick={toggleMotion} label="動畫" pressed={motion} hideLabelOnMobile hideLabelBelowXl>
             {motion ? <path d="M5 12c2-4 5-4 7 0s5 4 7 0" /> : <path d="M5 12h14" />}
           </ToolButton>
-          <ToolButton onClick={() => setIntroOpen(true)} label="導覽" hideLabelOnMobile>
+          <ToolButton onClick={() => setIntroOpen(true)} label="導覽" hideLabelOnMobile hideLabelBelowXl>
             <path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.4V14M12 17.5v.1" />
           </ToolButton>
         </div>
@@ -680,14 +786,14 @@ export function ExploreApp({
         {/* 手機：底部抽屜 */}
         {!desktop && view === "map" && (
           <section
-            aria-labelledby={relationsPanel ? RELATIONS_HEADING_ID : current ? panelHeading : "sheet-title"}
-            key={relationsPanel ? `links-${relationId ?? "all"}` : (panelKey ?? "none")}
+            aria-labelledby={relationsPanel ? RELATIONS_HEADING_ID : cityLog ? LOG_HEADING_ID : current ? panelHeading : "sheet-title"}
+            key={relationsPanel ? `links-${relationId ?? "all"}` : cityLog ? "log" : (panelKey ?? "none")}
             className={`absolute inset-x-0 bottom-0 z-10 overflow-y-auto overscroll-contain rounded-t-[28px] border-t-2 border-edge bg-paper px-5 pb-8 pt-3 shadow-[0_-12px_30px_-18px_rgb(0_90_85/0.45)] ${
-              currentPolicy ? "max-h-[60%]" : current ? "max-h-[52%]" : relationsPanel ? "max-h-[42%]" : ""
+              currentPolicy ? "max-h-[60%]" : current ? "max-h-[52%]" : relationsPanel ? "max-h-[42%]" : cityLog ? "flex h-[52%] flex-col !px-0" : ""
             } ${current || relationsPanel ? "[animation:pin-drop_.4s_both_var(--ease-out-soft)]" : ""}`}
           >
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-teal-deep/20" aria-hidden="true" />
-            {relationsPanel ?? (current ? (
+            {relationsPanel ?? cityLog ?? (current ? (
               (policyPanel ?? citizenPanel ?? islandPanel)
             ) : (
               <>
@@ -695,8 +801,16 @@ export function ExploreApp({
                   <h2 id="sheet-title" className="text-[16px] font-black tracking-[0.08em]">
                     選一座島開始探索
                   </h2>
-                  <ThreadsFollow compact />
+                  <button
+                    type="button"
+                    onClick={toggleLog}
+                    className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-edge bg-paper px-3 text-[12.5px] font-black"
+                  >
+                    <span className={`h-2 w-2 rounded-full ${motion ? "bg-teal" : "bg-ink-soft/50"}`} aria-hidden="true" />
+                    城市日誌
+                  </button>
                 </div>
+                <ThreadsFollow compact className="mt-2" />
                 <ul className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-1">
                   {islands.map((i) => (
                     <li key={i.pin.slug} className="shrink-0">
@@ -720,8 +834,12 @@ export function ExploreApp({
       </div>
 
       {/* 桌機：右側政策索引 */}
-      <aside aria-label="政策索引" className="hidden w-[380px] shrink-0 border-l-2 border-edge bg-paper lg:block">
-        <PolicyIndex islands={islands} selected={selected} activePolicy={policySlug} onSelect={select} onOpenPolicy={openPolicy} />
+      <aside aria-label={logOpen ? "城市日誌" : "政策索引"} className="hidden w-[380px] shrink-0 border-l-2 border-edge bg-paper lg:block">
+        {desktop && cityLog ? (
+          cityLog
+        ) : (
+          <PolicyIndex islands={islands} selected={selected} activePolicy={policySlug} onSelect={select} onOpenPolicy={openPolicy} />
+        )}
       </aside>
 
       <IntroDialog open={introOpen} onClose={closeIntro} />
@@ -736,6 +854,8 @@ function ToolButton({
   disabled,
   pressed,
   hideLabelOnMobile = false,
+  hideLabelBelowXl = false,
+  ariaLabel,
   buttonRef,
 }: {
   children: React.ReactNode;
@@ -744,6 +864,9 @@ function ToolButton({
   disabled?: boolean;
   pressed?: boolean;
   hideLabelOnMobile?: boolean;
+  /** 工具按鈕多，2xl 以下只顯示圖示 */
+  hideLabelBelowXl?: boolean;
+  ariaLabel?: string;
   buttonRef?: React.Ref<HTMLButtonElement>;
 }) {
   return (
@@ -753,14 +876,27 @@ function ToolButton({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={pressed}
-      aria-label={hideLabelOnMobile ? label : undefined}
+      aria-label={ariaLabel ?? (hideLabelOnMobile || hideLabelBelowXl ? label : undefined)}
       className="flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-edge bg-paper px-2.5 text-[13px] font-black tracking-[0.08em] shadow-soft hover:bg-mint disabled:opacity-45 aria-pressed:bg-mint sm:px-3 lg:h-9 lg:border-0 lg:shadow-none"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
         {children}
       </svg>
-      <span className={hideLabelOnMobile ? "hidden sm:inline" : undefined}>{label}</span>
+      <span className={hideLabelBelowXl ? "hidden 2xl:inline" : hideLabelOnMobile ? "hidden sm:inline" : undefined}>{label}</span>
     </button>
+  );
+}
+
+/** 市民面板裡的即時狀態：正在走去哪裡，或停在哪裡 */
+function CitizenLive({ sim, id, titles, running }: { sim: CitySim; id: string; titles: Map<string, string>; running: boolean }) {
+  const st = useSyncExternalStore(sim.subscribe, () => sim.statusOf(id), () => null);
+  if (!st) return null;
+  return (
+    <p className="mt-3 flex items-center gap-2 rounded-2xl bg-mint/60 px-3 py-2 text-[13px] font-bold">
+      <span className={`h-2 w-2 shrink-0 rounded-full ${running ? "bg-teal" : "bg-ink-soft/50"}`} aria-hidden="true" />
+      {st.walking ? `正在前往「${titles.get(st.to ?? "")}」` : `正在「${titles.get(st.at)}」`}
+      {st.walking && st.relation && <span className="ml-auto shrink-0 rounded bg-paper px-1.5 py-0.5 text-[11px] text-teal-deep">沿著政策關聯</span>}
+    </p>
   );
 }
 

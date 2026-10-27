@@ -16,14 +16,21 @@ function seedOf(id: string) {
   return h;
 }
 
+/** 市民的外型：衣服、膚色、髮色、長短髮 */
+export function lookOf(citizen: ExploreCitizen) {
+  const h = seedOf(citizen.id);
+  return {
+    shirt: SHIRTS[h % SHIRTS.length],
+    skin: SKINS[(h >>> 4) % SKINS.length],
+    hair: ELDER.test(citizen.persona) ? "#B9B4AC" : HAIRS[(h >>> 7) % HAIRS.length],
+    long: LONG_HAIR.test(citizen.persona) || (h >>> 9) % 4 === 0,
+  };
+}
+
 /** 市民頭像：圓框裡的半身像（扁平、無描邊，和島上插畫的小人同一種畫法） */
 export function CitizenAvatar({ citizen, className = "" }: { citizen: ExploreCitizen; className?: string }) {
   const clip = useId();
-  const h = seedOf(citizen.id);
-  const shirt = SHIRTS[h % SHIRTS.length];
-  const skin = SKINS[(h >>> 4) % SKINS.length];
-  const hair = ELDER.test(citizen.persona) ? "#B9B4AC" : HAIRS[(h >>> 7) % HAIRS.length];
-  const long = LONG_HAIR.test(citizen.persona) || (h >>> 9) % 4 === 0;
+  const { shirt, skin, hair, long } = lookOf(citizen);
   return (
     <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
       <clipPath id={clip}>
@@ -41,40 +48,6 @@ export function CitizenAvatar({ citizen, className = "" }: { citizen: ExploreCit
         <path d="M18.2 21.8c1 .8 2.6.8 3.6 0" fill="none" stroke="#234647" strokeWidth="1.1" strokeLinecap="round" />
       </g>
     </svg>
-  );
-}
-
-/** 島上的市民標記：站在相關建築旁，點了聽他說 */
-export function CitizenMarker({ citizen, index, active, onClick }: { citizen: ExploreCitizen; index: number; active: boolean; onClick: () => void }) {
-  return (
-    <li className="absolute" style={{ left: `${citizen.x}%`, top: `${citizen.y}%`, zIndex: active ? 5 : 2 }}>
-      <div className="pointer-events-none absolute left-0 top-0" style={{ transform: "translate(-50%,-100%) scale(var(--inv,1))", transformOrigin: "50% 100%" }}>
-        <button
-          type="button"
-          onClick={onClick}
-          aria-pressed={active}
-          aria-label={`市民（虛構）：${citizen.persona}${citizen.district ? `，${citizen.district}` : ""}`}
-          className="group pointer-events-auto relative block"
-          style={{ animation: `pin-drop .5s ${0.55 + index * 0.04}s both var(--ease-out-soft)` }}
-        >
-          <span
-            className={`block rounded-full border-2 bg-paper p-[2px] shadow-soft transition-transform duration-200 group-hover:-translate-y-0.5 ${
-              active ? "scale-110 border-teal-deep ring-2 ring-sun" : "border-edge"
-            }`}
-          >
-            <CitizenAvatar citizen={citizen} className="h-6 w-6 sm:h-7 sm:w-7" />
-          </span>
-          <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-paper bg-sun" aria-hidden="true" />
-          <span
-            role="presentation"
-            className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden w-44 -translate-x-1/2 translate-y-1 rounded-xl border-2 border-edge bg-paper px-2.5 py-1.5 text-left text-[12px] font-bold leading-snug opacity-0 shadow-soft transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 lg:block"
-          >
-            {citizen.persona}
-            <span className="mt-0.5 block text-[11px] font-bold text-teal-deep">點我聽他說 →</span>
-          </span>
-        </button>
-      </div>
-    </li>
   );
 }
 
@@ -113,12 +86,15 @@ export function CitizenPanel({
   onClose,
   onOpenCitizen,
   onOpenPolicy,
+  live,
 }: {
   island: ExploreIsland;
   citizen: ExploreCitizen;
   onClose: () => void;
   onOpenCitizen: (id: string) => void;
   onOpenPolicy: (slug: string) => void;
+  /** 地圖上的即時狀態（正在前往哪裡） */
+  live?: React.ReactNode;
 }) {
   const { pin } = island;
   const list = island.citizens;
@@ -182,6 +158,7 @@ export function CitizenPanel({
       <h2 id={CITIZEN_HEADING_ID} tabIndex={-1} className="mt-3 text-[20px] font-black leading-snug tracking-[0.06em] text-teal-deep focus:outline-none">
         {citizen.persona}
       </h2>
+      {live}
 
       <blockquote className="relative mt-4 rounded-[20px] border-2 border-edge bg-cream px-4 py-3.5 text-[15px] leading-[1.9]">
         <svg viewBox="0 0 20 14" className="absolute -top-[12px] left-6 h-3.5 w-5" aria-hidden="true">

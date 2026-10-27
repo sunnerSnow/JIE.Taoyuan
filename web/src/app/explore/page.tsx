@@ -14,12 +14,11 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function ExplorePage() {
-  const { world, islands, spots, alongRim, ratio } = worldPins();
+  const { world, islands, spots, walk, ratio } = worldPins();
   const data: ExploreIsland[] = categories.map((c) => {
     const pin = islands.find((p) => p.slug === c.slug)!;
-    // 市民（每項政策的虛構情境）依政策順序沿著島的前緣排開
+    // 市民：每項政策的虛構情境，在地圖上從政策建築出發走動
     const scenes = policiesIn(c.slug).flatMap((p, i) => (p.scenarios ?? []).map((sc, k) => ({ p, n: i + 1, sc, k })));
-    const rim = alongRim(c.slug, scenes.length);
     return {
       pin,
       tagline: c.tagline,
@@ -46,16 +45,17 @@ export default function ExplorePage() {
         tags: p.tags ?? [],
         keywords: [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])].join(" "),
         actions: actionCount(p),
+        pillars: p.pillars ?? [],
+        approach: p.approach ?? [],
       })),
       spots: spots[c.slug],
-      citizens: scenes.map(({ p, n, sc, k }, j) => ({
+      citizens: scenes.map(({ p, n, sc, k }) => ({
         id: `${p.slug}-${k + 1}`,
         persona: sc.persona,
         district: sc.district,
         text: sc.text,
         policySlug: p.slug,
         policyN: n,
-        ...rim[j],
       })),
     };
   });
@@ -67,6 +67,7 @@ export default function ExplorePage() {
         islands={data}
         ratio={ratio}
         relations={relations}
+        walk={walk}
         map={<IsoSvg shapes={world.shapes} viewBox={world.viewBox} className="absolute inset-0 h-full" label="桃園政策島插畫" />}
       />
     </main>

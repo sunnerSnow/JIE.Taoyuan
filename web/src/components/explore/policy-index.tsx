@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "@/components/ui/decor";
+import { shortTitle } from "@/data/policies";
 import type { CategorySlug } from "@/data/types";
 import { intercept } from "./intercept";
 import { FilterBar, FilterResults, useExploreFilter } from "./policy-filter";
@@ -60,14 +61,15 @@ export function PolicyIndex({
                     <span className="flex-1 text-[16px] font-black tracking-[0.06em]">{island.pin.name}</span>
                     <span className="text-[12px] font-bold text-ink-soft">{island.policies.length} 項 ↗</span>
                   </a>
-                  {open && (
-                    <div className="pb-3 pl-[68px] pr-3">
+                  <div className="pb-3 pl-[68px] pr-3">
+                    {open && (
                       <Link
                         href={`/islands/${island.pin.slug}`}
                         className="mb-1 inline-flex items-center gap-1 text-[13px] font-bold text-teal-deep hover:underline"
                       >
                         看{island.pin.name}分類頁 <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
+                    )}
                       <ol className="space-y-0.5">
                         {island.policies.map((p) => (
                           <li key={p.slug}>
@@ -83,13 +85,13 @@ export function PolicyIndex({
                               >
                                 {p.n}
                               </span>
-                              <span className="flex-1 text-[14px] font-bold leading-snug">{p.title}</span>
+                              <span className="flex-1 text-[14px] font-bold leading-snug">{shortTitle(p.title)}</span>
+                              <span className="mt-0.5 shrink-0 text-[11.5px] text-ink-soft">{p.actions} 項</span>
                             </a>
                           </li>
                         ))}
                       </ol>
-                    </div>
-                  )}
+                  </div>
                 </li>
               );
             })}

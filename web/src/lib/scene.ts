@@ -375,11 +375,17 @@ export type SceneData = {
   spots: Record<CategorySlug, PinPos[]>;
   /** 每座島在整張圖中的範圍（拉近鏡頭用） */
   frames: Record<CategorySlug, IsoBounds>;
-  /** 島的前緣（左角 → 前角 → 右角，往內縮一點）：市民（虛構情境）沿著這條線排開，不會擋到建築上的圖釘 */
-  rims: Record<CategorySlug, PinPos[]>;
+  /** 市民走路用的座標：每棟政策建築的門口、島上的碼頭（航線終點）、中央小島，以及航線曲線的控制點 */
+  walk: {
+    hub: PinPos;
+    docks: Record<CategorySlug, PinPos>;
+    ctrls: Record<CategorySlug, PinPos>;
+    doors: Record<CategorySlug, PinPos[]>;
+  };
 };
 
-const RIM_INSET = 1.6;
+/** 門口在建築的正前方（島的區域座標位移），超出島的會被拉回島上 */
+const DOOR_OFFSET: [number, number] = [1.4, 2.4];
 
 const order: CategorySlug[] = ["transport", "environment", "future", "health", "family"];
 
@@ -444,7 +450,9 @@ export function buildWorld(): SceneData {
   const anchors = {} as Record<CategorySlug, PinPos>;
   const spots = {} as Record<CategorySlug, PinPos[]>;
   const frames = {} as Record<CategorySlug, IsoBounds>;
-  const rims = {} as Record<CategorySlug, PinPos[]>;
+  const docks = {} as Record<CategorySlug, PinPos>;
+  const ctrls = {} as Record<CategorySlug, PinPos>;
+  const doors = {} as Record<CategorySlug, PinPos[]>;
 
   const drawOrder: (CategorySlug | "hub")[] = ["transport", "environment", "future", "hub", "health", "family"];
   for (const key of drawOrder) {
@@ -470,15 +478,16 @@ export function buildWorld(): SceneData {
       const p = project(x + ox, y + oy, z);
       return { x: p[0], y: p[1] };
     });
-    const i = RIM_INSET;
-    rims[key] = [
-      [i, def.d - i],
-      [def.w - i, def.d - i],
-      [def.w - i, i],
-    ].map(([x, y]) => {
-      const p = project(x + ox, y + oy, 0);
+    const clamp = (v: number, max: number) => Math.min(max - 1.2, Math.max(1.2, v));
+    doors[key] = def.spots.map(([x, y]) => {
+      const p = project(clamp(x + DOOR_OFFSET[0], def.w) + ox, clamp(y + DOOR_OFFSET[1], def.d) + oy, 0);
       return { x: p[0], y: p[1] };
     });
+    // 航線：和 seaDecor 畫的虛線同一條曲線
+    const [hx, hy] = HUB.screen;
+    const [sx, sy] = def.screen;
+    docks[key] = { x: sx, y: sy + 8 };
+    ctrls[key] = { x: (hx + sx) / 2 + (sy - hy) * 0.18, y: (hy + sy) / 2 + 6 };
   }
 
   const vb = boundsOf(all, 10);
@@ -488,7 +497,7 @@ export function buildWorld(): SceneData {
   seaDecor(decor);
   skyDecor(decor, vb);
 
-  cached = { shapes: [...decor, ...islandShapes], viewBox: vb, anchors, spots, frames, rims };
+  cached = { shapes: [...decor, ...islandShapes], viewBox: vb, anchors, spots, frames, walk: { hub: { x: HUB.screen[0], y: HUB.screen[1] + 6 }, docks, ctrls, doors } };
   return cached;
 }
 

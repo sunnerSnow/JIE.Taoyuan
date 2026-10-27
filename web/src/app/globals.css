@@ -269,6 +269,66 @@ html[data-menu-open="true"] {
   animation: bob 4s ease-in-out infinite;
 }
 
+/* 探索地圖上走動的市民：走路時擺腿、身體上下晃，往左走時左右翻轉 */
+@keyframes walker-leg {
+  from {
+    transform: rotate(24deg);
+  }
+  to {
+    transform: rotate(-24deg);
+  }
+}
+
+@keyframes walker-bob {
+  50% {
+    transform: translateY(-0.7px);
+  }
+}
+
+.walker .walker-flip {
+  transform-box: view-box;
+  transform-origin: 5px 8px;
+}
+
+.walker[data-dir="-1"] .walker-flip {
+  transform: scaleX(-1);
+}
+
+.walker .leg-l,
+.walker .leg-r {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+.walker[data-walking="1"] .leg-l {
+  animation: walker-leg 0.42s ease-in-out infinite alternate;
+}
+
+.walker[data-walking="1"] .leg-r {
+  animation: walker-leg 0.42s ease-in-out -0.42s infinite alternate-reverse;
+}
+
+.walker[data-walking="1"] svg {
+  animation: walker-bob 0.42s ease-in-out infinite;
+}
+
+/* 日夜：依台灣時間自動切換（也可以手動選），只染插畫，名牌與面板不受影響 */
+.explore-sky {
+  transition: filter 1.2s, opacity 1.2s;
+}
+
+[data-time="dawn"] .explore-sky {
+  filter: saturate(1.05) brightness(1.02) sepia(0.12) hue-rotate(-8deg);
+}
+
+[data-time="dusk"] .explore-sky {
+  filter: saturate(1.15) brightness(0.96) sepia(0.32) hue-rotate(-14deg);
+}
+
+[data-time="night"] .explore-sky {
+  filter: brightness(0.62) saturate(0.85) hue-rotate(8deg) contrast(1.05);
+}
+
 /* 探索地圖的「動畫」開關：關掉後鏡頭、面板、圖釘都直接切換 */
 [data-motion="off"] *,
 [data-motion="off"] *::before,

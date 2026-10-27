@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { ArrowCurve, Scallop } from "@/components/ui/decor";
-import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
+import { SampleTag } from "@/components/ui/status-badge";
+import { shortTitle } from "@/data/policies";
 import { CitizenList } from "./citizens";
 import { intercept } from "./intercept";
 import type { ExploreIsland } from "./types";
@@ -54,34 +55,48 @@ export function IslandPanel({
         {island.penguinTip}
       </PenguinSays>
 
-      <h3 className="mt-2 text-[13px] font-black tracking-[0.2em] text-teal-deep">政策細項</h3>
-      <ol className="mt-2 space-y-2">
-        {island.policies.map((p) => (
-          <li key={p.slug}>
-            <a
-              href={`/policies/${p.slug}`}
-              onClick={(e) => intercept(e, () => onOpenPolicy(p.slug))}
-              className="group flex items-start gap-3 rounded-2xl border-2 border-edge bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5 hover:bg-mint/40"
-            >
-              <span
-                className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-edge text-[12px] font-black"
-                style={{ background: pin.color }}
+      <h3 className="mt-2 text-[13px] font-black tracking-[0.2em] text-teal-deep">
+        政策一覽・{island.policies.length} 項政策、{island.policies.reduce((n, p) => n + p.actions, 0)} 項做法
+      </h3>
+      <ol className="mt-2 space-y-2.5">
+        {island.policies.map((p) => {
+          // 一眼看完：有分主張的列主張標題，沒有的列前幾項做法
+          const points = p.pillars.length ? p.pillars.map((x) => x.title) : p.approach.slice(0, 4);
+          return (
+            <li key={p.slug}>
+              <a
+                href={`/policies/${p.slug}`}
+                onClick={(e) => intercept(e, () => onOpenPolicy(p.slug))}
+                className="group block rounded-2xl border-2 border-edge bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5 hover:bg-mint/40"
               >
-                {p.n}
-              </span>
-              <span className="flex-1">
-                <span className="block text-[15px] font-black leading-snug tracking-[0.04em]">{p.title}</span>
-                <span className="mt-2 flex flex-wrap gap-1.5">
-                  <StatusBadge status={p.status} size="sm" />
+                <span className="flex items-start gap-2.5">
+                  <span
+                    className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-edge text-[12px] font-black"
+                    style={{ background: pin.color }}
+                  >
+                    {p.n}
+                  </span>
+                  <span className="flex-1 text-[15px] font-black leading-snug tracking-[0.04em]">{shortTitle(p.title)}</span>
                   {p.sample && <SampleTag />}
+                  <span className="mt-0.5 shrink-0 text-[12px] font-bold text-teal-deep transition-transform group-hover:translate-x-0.5">
+                    {p.actions} 項做法 ›
+                  </span>
                 </span>
-              </span>
-              <span className="mt-1 text-ink-soft transition-transform group-hover:translate-x-0.5" aria-hidden="true">
-                ›
-              </span>
-            </a>
-          </li>
-        ))}
+                <span className="mt-1.5 block text-[13px] leading-relaxed text-ink-soft">{p.summary}</span>
+                {points.length > 0 && (
+                  <span className="mt-2 flex flex-wrap gap-1.5">
+                    {points.map((t, k) => (
+                      <span key={t} className="inline-flex max-w-full items-start gap-1 rounded-lg px-2 py-1 text-[12.5px] font-bold leading-snug" style={{ background: island.soft }}>
+                        <span className="shrink-0 text-teal-deep">{k + 1}</span>
+                        <span className="line-clamp-2">{t}</span>
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </a>
+            </li>
+          );
+        })}
       </ol>
 
       {island.citizens.length > 0 && (

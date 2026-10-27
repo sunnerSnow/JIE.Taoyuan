@@ -28,6 +28,9 @@ export type ExplorePolicy = {
   keywords: string;
   /** 具體做法數 */
   actions: number;
+  /** 主張與做法（政策面板、島嶼面板直接列出，不用點進完整頁） */
+  pillars: { title: string; tagline?: string; items: string[] }[];
+  approach: string[];
 };
 
 /** 島上的市民：政策的虛構生活情境，站在相關建築旁 */
@@ -39,9 +42,6 @@ export type ExploreCitizen = {
   policySlug: string;
   /** 相關政策在島上的編號 */
   policyN: number;
-  /** 在世界圖上的位置（百分比） */
-  x: number;
-  y: number;
 };
 
 export type ExploreIsland = {
