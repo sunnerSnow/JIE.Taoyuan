@@ -223,6 +223,16 @@ function environment(g: Iso) {
   g.box(23.8, 7.6, 0, 1.7, 1.3, 1.9, SUN);
   g.building(null);
 
+  // 溫網室＋水冷扇、乘涼的農友（農民降溫設備）
+  g.building(4);
+  g.box(20, 10.2, 0, 5.6, 4.4, 2.4, { top: "#E6F4F1", left: "#DDF0EE", right: "#C9E3E3" });
+  g.gable(20, 10.2, 2.4, 5.6, 4.4, 1.7, "x", "#D3ECE7", "#E6F4F1");
+  g.windowsL(14.6, 20.3, 25.3, 0.4, 2.1, 4, "#F4FBFA");
+  g.windowsR(25.6, 10.5, 14.3, 0.4, 2.1, 2, "#F4FBFA");
+  g.box(19.2, 15.2, 0, 1, 0.8, 1.6, { top: WALL, left: "#7FB0D6", right: shade("#7FB0D6", -0.14) });
+  g.person(21, 16.2, 0, SUN, { h: 0.9 });
+  g.building(null);
+
   // 風力發電
   g.line([[27, 12, 0], [27, 12, 13]], INK, 1.3);
   g.free(27, 12, 13, ([x, y]) => `M${x} ${y}L${x - 0.4} ${y - 5.2}L${x + 0.5} ${y - 5}Z M${x} ${y}L${x + 4.7} ${y + 2}L${x + 4.2} ${y + 2.8}Z M${x} ${y}L${x - 4.3} ${y + 2.9}L${x - 4.6} ${y + 2}Z`, WALL, { sw: 0.8 });
@@ -336,7 +346,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 26,
     screen: [70, -4],
     anchor: [17, 9, 11],
-    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5]],
+    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5], [22.8, 12.4, 4.4]],
     draw: environment,
   },
   future: {

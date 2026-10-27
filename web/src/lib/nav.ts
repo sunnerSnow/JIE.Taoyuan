@@ -7,7 +7,7 @@ export const mainNav = [
 ] as const;
 
 export const footerNav = [
-  { href: "/about", label: "關於與聯絡" },
+  { href: "/about", label: "關於本站" },
   { href: "/about#sources", label: "資料來源與更新說明" },
   { href: "/privacy", label: "隱私權政策" },
 ] as const;

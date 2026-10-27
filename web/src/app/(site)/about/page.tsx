@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { PageHead } from "@/components/site/page-head";
-import { ArrowCurve, Scallop } from "@/components/ui/decor";
+import { Scallop } from "@/components/ui/decor";
 import { formatDate, sourceTypeLabel } from "@/data/policies";
 import type { SourceType } from "@/data/types";
 import { pageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "關於與聯絡",
-  description: "JIE.Taoyuan 杰伴桃園的理念、主辦與維護資訊、政策資料來源與更新說明，以及聯絡與更正方式。",
+  title: "關於本站",
+  description: "JIE.Taoyuan 杰伴桃園的理念、網站立場與維護、政策資料來源與更新說明，以及資料更正方式。",
   path: "/about",
 });
 
@@ -34,13 +34,13 @@ const process = [
   "區分政策原文、網站摘要與編輯補充。",
   "核對政策狀態與具體數字。",
   "發布後保留更新紀錄。",
-  "發現錯誤時提供更正方式與更新時間。",
+  "發現錯誤時更正內容，並標示更新時間。",
 ];
 
 export default function AboutPage() {
   return (
     <>
-      <PageHead title="關於與聯絡" eyebrow="About & Contact" lead={site.tagline}>
+      <PageHead title="關於本站" eyebrow="About" lead={site.tagline}>
         <nav aria-label="本頁目錄" className="mt-8">
           <ul className="flex flex-wrap gap-2 text-[14px] font-bold">
             {[
@@ -48,7 +48,7 @@ export default function AboutPage() {
               ["#organizer", "網站立場與維護"],
               ["#sources", "資料來源與更新說明"],
               ["#assets", "素材與授權"],
-              ["#contact", "聯絡與更正"],
+              ["#corrections", "資料更正"],
             ].map(([href, label]) => (
               <li key={href}>
                 <a href={href} className="inline-flex min-h-10 items-center rounded-full border-2 border-edge bg-paper px-4 hover:bg-mint">
@@ -93,14 +93,8 @@ export default function AboutPage() {
             </dd>
             <dt className="font-bold text-ink">維護者</dt>
             <dd>{site.organizer}</dd>
-            <dt className="font-bold text-ink">聯絡信箱</dt>
-            <dd>
-              <a href={`mailto:${site.contactEmail}`} className="link-ink text-ink">
-                {site.contactEmail}
-              </a>
-            </dd>
           </dl>
-          <p className="mt-4">{site.stanceLong}正式上線前，會依適用規範揭露網站維護者資訊。</p>
+          <p className="mt-4">{site.stanceLong}</p>
         </Section>
 
         <Section id="sources" title="資料來源與更新說明">
@@ -139,17 +133,11 @@ export default function AboutPage() {
           </p>
         </Section>
 
-        <Section id="contact" title="聯絡與更正">
-          <p>發現資料錯誤、來源失效，或想提出建議，歡迎寫信給我們。更正後，政策頁面會標示新的更新日期。</p>
-          <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end">
-            <a href={`mailto:${site.contactEmail}?subject=${encodeURIComponent("JIE.Taoyuan 資料更正／建議")}`} className="btn btn-sun self-start">
-              寫信給我們
-              <ArrowCurve className="h-5 w-5" />
-            </a>
-            <PenguinSays pose="wave" penguinClassName="h-24 w-20" bubbleClassName="text-[14px]">
-              市民提問表單會在第二階段開放，敬請期待！
-            </PenguinSays>
-          </div>
+        <Section id="corrections" title="資料更正">
+          <p>資料有誤或原始來源失效時，我們會更正內容，並在政策頁面標示新的更新日期。</p>
+          <PenguinSays pose="wave" className="mt-6" penguinClassName="h-24 w-20" bubbleClassName="text-[14px]">
+            市民提問表單會在第二階段開放，敬請期待！
+          </PenguinSays>
         </Section>
       </div>
     </>

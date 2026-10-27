@@ -47,13 +47,6 @@ export default function FaqPage() {
             </li>
           ))}
         </ul>
-        <p className="mt-8 text-[14.5px] text-ink-soft">
-          沒找到答案？到
-          <Link href="/about#contact" className="link-ink mx-1 font-bold text-ink">
-            關於與聯絡
-          </Link>
-          告訴我們。
-        </p>
       </section>
 
       <section id="classroom" aria-labelledby="classroom-title" className="border-t-2 border-edge bg-paper py-16 sm:py-20">

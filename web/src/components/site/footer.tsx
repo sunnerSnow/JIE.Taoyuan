@@ -22,14 +22,6 @@ export function SiteFooter() {
               <dt className="shrink-0 font-bold text-ink">維護者</dt>
               <dd>{site.organizer}</dd>
             </div>
-            <div className="flex gap-2">
-              <dt className="shrink-0 font-bold text-ink">聯絡信箱</dt>
-              <dd>
-                <a className="link-ink" href={`mailto:${site.contactEmail}`}>
-                  {site.contactEmail}
-                </a>
-              </dd>
-            </div>
           </dl>
           <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
             <Link href="/explore" className="group inline-flex items-end gap-3 border-b-2 border-edge pb-1">
@@ -40,8 +32,8 @@ export function SiteFooter() {
               </span>
             </Link>
             <Link href="/about" className="group inline-flex items-end gap-3 border-b-2 border-edge pb-1">
-              <span className="font-display text-[34px] leading-none">Contact</span>
-              <span className="pb-0.5 text-[13px] font-bold">關於與聯絡</span>
+              <span className="font-display text-[34px] leading-none">About</span>
+              <span className="pb-0.5 text-[13px] font-bold">關於本站</span>
               <span className="mb-0.5 grid h-7 w-7 place-items-center rounded-md bg-sun transition-transform group-hover:rotate-12">
                 <ArrowCurve className="h-4 w-4" />
               </span>

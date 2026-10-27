@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { PageHead } from "@/components/site/page-head";
 import { formatDate } from "@/data/policies";
 import { pageMetadata } from "@/lib/metadata";
-import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
   title: "隱私權政策",
@@ -49,15 +48,6 @@ export default function PrivacyPage() {
           <p>政策詳情頁會連到原始資料來源，例如政府公告或媒體報導。離開本站後，請參考該網站自己的隱私權政策。</p>
         </Item>
 
-        <Item title="聯絡我們">
-          <p>
-            對本政策有任何疑問，請寫信到
-            <a href={`mailto:${site.contactEmail}`} className="link-ink mx-1 font-bold text-ink">
-              {site.contactEmail}
-            </a>
-            。
-          </p>
-        </Item>
       </div>
     </>
   );

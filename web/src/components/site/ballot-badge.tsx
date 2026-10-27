@@ -4,16 +4,16 @@ import { site } from "@/lib/site";
 export function BallotBadge({ className = "" }: { className?: string }) {
   const c = site.candidate;
   return (
-    <p className={`inline-flex items-center gap-2.5 ${className}`}>
+    <p className={`inline-flex items-center gap-3 ${className}`}>
       <span
-        className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-[3px] border-coral bg-paper text-[24px] font-black leading-none text-coral"
+        className="grid h-14 w-14 shrink-0 place-items-center rounded-full border-[3.5px] border-coral bg-paper text-[32px] font-black leading-none text-coral sm:h-16 sm:w-16 sm:text-[36px]"
         aria-hidden="true"
       >
         {c.ballotNo}
       </span>
       <span className="leading-tight">
-        <span className="block text-[12px] font-bold tracking-[0.08em] text-ink-soft">{c.office}</span>
-        <span className="block text-[17px] font-black tracking-[0.08em]">
+        <span className="block text-[13.5px] font-bold tracking-[0.08em] text-ink-soft sm:text-[14.5px]">{c.office}</span>
+        <span className="mt-0.5 block text-[24px] font-black tracking-[0.08em] sm:text-[28px]">
           <span className="text-coral">{c.ballotNo} 號</span> {c.name}
         </span>
       </span>
