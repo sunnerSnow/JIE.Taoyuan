@@ -4,6 +4,7 @@ import { HomeMap } from "@/components/map/home-map";
 import { IslandCard } from "@/components/policy/island-card";
 import { LessonList } from "@/components/policy/lesson-list";
 import { PolicyCard } from "@/components/policy/policy-card";
+import { BallotBadge } from "@/components/site/ballot-badge";
 import { SampleNotice } from "@/components/site/sample-notice";
 import { ArrowCurve, Cloud, Squiggle } from "@/components/ui/decor";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -179,7 +180,8 @@ function Hero() {
             <p className="font-display text-[22px] leading-none sm:text-[28px]">
               JIE.<span className="text-teal">Taoyuan</span>
             </p>
-            <p className="mt-3 inline-flex rounded-full border-2 border-dashed border-ink/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
+            <BallotBadge className="mt-4" />
+            <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-ink/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
             <h1 id="hero-title" className="mt-4 text-[30px] font-black leading-[1.35] tracking-[0.06em] sm:text-[36px]">
               桃園的未來，
               <br />

@@ -18,6 +18,9 @@ import { site } from "@/lib/site";
 
 const noteLabel: Record<EditorNote["kind"], string> = { supplement: "補充", check: "核對", clarify: "澄清" };
 
+/** 側欄只顯示來源名稱：去掉結尾的〈標題〉或（說明），完整標題在「出處與查證」 */
+const sourceName = (title: string) => title.replace(/\s*[〈（(][^〈（(]*[〉）)]\s*$/, "");
+
 export function generateStaticParams() {
   return policies.map((p) => ({ slug: p.slug }));
 }
@@ -231,11 +234,11 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
               <Row label="原始資料">
                 {policy.sourceUrl ? (
                   <a href={policy.sourceUrl} target="_blank" rel="noopener noreferrer" className="link-ink break-words">
-                    {policy.sourceTitle}
+                    {sourceName(policy.sourceTitle)}
                     <span className="sr-only">（另開新視窗）</span>
                   </a>
                 ) : (
-                  policy.sourceTitle
+                  sourceName(policy.sourceTitle)
                 )}
               </Row>
               <Row label="發布日期">

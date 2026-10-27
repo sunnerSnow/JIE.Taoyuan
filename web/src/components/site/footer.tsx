@@ -3,6 +3,7 @@ import { categories } from "@/data/categories";
 import { footerNav, mainNav } from "@/lib/nav";
 import { site } from "@/lib/site";
 import { ArrowCurve, Cloud, PinIcon } from "@/components/ui/decor";
+import { BallotBadge } from "./ballot-badge";
 import { Logo } from "./logo";
 
 export function SiteFooter() {
@@ -15,6 +16,7 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-6 max-w-sm text-[15px] font-bold leading-relaxed">{site.tagline}</p>
+          <BallotBadge className="mt-5" />
           <dl className="mt-6 space-y-1 text-[14px] leading-relaxed text-ink-soft">
             <div className="flex gap-2">
               <dt className="shrink-0 font-bold text-ink">維護者</dt>

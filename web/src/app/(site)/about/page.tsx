@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { PageHead } from "@/components/site/page-head";
 import { ArrowCurve, Scallop } from "@/components/ui/decor";
-import { sourceTypeLabel } from "@/data/policies";
+import { formatDate, sourceTypeLabel } from "@/data/policies";
 import type { SourceType } from "@/data/types";
 import { pageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
@@ -79,6 +79,18 @@ export default function AboutPage() {
 
         <Section id="organizer" title="網站立場與維護">
           <dl className="grid grid-cols-[6em_1fr] gap-x-4 gap-y-2 rounded-2xl border-2 border-ink bg-paper p-5">
+            <dt className="font-bold text-ink">支持候選人</dt>
+            <dd>
+              {site.candidate.office} {site.candidate.ballotNo} 號 {site.candidate.name}
+              <span className="block text-[13.5px]">
+                號次依據：
+                <a href={site.candidate.ballotSource.url} target="_blank" rel="noopener noreferrer" className="link-ink text-ink">
+                  {site.candidate.ballotSource.title}
+                  <span className="sr-only">（另開新視窗）</span>
+                </a>
+                ・<time dateTime={site.candidate.ballotSource.date}>{formatDate(site.candidate.ballotSource.date)}</time>
+              </span>
+            </dd>
             <dt className="font-bold text-ink">維護者</dt>
             <dd>{site.organizer}</dd>
             <dt className="font-bold text-ink">聯絡信箱</dt>
