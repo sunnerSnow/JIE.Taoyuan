@@ -2101,6 +2101,9 @@ export function latestPolicies(n: number) {
     .slice(0, n);
 }
 
+/** 一項政見列出的具體做法數（各主張底下的細項＋做法清單） */
+export const actionCount = (p: Policy) => (p.approach?.length ?? 0) + (p.pillars ?? []).reduce((n, x) => n + x.items.length, 0);
+
 /** 地圖圖釘只放主要主張：取標題冒號前的部分，例如「公車政見六大主張」 */
 export const shortTitle = (title: string) => title.split("：")[0];
 

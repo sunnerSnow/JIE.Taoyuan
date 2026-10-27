@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { ArrowCurve, Scallop } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
+import { CitizenList } from "./citizens";
 import { intercept } from "./intercept";
 import type { ExploreIsland } from "./types";
 
@@ -10,12 +11,15 @@ export function IslandPanel({
   island,
   onClose,
   onOpenPolicy,
+  onOpenCitizen,
   headingId,
 }: {
   island: ExploreIsland;
   onClose: () => void;
   /** 點政策：在地圖內打開政策面板 */
   onOpenPolicy: (slug: string) => void;
+  /** 點市民：在地圖內打開市民面板 */
+  onOpenCitizen: (id: string) => void;
   headingId: string;
 }) {
   const { pin } = island;
@@ -79,6 +83,14 @@ export function IslandPanel({
           </li>
         ))}
       </ol>
+
+      {island.citizens.length > 0 && (
+        <>
+          <h3 className="mt-5 text-[13px] font-black tracking-[0.2em] text-teal-deep">島上的市民（虛構）</h3>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft">地圖上的小人頭也可以點。他們是虛構角色，說說政見和自己生活的關係。</p>
+          <CitizenList citizens={island.citizens} onOpen={onOpenCitizen} className="mt-2" />
+        </>
+      )}
 
       <h3 className="mt-5 text-[13px] font-black tracking-[0.2em] text-teal-deep">可能涵蓋</h3>
       <ul className="mt-2 flex flex-wrap gap-1.5">

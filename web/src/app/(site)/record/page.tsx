@@ -10,8 +10,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   title: "過去的貢獻",
-  description:
-    "參選市長以前，黃世杰在桃園市政府、立法院和法務部做過哪些事？每一項都附上出處，並標明是官方紀錄、媒體報導，還是候選人或競選方的說法。",
+  description: "參選市長以前，黃世杰在桃園市政府、立法院和法務部做過哪些事？每一項都附上出處，並標明是官方紀錄、媒體報導，還是候選人或競選方的說法。",
   path: "/record",
 });
 
@@ -61,7 +60,8 @@ export default function RecordPage() {
           <div>
             <SectionTitle id="how-to-read-title">怎麼讀這一頁</SectionTitle>
             <p className="mt-3 max-w-2xl text-[15.5px] leading-[1.9] text-ink-soft">
-              這一頁只收找得到出處的事。政績常常是候選人或支持者說的，所以每一句引文都標明是誰說的；評價性的說法（例如「排審超過 350 案」）照原文引用，本站不替它背書。
+              這一頁只收找得到出處的事。政績常常是候選人或支持者說的，所以每一句引文都標明是誰說的；評價性的說法（例如「排審超過 350
+              案」）照原文引用，本站不替它背書。
             </p>
             <dl className="mt-6 grid gap-3 sm:grid-cols-2">
               {claimByOrder.map((by) => (
@@ -178,30 +178,35 @@ function RecordCard({ item }: { item: RecordItem }) {
         </div>
       )}
 
-      <div className="mt-6">
-        <h4 className="text-[14.5px] font-black tracking-[0.1em] text-ink">各方說法</h4>
-        <ul className="mt-3 space-y-3">
-          {item.claims.map((c) => (
-            <li key={c.quote}>
-              <figure className="rounded-2xl border-2 border-edge bg-cream/60 px-4 py-3">
-                <ClaimBadge by={c.by} />
-                <blockquote cite={c.source.url} className="mt-2 text-[15px] leading-[1.85] text-ink">
-                  「{c.quote}」
-                </blockquote>
-                <figcaption className="mt-2 text-[13px] leading-relaxed text-ink-soft">
-                  {c.speaker && c.speaker !== c.source.outlet && <span className="mr-1">{c.speaker}：</span>}
-                  <SourceLink source={c.source} />
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {item.claims.length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-[14.5px] font-black tracking-[0.1em] text-ink">各方說法</h4>
+          <ul className="mt-3 space-y-3">
+            {item.claims.map((c) => (
+              <li key={c.quote}>
+                <figure className="rounded-2xl border-2 border-edge bg-cream/60 px-4 py-3">
+                  <ClaimBadge by={c.by} />
+                  <blockquote cite={c.source.url} className="mt-2 text-[15px] leading-[1.85] text-ink">
+                    「{c.quote}」
+                  </blockquote>
+                  <figcaption className="mt-2 text-[13px] leading-relaxed text-ink-soft">
+                    {c.speaker && c.speaker !== c.source.outlet && <span className="mr-1">{c.speaker}：</span>}
+                    <SourceLink source={c.source} />
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {item.notes && item.notes.length > 0 && (
         <ul className="mt-6 space-y-3">
           {item.notes.map((n) => (
-            <li key={n.text} className="flex items-start gap-3 rounded-2xl border-2 border-teal-deep/15 bg-sun-soft px-4 py-3 text-[14.5px] leading-[1.8] text-ink">
+            <li
+              key={n.text}
+              className="flex items-start gap-3 rounded-2xl border-2 border-teal-deep/15 bg-sun-soft px-4 py-3 text-[14.5px] leading-[1.8] text-ink"
+            >
               <span className="mt-1 shrink-0 rounded-md bg-teal-deep px-2 py-0.5 text-[12px] font-black leading-snug tracking-[0.1em] text-paper">
                 {noteLabel[n.kind]}
               </span>

@@ -25,6 +25,8 @@ export function PolicyIndex({
 }) {
   const filter = useExploreFilter(islands);
   const total = islands.reduce((n, i) => n + i.policies.length, 0);
+  const people = islands.reduce((n, i) => n + i.citizens.length, 0);
+  const actions = islands.reduce((n, i) => n + i.policies.reduce((m, p) => m + p.actions, 0), 0);
 
   return (
     <div className="flex h-full flex-col">
@@ -32,7 +34,7 @@ export function PolicyIndex({
         <p className="eyebrow">The Policy Index</p>
         <h2 className="mt-2 text-[24px] font-black leading-snug tracking-[0.06em]">選一座島，走進生活場景。</h2>
         <p className="mb-4 mt-1 text-[13px] text-ink-soft">
-          {islands.length} 座政策島／{total} 項政策
+          {islands.length} 座政策島／{total} 項政策／{actions} 項具體做法／{people} 位虛構市民
         </p>
         <FilterBar islands={islands} filter={filter} />
       </div>

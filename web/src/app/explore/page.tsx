@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IsoSvg } from "@/components/art/iso-svg";
 import { ExploreApp, type ExploreIsland } from "@/components/explore/explore-app";
 import { categories, categoryColor } from "@/data/categories";
-import { policiesIn, sourceTypeLabel } from "@/data/policies";
+import { actionCount, policiesIn, sourceTypeLabel } from "@/data/policies";
 import { relations } from "@/data/relations";
 import { worldPins } from "@/lib/map-data";
 import { pageMetadata } from "@/lib/metadata";
@@ -14,9 +14,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function ExplorePage() {
-  const { world, islands, spots, ratio } = worldPins();
+  const { world, islands, spots, alongRim, ratio } = worldPins();
   const data: ExploreIsland[] = categories.map((c) => {
     const pin = islands.find((p) => p.slug === c.slug)!;
+    // 市民（每項政策的虛構情境）依政策順序沿著島的前緣排開
+    const scenes = policiesIn(c.slug).flatMap((p, i) => (p.scenarios ?? []).map((sc, k) => ({ p, n: i + 1, sc, k })));
+    const rim = alongRim(c.slug, scenes.length);
     return {
       pin,
       tagline: c.tagline,
@@ -42,8 +45,18 @@ export default function ExplorePage() {
         extraSources: p.extraSources?.length ?? 0,
         tags: p.tags ?? [],
         keywords: [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])].join(" "),
+        actions: actionCount(p),
       })),
       spots: spots[c.slug],
+      citizens: scenes.map(({ p, n, sc, k }, j) => ({
+        id: `${p.slug}-${k + 1}`,
+        persona: sc.persona,
+        district: sc.district,
+        text: sc.text,
+        policySlug: p.slug,
+        policyN: n,
+        ...rim[j],
+      })),
     };
   });
 

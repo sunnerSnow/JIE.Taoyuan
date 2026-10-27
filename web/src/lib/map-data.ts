@@ -55,9 +55,21 @@ export function worldPins() {
       })),
     ]),
   ) as Record<CategorySlug, SpotPin[]>;
+  /** 沿著島的前緣平均排開 n 個位置（兩端各留一點空），給市民（虛構情境）站 */
+  const alongRim = (slug: CategorySlug, n: number) => {
+    const [a, b, c] = world.rims[slug].map((p) => pct(p, vb));
+    const l1 = Math.hypot(b.x - a.x, b.y - a.y);
+    const l2 = Math.hypot(c.x - b.x, c.y - b.y);
+    return Array.from({ length: n }, (_, i) => {
+      const d = (0.06 + (0.88 * (i + 0.5)) / n) * (l1 + l2);
+      if (d <= l1) return { x: a.x + ((b.x - a.x) * d) / l1, y: a.y + ((b.y - a.y) * d) / l1 };
+      const t = (d - l1) / l2;
+      return { x: b.x + (c.x - b.x) * t, y: b.y + (c.y - b.y) * t };
+    });
+  };
   /** 地圖上任意螢幕座標（插畫單位）換成百分比，用來擺企鵝、裝飾 */
   const at = (sx: number, sy: number) => pct({ x: sx, y: sy }, vb);
-  return { world, islands, spots, ratio: vb.w / vb.h, at };
+  return { world, islands, spots, alongRim, ratio: vb.w / vb.h, at };
 }
 
 export function islandSpots(slug: CategorySlug) {

@@ -26,6 +26,22 @@ export type ExplorePolicy = {
   tags: string[];
   /** 搜尋用全文：各項主張與做法 */
   keywords: string;
+  /** 具體做法數 */
+  actions: number;
+};
+
+/** 島上的市民：政策的虛構生活情境，站在相關建築旁 */
+export type ExploreCitizen = {
+  id: string;
+  persona: string;
+  district?: string;
+  text: string;
+  policySlug: string;
+  /** 相關政策在島上的編號 */
+  policyN: number;
+  /** 在世界圖上的位置（百分比） */
+  x: number;
+  y: number;
 };
 
 export type ExploreIsland = {
@@ -37,4 +53,5 @@ export type ExploreIsland = {
   soft: string;
   policies: ExplorePolicy[];
   spots: SpotPin[];
+  citizens: ExploreCitizen[];
 };

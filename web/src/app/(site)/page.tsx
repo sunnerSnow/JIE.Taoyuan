@@ -5,11 +5,13 @@ import { IslandCard } from "@/components/policy/island-card";
 import { LessonList } from "@/components/policy/lesson-list";
 import { PolicyCard } from "@/components/policy/policy-card";
 import { BallotBadge } from "@/components/site/ballot-badge";
+import { ElectionCountdown } from "@/components/site/election-countdown";
 import { SampleNotice } from "@/components/site/sample-notice";
+import { ThreadsFollow } from "@/components/site/threads-follow";
 import { ArrowCurve, ArrowRight, Cloud, Squiggle } from "@/components/ui/decor";
 import { categories, categoryColor } from "@/data/categories";
 import { lessons } from "@/data/learn";
-import { latestPolicies, policies, policiesIn } from "@/data/policies";
+import { actionCount, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
 import { site } from "@/lib/site";
 
@@ -120,6 +122,7 @@ export default function HomePage() {
                 <span className="font-display text-[56px] leading-none text-teal">{policies.length}</span>
                 <span className="text-[16px] font-bold">項，分布在 {categories.length} 座政策島</span>
               </p>
+              <p className="mt-1 text-[14px] text-ink-soft">共列出 {policies.reduce((n, p) => n + actionCount(p), 0)} 項具體做法，每一項都附來源。</p>
               <ul className="mt-6 space-y-2.5">
                 {categories.map((c) => {
                   const n = policiesIn(c.slug).length;
@@ -229,6 +232,10 @@ function Hero() {
             </p>
             <BallotBadge className="mt-4" />
             <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-teal-deep/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
+            {/* 桌機的倒數在頁首右上，這裡只給手機與平板 */}
+            <div className="lg:hidden">
+              <ElectionCountdown className="mt-3" />
+            </div>
             <h1 id="hero-title" className="mt-5 text-[30px] font-black leading-[1.55] tracking-[0.08em] text-teal-deep sm:text-[38px]">
               <span className="wavy">桃園的未來，</span>
               <br />
@@ -243,6 +250,7 @@ function Hero() {
               <Link href="/policies" className="btn">
                 查看全部政策
               </Link>
+              <ThreadsFollow compact className="self-center" />
             </div>
           </div>
         </div>

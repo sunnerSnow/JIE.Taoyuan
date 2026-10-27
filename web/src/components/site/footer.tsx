@@ -4,7 +4,9 @@ import { footerNav, mainNav } from "@/lib/nav";
 import { site } from "@/lib/site";
 import { ArrowCurve, Cloud, PinIcon } from "@/components/ui/decor";
 import { BallotBadge } from "./ballot-badge";
+import { ElectionCountdown } from "./election-countdown";
 import { Logo } from "./logo";
+import { ThreadsFollow } from "./threads-follow";
 
 export function SiteFooter() {
   return (
@@ -17,6 +19,10 @@ export function SiteFooter() {
           <Logo />
           <p className="mt-6 max-w-sm text-[15px] font-bold leading-relaxed">{site.tagline}</p>
           <BallotBadge className="mt-5" />
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <ThreadsFollow />
+            <ElectionCountdown />
+          </div>
           <dl className="mt-6 space-y-1 text-[14px] leading-relaxed text-ink-soft">
             <div className="flex gap-2">
               <dt className="shrink-0 font-bold text-ink">維護者</dt>

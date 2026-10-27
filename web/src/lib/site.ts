@@ -16,7 +16,11 @@ export const site = {
     office: "桃園市長候選人",
     ballotNo: 1,
     ballotSource: { title: "黃世杰 Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/De-oyFao2Sj", date: "2026-10-27" },
+    /** 候選人本人的 Threads 帳號 */
+    threads: "https://www.threads.com/@schuanglawyer",
   },
+  /** 投票日（2026 地方公職人員選舉） */
+  electionDate: "2026-11-28",
   /** 網站立場：支持者自發整理，非候選人或競選團隊經營 */
   stance: "非官方・支持者依公開資料整理",
   stanceLong: "本站是支持者自發整理的非官方網站，並非候選人或競選團隊經營。政見內容依候選人公開文宣與媒體報導整理，正確內容以原始來源為準。",

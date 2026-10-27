@@ -4,6 +4,7 @@ import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { RelationEvidence, RelationTypeBadge } from "@/components/policy/relation-badge";
 import { formatDate, shortTitle, sourceName } from "@/data/policies";
 import { RELATION_DISCLAIMER, type Relation } from "@/data/relations";
+import { CitizenList } from "./citizens";
 import type { ExploreIsland, ExplorePolicy } from "./types";
 
 export const POLICY_HEADING_ID = "policy-panel-title";
@@ -23,6 +24,7 @@ export function PolicyPanel({
   onPrev,
   onNext,
   onOpenPolicy,
+  onOpenCitizen,
 }: {
   island: ExploreIsland;
   policy: ExplorePolicy;
@@ -32,8 +34,10 @@ export function PolicyPanel({
   onPrev?: () => void;
   onNext?: () => void;
   onOpenPolicy: (slug: string) => void;
+  onOpenCitizen: (id: string) => void;
 }) {
   const { pin } = island;
+  const citizens = island.citizens.filter((c) => c.policySlug === policy.slug);
   const total = island.policies.length;
   const prev = island.policies.find((p) => p.n === policy.n - 1);
   const next = island.policies.find((p) => p.n === policy.n + 1);
@@ -142,6 +146,15 @@ export function PolicyPanel({
         看完整政策頁
         <ArrowCurve className="h-4 w-4" />
       </Link>
+
+      {citizens.length > 0 && (
+        <section aria-labelledby="policy-citizens-title" className="mt-6 border-t-2 border-dashed border-teal-deep/20 pt-4">
+          <h3 id="policy-citizens-title" className="text-[13px] font-black tracking-[0.2em] text-teal-deep">
+            如果你是…（虛構市民）
+          </h3>
+          <CitizenList citizens={citizens} onOpen={onOpenCitizen} className="mt-2" />
+        </section>
+      )}
 
       {related.length > 0 && (
         <section aria-labelledby="policy-related-title" className="mt-6 border-t-2 border-dashed border-teal-deep/20 pt-4">

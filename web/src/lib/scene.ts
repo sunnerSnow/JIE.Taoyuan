@@ -375,7 +375,11 @@ export type SceneData = {
   spots: Record<CategorySlug, PinPos[]>;
   /** 每座島在整張圖中的範圍（拉近鏡頭用） */
   frames: Record<CategorySlug, IsoBounds>;
+  /** 島的前緣（左角 → 前角 → 右角，往內縮一點）：市民（虛構情境）沿著這條線排開，不會擋到建築上的圖釘 */
+  rims: Record<CategorySlug, PinPos[]>;
 };
+
+const RIM_INSET = 1.6;
 
 const order: CategorySlug[] = ["transport", "environment", "future", "health", "family"];
 
@@ -440,6 +444,7 @@ export function buildWorld(): SceneData {
   const anchors = {} as Record<CategorySlug, PinPos>;
   const spots = {} as Record<CategorySlug, PinPos[]>;
   const frames = {} as Record<CategorySlug, IsoBounds>;
+  const rims = {} as Record<CategorySlug, PinPos[]>;
 
   const drawOrder: (CategorySlug | "hub")[] = ["transport", "environment", "future", "hub", "health", "family"];
   for (const key of drawOrder) {
@@ -465,6 +470,15 @@ export function buildWorld(): SceneData {
       const p = project(x + ox, y + oy, z);
       return { x: p[0], y: p[1] };
     });
+    const i = RIM_INSET;
+    rims[key] = [
+      [i, def.d - i],
+      [def.w - i, def.d - i],
+      [def.w - i, i],
+    ].map(([x, y]) => {
+      const p = project(x + ox, y + oy, 0);
+      return { x: p[0], y: p[1] };
+    });
   }
 
   const vb = boundsOf(all, 10);
@@ -474,7 +488,7 @@ export function buildWorld(): SceneData {
   seaDecor(decor);
   skyDecor(decor, vb);
 
-  cached = { shapes: [...decor, ...islandShapes], viewBox: vb, anchors, spots, frames };
+  cached = { shapes: [...decor, ...islandShapes], viewBox: vb, anchors, spots, frames, rims };
   return cached;
 }
 

@@ -6,6 +6,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { mainNav } from "@/lib/nav";
 import { Penguin } from "@/components/art/penguin";
 import { ArrowCurve } from "@/components/ui/decor";
+import { ElectionCountdown } from "./election-countdown";
 import { Logo } from "./logo";
 
 function isActive(pathname: string, href: string) {
@@ -85,6 +86,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="pointer-events-auto flex items-center gap-2">
+          <span className="hidden xl:block">
+            <ElectionCountdown />
+          </span>
           <Link href="/explore" className="btn btn-sun btn-sm hidden sm:inline-flex">
             開始探索
             <ArrowCurve className="h-4 w-4" />
