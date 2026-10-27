@@ -43,7 +43,7 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
       if (!q) return true;
       const name = categories.find((c) => c.slug === p.category)?.name ?? "";
       const steps = [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])];
-      return [p.title, p.summary, p.description, name, ...steps].some((t) => t.includes(q));
+      return [p.title, p.summary, p.description, name, ...steps, ...(p.tags ?? [])].some((t) => t.includes(q));
     });
     return sort === "updated" ? [...list].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)) : list;
   }, [policies, category, status, q, sort]);

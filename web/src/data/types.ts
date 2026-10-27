@@ -26,6 +26,8 @@ export type Policy = {
   /** 一則政見拆成數個主張、每個主張各有具體做法時使用（例如「藝文四大主張」） */
   pillars?: { title: string; tagline?: string; items: string[] }[];
   audience?: string;
+  /** 搜尋用的關鍵字（取自政見內容） */
+  tags?: string[];
   status: PolicyStatus;
   /** 只有在有可靠來源時才填 */
   timeline?: { label: string; date: string }[];
@@ -40,7 +42,6 @@ export type Policy = {
   notes?: EditorNote[];
   scenarios?: Scenario[];
   faqs?: { q: string; a: string }[];
-  related?: string[];
   /** 在島上插畫的第幾個地點（0 起算） */
   spot: number;
   /** 示範資料：正式上線前必須換成可查證的內容 */

@@ -22,6 +22,10 @@ export type ExplorePolicy = {
   audience?: string;
   /** 主要來源以外的佐證來源數 */
   extraSources: number;
+  /** 搜尋用關鍵字 */
+  tags: string[];
+  /** 搜尋用全文：各項主張與做法 */
+  keywords: string;
 };
 
 export type ExploreIsland = {

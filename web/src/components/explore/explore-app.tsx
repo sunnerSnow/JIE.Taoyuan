@@ -7,13 +7,16 @@ import { ArrowRight } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { IslandLabel } from "@/components/map/island-label";
 import { shortTitle } from "@/data/policies";
+import type { Relation } from "@/data/relations";
 import type { CategorySlug } from "@/data/types";
 import { liftLabels } from "@/lib/pin-layout";
 import { intercept } from "./intercept";
 import { IntroDialog } from "./intro-dialog";
 import { IslandPanel } from "./island-panel";
-import { POLICY_HEADING_ID, PolicyPanel } from "./policy-panel";
+import { FilterBar, FilterResults, useExploreFilter } from "./policy-filter";
+import { POLICY_HEADING_ID, PolicyPanel, type RelatedItem } from "./policy-panel";
 import { PolicyIndex } from "./policy-index";
+import { arc, placeMarkers, RELATIONS_HEADING_ID, RelationLines, RelationMarker, RelationsPanel, spotIndex } from "./relation-map";
 import type { ExploreIsland } from "./types";
 
 export type { ExploreIsland } from "./types";
@@ -43,11 +46,25 @@ function writeUrl(island: string | null, policy: string | null, mode: "push" | "
  * 探索政策島（參考 puma.taipei/heart-island 的互動）：
  * 全景地圖 → 點島拉近鏡頭、顯示每項政策的圖釘 → 點圖釘或建築，在地圖內打開政策面板（手機是底部抽屜）。
  * 選取的島與政策寫在網址，開政策面板會記一筆瀏覽紀錄，按「返回」先關面板。
+ * 「關聯」模式：回到全景，把政策之間的關聯畫成線，點線上的按鈕看依據。
  */
-export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; ratio: number; map: React.ReactNode }) {
+export function ExploreApp({
+  islands,
+  ratio,
+  relations,
+  map,
+}: {
+  islands: ExploreIsland[];
+  ratio: number;
+  relations: Relation[];
+  map: React.ReactNode;
+}) {
   const [selected, setSelected] = useState<CategorySlug | null>(null);
   const [policySlug, setPolicySlug] = useState<string | null>(null);
   const [view, setView] = useState<"map" | "list">("map");
+  /** 關聯總覽模式，以及總覽裡選取的那一條 */
+  const [linksOn, setLinksOn] = useState(false);
+  const [relationId, setRelationId] = useState<string | null>(null);
   const [introOpen, setIntroOpen] = useState(false);
   const [motion, setMotion] = useState(true);
   const [stage, setStage] = useState<Box>({ w: 0, h: 0 });
@@ -62,14 +79,27 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
   const restoreFocusRef = useRef<string | null>(null);
   const policyRef = useRef<string | null>(null);
   const selectedRef = useRef<CategorySlug | null>(null);
+  const linksRef = useRef({ on: false, id: null as string | null });
+  const linksButtonRef = useRef<HTMLButtonElement>(null);
 
   const current = islands.find((i) => i.pin.slug === selected) ?? null;
   const currentPolicy = current?.policies.find((p) => p.slug === policySlug) ?? null;
+  const spots = useMemo(() => spotIndex(islands), [islands]);
+  /** 開著的政策有哪些關聯（另一端的政策與島） */
+  const related = useMemo<RelatedItem[]>(() => {
+    if (!currentPolicy) return [];
+    return relations.flatMap((relation) => {
+      if (relation.a !== currentPolicy.slug && relation.b !== currentPolicy.slug) return [];
+      const other = spots[relation.a === currentPolicy.slug ? relation.b : relation.a];
+      return other ? [{ relation, policy: other.policy, island: other.island }] : [];
+    });
+  }, [relations, spots, currentPolicy]);
 
   useEffect(() => {
     policyRef.current = policySlug;
     selectedRef.current = selected;
-  }, [policySlug, selected]);
+    linksRef.current = { on: linksOn, id: relationId };
+  }, [policySlug, selected, linksOn, relationId]);
 
   const ownerOf = useCallback((slug: string) => islands.find((i) => i.policies.some((p) => p.slug === slug)) ?? null, [islands]);
 
@@ -128,6 +158,8 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
   const select = useCallback((slug: CategorySlug | null) => {
     setSelected(slug);
     setPolicySlug(null);
+    setLinksOn(false);
+    setRelationId(null);
     setView("map");
     pushedRef.current = false;
     writeUrl(slug, null, "replace");
@@ -140,6 +172,8 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
       if (!owner) return;
       const mode = policyRef.current ? "replace" : "push";
       if (mode === "push") pushedRef.current = true;
+      setLinksOn(false);
+      setRelationId(null);
       setView("map");
       setSelected(owner.pin.slug);
       setPolicySlug(slug);
@@ -159,6 +193,29 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
     writeUrl(selectedRef.current, null, "replace");
   }, []);
 
+  /** 打開／關閉關聯總覽：打開時回到全景、關掉島與政策面板 */
+  const toggleLinks = useCallback(() => {
+    if (linksRef.current.on) {
+      setLinksOn(false);
+      setRelationId(null);
+      requestAnimationFrame(() => linksButtonRef.current?.focus());
+      return;
+    }
+    setSelected(null);
+    setPolicySlug(null);
+    setView("map");
+    setLinksOn(true);
+    setRelationId(null);
+    pushedRef.current = false;
+    writeUrl(null, null, "replace");
+    focusLater(RELATIONS_HEADING_ID);
+  }, []);
+
+  const pickRelation = useCallback((id: string | null) => {
+    setRelationId(id);
+    focusLater(RELATIONS_HEADING_ID);
+  }, []);
+
   // 政策面板關閉後，把焦點還給原本的圖釘（沒有圖釘時給島嶼面板標題）
   useEffect(() => {
     if (policySlug || !restoreFocusRef.current) return;
@@ -170,12 +227,14 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape" || introOpen) return;
-      if (policyRef.current) closePolicy();
+      if (linksRef.current.id) pickRelation(null);
+      else if (linksRef.current.on) toggleLinks();
+      else if (policyRef.current) closePolicy();
       else if (selectedRef.current) select(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [introOpen, closePolicy, select]);
+  }, [introOpen, closePolicy, select, pickRelation, toggleLinks]);
 
   const closeIntro = () => {
     setIntroOpen(false);
@@ -211,6 +270,18 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
   const worldCss = useMemo(() => {
     const W = ".explore-world";
     const rules = [`${W} [data-island],${W} [data-spot]{transition:opacity .45s,filter .35s}`];
+    // 有關聯的建築：青綠色光暈
+    const linkGlow = "filter:brightness(1.05) drop-shadow(0 0 .6px #fff) drop-shadow(0 0 1.8px rgba(0,166,161,.95))";
+    const spotSel = (slug: string) => {
+      const s = spots[slug];
+      return s ? `${W} [data-island="${s.island.pin.slug}"] [data-spot="${s.policy.spot}"]` : null;
+    };
+    if (linksOn) {
+      const active = relations.find((r) => r.id === relationId);
+      const ends = (active ? [active] : relations).flatMap((r) => [spotSel(r.a), spotSel(r.b)]).filter(Boolean);
+      rules.push(`${W} [data-island]{cursor:pointer}`, `${W} [data-spot]{opacity:.6}`, `${ends.join(",")}{opacity:1;${linkGlow}}`);
+      return rules.join("");
+    }
     if (!current) {
       rules.push(`${W} [data-island]{cursor:pointer}`, `${W} [data-island]:hover{filter:brightness(1.05) saturate(1.12)}`);
       return rules.join("");
@@ -227,9 +298,14 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
     if (currentPolicy) {
       rules.push(`${sel} [data-spot]:not([data-spot="${currentPolicy.spot}"]){opacity:.5}`);
       rules.push(`${sel} [data-spot="${currentPolicy.spot}"]{opacity:1;${glow}}`);
+      // 相關政策的建築也亮起來；在別座島的，那座島不要淡出
+      for (const { policy, island } of related) {
+        if (island !== current) rules.push(`${W} [data-island="${island.pin.slug}"]{opacity:.9}`);
+        rules.push(`${spotSel(policy.slug)}{opacity:1;${linkGlow}}`);
+      }
     }
     return rules.join("");
-  }, [current, currentPolicy]);
+  }, [current, currentPolicy, related, linksOn, relationId, relations, spots]);
 
   // 鏡頭：算出世界圖要放大多少、移到哪裡，讓選到的島落在「沒被面板擋住」的區域中央
   const measured = stage.w > 0;
@@ -238,8 +314,8 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
   const left0 = (stage.w - ww) / 2;
   const top0 = (stage.h - wh) / 2;
   const inset = desktop
-    ? { l: current ? PANEL_W + 24 : 0, t: 96, r: 0, b: 16 }
-    : { l: 0, t: stage.w < 640 ? 124 : 76, r: 0, b: current ? stage.h * (currentPolicy ? 0.6 : 0.52) : 150 };
+    ? { l: current || linksOn ? PANEL_W + 24 : 0, t: 96, r: 0, b: 16 }
+    : { l: 0, t: stage.w < 640 ? 124 : 76, r: 0, b: current ? stage.h * (currentPolicy ? 0.6 : 0.52) : linksOn ? stage.h * 0.42 : 150 };
   const visW = stage.w - inset.l - inset.r;
   const visH = stage.h - inset.t - inset.b;
   const vx = inset.l + visW / 2;
@@ -252,6 +328,16 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
     s = Math.max(1, Math.min(3.4, (visW * 0.8) / ((f.w / 100) * ww), (visH * 0.8) / ((f.h / 100) * wh)));
     cx = (f.x + f.w / 2) / 100;
     cy = (f.y + f.h / 2) / 100;
+  } else if (linksOn && measured) {
+    // 關聯總覽：只框住五座島（不含四周的海），線和按鈕才不會擠在一起
+    const fs = islands.map((i) => i.pin.frame);
+    const x0 = Math.min(...fs.map((f) => f.x));
+    const y0 = Math.min(...fs.map((f) => f.y));
+    const x1 = Math.max(...fs.map((f) => f.x + f.w));
+    const y1 = Math.max(...fs.map((f) => f.y + f.h));
+    s = Math.max(0.5, Math.min(2, (visW * 0.96) / (((x1 - x0) / 100) * ww), (visH * 0.96) / (((y1 - y0) / 100) * wh)));
+    cx = (x0 + x1) / 200;
+    cy = (y0 + y1) / 200;
   }
   const tx = vx - left0 - s * cx * ww;
   const ty = vy - top0 - s * cy * wh;
@@ -279,11 +365,37 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
       <PolicyPanel
         island={current}
         policy={currentPolicy}
+        related={related}
         onClose={closePolicy}
         onPrev={prevPolicy ? () => openPolicy(prevPolicy.slug) : undefined}
         onNext={nextPolicy ? () => openPolicy(nextPolicy.slug) : undefined}
+        onOpenPolicy={openPolicy}
       />
     ) : null;
+
+  // 要畫的關聯線：總覽模式畫全部；開著政策時畫它和同一座島上相關政策之間的線
+  const lines = measured
+    ? linksOn
+      ? relations.flatMap((relation) => {
+          const a = spots[relation.a];
+          const b = spots[relation.b];
+          return a && b ? [{ relation, a, b, ...arc(a, b, ww, wh) }] : [];
+        })
+      : currentPolicy
+        ? related
+            .filter((r) => r.island === current)
+            .map(({ relation, policy }) => {
+              const a = spots[currentPolicy.slug];
+              const b = spots[policy.slug];
+              return { relation, a, b, ...arc(a, b, ww, wh, "down") };
+            })
+        : []
+    : [];
+  // 手機的按鈕小一號，間距也跟著縮
+  const markers = linksOn ? placeMarkers(lines, s, desktop ? 36 : 28) : [];
+  const relationsPanel = linksOn ? (
+    <RelationsPanel relations={relations} spots={spots} activeId={relationId} onPick={pickRelation} onOpenPolicy={openPolicy} onClose={toggleLinks} />
+  ) : null;
 
   return (
     <div
@@ -312,6 +424,7 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
           }
         >
           {map}
+          {lines.length > 0 && <RelationLines key={linksOn ? "all" : currentPolicy?.slug} lines={lines} ww={ww} wh={wh} scale={s} activeId={relationId} />}
           <ul aria-label="政策島">
             {islands.map((island) => {
               const active = selected === island.pin.slug;
@@ -410,6 +523,24 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
               })}
             </ol>
           )}
+
+          {linksOn && (
+            <ul aria-label="政策關聯">
+              {lines.map(({ relation, a, b }, i) => (
+                <RelationMarker
+                  key={relation.id}
+                  relation={relation}
+                  a={a.policy}
+                  b={b.policy}
+                  x={(markers[i].x / ww) * 100}
+                  y={(markers[i].y / wh) * 100}
+                  active={relationId === relation.id}
+                  compact={!desktop}
+                  onClick={() => pickRelation(relationId === relation.id ? null : relation.id)}
+                />
+              ))}
+            </ul>
+          )}
         </div>
 
         {view === "list" && <ListView islands={islands} onPick={select} onOpenPolicy={openPolicy} />}
@@ -426,7 +557,7 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
 
         {/* 工具列：全景／地圖・清單／動畫／導覽 */}
         <div
-          className="absolute right-3 top-[72px] z-20 flex items-center gap-1.5 sm:right-5 sm:top-4 lg:gap-1 lg:rounded-full lg:border-2 lg:border-edge lg:bg-paper lg:p-1.5 lg:shadow-soft"
+          className="absolute right-3 top-[72px] z-20 flex items-center gap-1 sm:right-5 sm:top-4 sm:gap-1.5 lg:gap-1 lg:rounded-full lg:border-2 lg:border-edge lg:bg-paper lg:p-1.5 lg:shadow-soft"
           role="toolbar"
           aria-label="地圖工具"
         >
@@ -440,12 +571,17 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
                 type="button"
                 aria-pressed={view === v}
                 onClick={() => setView(v)}
-                className={`h-9 rounded-full px-3.5 text-[13px] font-black tracking-[0.08em] ${view === v ? "bg-teal-deep text-paper" : "hover:bg-mint"}`}
+                className={`h-9 whitespace-nowrap rounded-full px-3 text-[13px] font-black tracking-[0.08em] sm:px-3.5 ${view === v ? "bg-teal-deep text-paper" : "hover:bg-mint"}`}
               >
                 {v === "map" ? "地圖" : "清單"}
               </button>
             ))}
           </div>
+          <ToolButton onClick={toggleLinks} label="關聯" pressed={linksOn} buttonRef={linksButtonRef}>
+            <path d="M5 17c3-8 11-8 14 0" />
+            <circle cx="5" cy="17" r="2" />
+            <circle cx="19" cy="17" r="2" />
+          </ToolButton>
           <ToolButton onClick={toggleMotion} label="動畫" pressed={motion} hideLabelOnMobile>
             {motion ? <path d="M5 12c2-4 5-4 7 0s5 4 7 0" /> : <path d="M5 12h14" />}
           </ToolButton>
@@ -455,6 +591,16 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
         </div>
 
         {/* 桌機：左側面板（島嶼說明 ⇄ 政策詳情） */}
+        {desktop && view === "map" && relationsPanel && (
+          <section
+            aria-labelledby={RELATIONS_HEADING_ID}
+            key={`links-${relationId ?? "all"}`}
+            className="absolute bottom-4 left-5 top-[92px] z-10 overflow-y-auto overscroll-contain rounded-[28px] border-2 border-edge bg-paper/95 p-6 shadow-lift backdrop-blur [animation:pin-drop_.45s_both_var(--ease-out-soft)]"
+            style={{ width: PANEL_W - 20 }}
+          >
+            {relationsPanel}
+          </section>
+        )}
         {desktop && current && view === "map" && (
           <section
             aria-labelledby={currentPolicy ? POLICY_HEADING_ID : ISLAND_HEADING_ID}
@@ -469,14 +615,14 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
         {/* 手機：底部抽屜 */}
         {!desktop && view === "map" && (
           <section
-            aria-labelledby={current ? (currentPolicy ? POLICY_HEADING_ID : ISLAND_HEADING_ID) : "sheet-title"}
-            key={currentPolicy?.slug ?? current?.pin.slug ?? "none"}
+            aria-labelledby={relationsPanel ? RELATIONS_HEADING_ID : current ? (currentPolicy ? POLICY_HEADING_ID : ISLAND_HEADING_ID) : "sheet-title"}
+            key={relationsPanel ? `links-${relationId ?? "all"}` : (currentPolicy?.slug ?? current?.pin.slug ?? "none")}
             className={`absolute inset-x-0 bottom-0 z-10 overflow-y-auto overscroll-contain rounded-t-[28px] border-t-2 border-edge bg-paper px-5 pb-8 pt-3 shadow-[0_-12px_30px_-18px_rgb(0_90_85/0.45)] ${
-              currentPolicy ? "max-h-[60%]" : current ? "max-h-[52%]" : ""
-            } ${current ? "[animation:pin-drop_.4s_both_var(--ease-out-soft)]" : ""}`}
+              currentPolicy ? "max-h-[60%]" : current ? "max-h-[52%]" : relationsPanel ? "max-h-[42%]" : ""
+            } ${current || relationsPanel ? "[animation:pin-drop_.4s_both_var(--ease-out-soft)]" : ""}`}
           >
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-teal-deep/20" aria-hidden="true" />
-            {current ? (
+            {relationsPanel ?? (current ? (
               (policyPanel ?? <IslandPanel island={current} onClose={() => select(null)} onOpenPolicy={openPolicy} headingId={ISLAND_HEADING_ID} />)
             ) : (
               <>
@@ -500,7 +646,7 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
                   ))}
                 </ul>
               </>
-            )}
+            ))}
           </section>
         )}
       </div>
@@ -522,6 +668,7 @@ function ToolButton({
   disabled,
   pressed,
   hideLabelOnMobile = false,
+  buttonRef,
 }: {
   children: React.ReactNode;
   label: string;
@@ -529,15 +676,17 @@ function ToolButton({
   disabled?: boolean;
   pressed?: boolean;
   hideLabelOnMobile?: boolean;
+  buttonRef?: React.Ref<HTMLButtonElement>;
 }) {
   return (
     <button
+      ref={buttonRef}
       type="button"
       onClick={onClick}
       disabled={disabled}
       aria-pressed={pressed}
       aria-label={hideLabelOnMobile ? label : undefined}
-      className="flex h-10 items-center gap-1.5 rounded-full border-2 border-edge bg-paper px-3 text-[13px] font-black tracking-[0.08em] shadow-soft hover:bg-mint disabled:opacity-45 aria-pressed:bg-mint lg:h-9 lg:border-0 lg:shadow-none"
+      className="flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-edge bg-paper px-2.5 text-[13px] font-black tracking-[0.08em] shadow-soft hover:bg-mint disabled:opacity-45 aria-pressed:bg-mint sm:px-3 lg:h-9 lg:border-0 lg:shadow-none"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
         {children}
@@ -557,12 +706,22 @@ function ListView({
   onPick: (slug: CategorySlug) => void;
   onOpenPolicy: (slug: string) => void;
 }) {
+  const filter = useExploreFilter(islands);
   return (
     <div className="absolute inset-0 z-[5] overflow-y-auto bg-cream/95 px-4 pb-16 pt-32 backdrop-blur-sm sm:px-8 sm:pt-24 lg:pt-28">
       <div className="mx-auto max-w-3xl">
         <h2 className="section-title !text-[28px]">政策清單</h2>
         <p className="mt-2 text-[14.5px] text-ink-soft">與地圖相同的內容，用文字一次看完。點政策會回到地圖並打開說明。</p>
-        <div className="mt-8 space-y-10">
+        {/* 桌機的搜尋在右側索引，這裡給手機與平板 */}
+        <div className="mt-6 rounded-[24px] border-2 border-edge bg-paper p-4 lg:hidden">
+          <FilterBar islands={islands} filter={filter} />
+        </div>
+        {filter.active && (
+          <div className="mt-4 rounded-[24px] bg-paper p-3 lg:hidden">
+            <FilterResults filter={filter} onOpenPolicy={onOpenPolicy} />
+          </div>
+        )}
+        <div className={`mt-8 space-y-10 ${filter.active ? "max-lg:hidden" : ""}`}>
           {islands.map((island) => (
             <section key={island.pin.slug} aria-labelledby={`list-${island.pin.slug}`}>
               <div className="flex items-center justify-between gap-3 border-b-2 border-edge pb-2">

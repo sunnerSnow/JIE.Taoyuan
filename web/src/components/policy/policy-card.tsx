@@ -48,8 +48,18 @@ export function PolicyCard({ policy, headingLevel = 3, n }: { policy: Policy; he
             <time dateTime={policy.updatedAt}>{formatDate(policy.updatedAt)}</time>
           </dd>
         </dl>
-        <div className="mt-3 flex items-center justify-between">
-          {policy.sample ? <SampleTag /> : <span />}
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className="flex flex-wrap items-center gap-2">
+            {policy.sample && <SampleTag />}
+            {/* 疊在整張卡的連結之上，才點得到 */}
+            <Link
+              href={`/explore?policy=${policy.slug}`}
+              className="relative z-[1] inline-flex min-h-9 items-center gap-1 rounded-full border-2 border-edge bg-paper px-3 text-[12.5px] font-bold hover:bg-mint"
+            >
+              在政策島上看
+              <span className="sr-only">：{policy.title}</span>
+            </Link>
+          </span>
           <span className="grid h-9 w-9 place-items-center rounded-lg border-2 border-edge bg-sun transition-transform duration-300 group-hover:rotate-12" aria-hidden="true">
             <ArrowCurve className="h-4 w-4" />
           </span>

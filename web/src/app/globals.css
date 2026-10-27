@@ -258,6 +258,13 @@ html[data-menu-open="true"] {
   }
 }
 
+/* 探索地圖的關聯線：淡入 */
+@keyframes link-in {
+  from {
+    opacity: 0;
+  }
+}
+
 .anim-bob {
   animation: bob 4s ease-in-out infinite;
 }

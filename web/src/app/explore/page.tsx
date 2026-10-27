@@ -3,6 +3,7 @@ import { IsoSvg } from "@/components/art/iso-svg";
 import { ExploreApp, type ExploreIsland } from "@/components/explore/explore-app";
 import { categories, categoryColor } from "@/data/categories";
 import { policiesIn, sourceTypeLabel } from "@/data/policies";
+import { relations } from "@/data/relations";
 import { worldPins } from "@/lib/map-data";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -39,6 +40,8 @@ export default function ExplorePage() {
         updatedAt: p.updatedAt,
         audience: p.audience,
         extraSources: p.extraSources?.length ?? 0,
+        tags: p.tags ?? [],
+        keywords: [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])].join(" "),
       })),
       spots: spots[c.slug],
     };
@@ -50,6 +53,7 @@ export default function ExplorePage() {
       <ExploreApp
         islands={data}
         ratio={ratio}
+        relations={relations}
         map={<IsoSvg shapes={world.shapes} viewBox={world.viewBox} className="absolute inset-0 h-full" label="桃園政策島插畫" />}
       />
     </main>

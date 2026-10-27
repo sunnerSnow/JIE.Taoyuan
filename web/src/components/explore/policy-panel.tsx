@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { ArrowCurve } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
-import { formatDate, sourceName } from "@/data/policies";
+import { RelationEvidence, RelationTypeBadge } from "@/components/policy/relation-badge";
+import { formatDate, shortTitle, sourceName } from "@/data/policies";
+import { RELATION_DISCLAIMER, type Relation } from "@/data/relations";
 import type { ExploreIsland, ExplorePolicy } from "./types";
 
 export const POLICY_HEADING_ID = "policy-panel-title";
+
+/** 一條關聯，連同另一端的政策與它所在的島 */
+export type RelatedItem = { relation: Relation; policy: ExplorePolicy; island: ExploreIsland };
 
 /**
  * 選了政策（點圖釘、建築或清單）後的面板：桌機在左側、手機在底部抽屜。
@@ -13,15 +18,20 @@ export const POLICY_HEADING_ID = "policy-panel-title";
 export function PolicyPanel({
   island,
   policy,
+  related,
   onClose,
   onPrev,
   onNext,
+  onOpenPolicy,
 }: {
   island: ExploreIsland;
   policy: ExplorePolicy;
+  /** 這項政策的關聯（含另一端的政策與所屬島） */
+  related: RelatedItem[];
   onClose: () => void;
   onPrev?: () => void;
   onNext?: () => void;
+  onOpenPolicy: (slug: string) => void;
 }) {
   const { pin } = island;
   const total = island.policies.length;
@@ -132,6 +142,50 @@ export function PolicyPanel({
         看完整政策頁
         <ArrowCurve className="h-4 w-4" />
       </Link>
+
+      {related.length > 0 && (
+        <section aria-labelledby="policy-related-title" className="mt-6 border-t-2 border-dashed border-teal-deep/20 pt-4">
+          <h3 id="policy-related-title" className="text-[13px] font-black tracking-[0.2em] text-teal-deep">
+            相關政策 {related.length}
+          </h3>
+          <p className="mt-1 text-[12px] leading-relaxed text-ink-soft">{RELATION_DISCLAIMER}</p>
+          <ul className="mt-3 space-y-2.5">
+            {related.map(({ relation, policy: other, island: otherIsland }) => (
+              <li key={relation.id} className="rounded-2xl border-2 border-edge bg-paper px-3.5 py-3">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <RelationTypeBadge type={relation.type} />
+                  {otherIsland.pin.slug !== pin.slug && (
+                    <span className="chip !min-h-6 !text-[11.5px]" style={{ background: otherIsland.soft }}>
+                      在{otherIsland.pin.name}
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenPolicy(other.slug)}
+                  className="group mt-2 flex w-full items-start gap-2 text-left"
+                >
+                  <span
+                    className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-black"
+                    style={{ background: otherIsland.pin.color }}
+                    aria-hidden="true"
+                  >
+                    {other.n}
+                  </span>
+                  <span className="flex-1">
+                    <span className="block text-[14.5px] font-black leading-snug group-hover:underline">{shortTitle(other.title)}</span>
+                    <span className="mt-0.5 block text-[12.5px] leading-relaxed text-ink-soft">{relation.label}</span>
+                  </span>
+                  <span className="mt-0.5 text-[12px] font-bold text-teal-deep" aria-hidden="true">
+                    看這項 ›
+                  </span>
+                </button>
+                <RelationEvidence relation={relation} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <nav aria-label={`${pin.name}的其他政策`} className="mt-5 grid grid-cols-2 gap-2 border-t-2 border-dashed border-teal-deep/20 pt-4">
         <SwitchButton dir="prev" label={prev?.title} onClick={onPrev} />

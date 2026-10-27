@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PenguinSays } from "@/components/art/speech";
 import { CategoryChip, PolicyCard } from "@/components/policy/policy-card";
+import { RelationEvidence, RelationTypeBadge } from "@/components/policy/relation-badge";
 import { ShareButtons } from "@/components/policy/share-buttons";
 import { Breadcrumbs } from "@/components/site/page-head";
 import { PageSkeleton } from "@/components/site/page-skeleton";
@@ -12,6 +13,7 @@ import { ArrowCurve, ArrowRight, PinIcon } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { categoryColor, categoryMap } from "@/data/categories";
 import { formatDate, getPolicy, policies, sourceName, sourceTypeLabel, statusInfo, statusOrder } from "@/data/policies";
+import { RELATION_DISCLAIMER, type Relation, relationsOf } from "@/data/relations";
 import type { EditorNote, ExtraSource, Policy } from "@/data/types";
 import { pageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
@@ -49,7 +51,9 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
 
   const category = categoryMap[policy.category];
   const color = categoryColor[policy.category];
-  const related = (policy.related ?? []).map(getPolicy).filter((p): p is Policy => !!p);
+  const related = relationsOf(policy.slug)
+    .map(({ relation, other }) => ({ relation, policy: getPolicy(other) }))
+    .filter((r): r is { relation: Relation; policy: Policy } => !!r.policy);
 
   return (
     <article aria-labelledby="policy-title">
@@ -278,9 +282,15 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
             <h2 id="related-title" className="text-[22px] font-black tracking-[0.08em]">
               相關政策
             </h2>
+            <p className="mt-2 text-[13.5px] text-ink-soft">{RELATION_DISCLAIMER}</p>
             <ul className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {related.map((p) => (
-                <li key={p.id}>
+              {related.map(({ relation, policy: p }) => (
+                <li key={relation.id} className="flex flex-col gap-3">
+                  <div className="rounded-2xl bg-cream px-4 py-3">
+                    <RelationTypeBadge type={relation.type} full />
+                    <p className="mt-2 text-[14px] font-bold leading-relaxed">{relation.label}</p>
+                    <RelationEvidence relation={relation} />
+                  </div>
                   <PolicyCard policy={p} />
                 </li>
               ))}
