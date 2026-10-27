@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+/* 色票依規格書第 7 節；版面語彙（線稿、實心位移陰影、超粗英文標題）參考 sunbousai.jp */
+@theme {
+  --color-ink: #193a42;
+  --color-ink-soft: #3e5e66;
+  --color-teal: #477d73;
+  --color-teal-deep: #35635b;
+  --color-cream: #f7f4eb;
+  --color-paper: #fffdf7;
+  --color-sun: #f5d45e;
+  --color-sun-soft: #fbf0c8;
+  --color-peach: #f9e3d8;
+  --color-mist: #dcebf0;
+  --color-mint: #cfe6da;
+  --color-mint-deep: #bfe0cf;
+  --color-sea: #cfe4eb;
+  --color-coral: #b14a2f;
+
+  --font-sans: "Inter Variable", "Noto Sans TC Variable", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-display: "BBH Bartle", "Inter Variable", "Noto Sans TC Variable", sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 96px;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  letter-spacing: 0.03em;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-sun);
+  color: var(--color-ink);
+}
+
+.iso-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.iso-art path {
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+html[data-menu-open="true"] {
+  overflow: hidden;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--color-sun);
+  border: 2px solid var(--color-ink);
+  font-weight: 800;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 52px;
+    padding: 0 1.5em;
+    border: 2px solid var(--color-ink);
+    border-radius: 12px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    box-shadow: 0 5px 0 var(--color-ink);
+    transition:
+      transform 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft),
+      background-color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 var(--color-ink);
+  }
+
+  .btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+
+  .btn-sun {
+    background: var(--color-sun);
+  }
+
+  .btn-sun:hover {
+    background: #f8dc76;
+  }
+
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    padding: 0 1em;
+    border-radius: 10px;
+    font-size: 14px;
+    box-shadow: 0 3px 0 var(--color-ink);
+  }
+
+  .btn-sm:hover {
+    box-shadow: 0 1px 0 var(--color-ink);
+  }
+
+  .ink-card {
+    background: var(--color-paper);
+    border: 2px solid var(--color-ink);
+    border-radius: 24px;
+    box-shadow: 0 8px 0 var(--color-mint-deep);
+  }
+
+  .eyebrow {
+    font-family: "Inter Variable", sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-teal-deep);
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4.2vw, 46px);
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 28px;
+    padding: 0 0.8em;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    background: var(--color-mint);
+    color: var(--color-ink);
+  }
+
+  .prose-policy p + p {
+    margin-top: 1em;
+  }
+
+  .link-ink {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-sun);
+  }
+
+  .link-ink:hover {
+    text-decoration-color: var(--color-ink);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes wave-hand {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-16deg);
+  }
+  85% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes pin-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-bob {
+  animation: bob 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
