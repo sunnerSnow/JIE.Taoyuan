@@ -71,7 +71,7 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="例如：公車、托育、長輩、公園…"
-              className="h-12 w-full rounded-xl border-2 border-ink bg-cream pl-11 pr-4 text-[15px] placeholder:text-ink-soft/70 focus:bg-paper focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="h-12 w-full rounded-xl border-2 border-edge bg-cream pl-11 pr-4 text-[15px] placeholder:text-ink-soft/70 focus:bg-paper focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-teal-deep"
             />
             <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2" aria-hidden="true">
               <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" strokeWidth={2.2} />
@@ -125,7 +125,7 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
             id={sortId}
             value={sort}
             onChange={(e) => setSort(e.target.value as Sort)}
-            className="h-10 rounded-lg border-2 border-ink bg-paper px-3 text-[14px] font-bold"
+            className="h-10 rounded-lg border-2 border-edge bg-paper px-3 text-[14px] font-bold"
           >
             <option value="category">依分類排序</option>
             <option value="updated">依最近更新排序</option>
@@ -142,7 +142,7 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
           ))}
         </ul>
       ) : (
-        <div className="mt-8 flex flex-col items-center gap-6 rounded-[28px] border-2 border-dashed border-ink/30 bg-paper px-6 py-12 text-center">
+        <div className="mt-8 flex flex-col items-center gap-6 rounded-[28px] border-2 border-dashed border-teal-deep/30 bg-paper px-6 py-12 text-center">
           <PenguinSays pose="stand" penguinClassName="h-24 w-20" bubbleClassName="text-[14.5px]">
             找不到符合條件的政策。換個關鍵字，或清除篩選再看看？
           </PenguinSays>
@@ -173,8 +173,8 @@ function FilterChip({ pressed, onClick, dot, children }: { pressed: boolean; onC
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className={`inline-flex min-h-10 items-center gap-2 rounded-full border-2 border-ink px-3.5 text-[14px] font-bold transition-colors ${
-        pressed ? "bg-ink text-paper" : "bg-paper hover:bg-mint"
+      className={`inline-flex min-h-10 items-center gap-2 rounded-full border-2 border-edge px-3.5 text-[14px] font-bold transition-colors ${
+        pressed ? "bg-teal-deep text-paper" : "bg-paper hover:bg-mint"
       }`}
     >
       {dot && <span className="h-3 w-3 rounded-full border-[1.5px] border-current" style={{ background: dot }} aria-hidden="true" />}

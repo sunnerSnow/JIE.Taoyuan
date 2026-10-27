@@ -24,20 +24,20 @@ export default function FaqPage() {
         </h2>
         <ul className="space-y-4">
           {faqs.map((f, i) => (
-            <li key={f.q} className="rounded-[22px] border-2 border-ink bg-paper shadow-[0_5px_0_#BFE0CF]">
+            <li key={f.q} className="rounded-[22px] border-2 border-edge bg-paper shadow-soft">
               <details className="group" open={i === 0}>
                 <summary className="flex cursor-pointer list-none items-start gap-4 p-5 [&::-webkit-details-marker]:hidden">
                   <span className="font-display text-[22px] leading-none text-teal" aria-hidden="true">
                     Q
                   </span>
                   <span className="flex-1 text-[17px] font-black leading-snug tracking-[0.04em]">{f.q}</span>
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-ink transition-transform group-open:rotate-45" aria-hidden="true">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-edge transition-transform group-open:rotate-45" aria-hidden="true">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5">
                       <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" />
                     </svg>
                   </span>
                 </summary>
-                <div className="mx-5 mb-5 flex gap-4 border-t-2 border-dashed border-ink/20 pt-4">
+                <div className="mx-5 mb-5 flex gap-4 border-t-2 border-dashed border-teal-deep/20 pt-4">
                   <span className="font-display text-[22px] leading-none text-coral" aria-hidden="true">
                     A
                   </span>
@@ -56,7 +56,7 @@ export default function FaqPage() {
         </p>
       </section>
 
-      <section id="classroom" aria-labelledby="classroom-title" className="border-t-2 border-ink bg-paper py-16 sm:py-20">
+      <section id="classroom" aria-labelledby="classroom-title" className="border-t-2 border-edge bg-paper py-16 sm:py-20">
         <div className="mx-auto grid max-w-[1200px] gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <h2 id="classroom-title" className="section-title !text-[clamp(26px,3.6vw,38px)]">

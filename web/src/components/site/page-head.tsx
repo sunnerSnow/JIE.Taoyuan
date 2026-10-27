@@ -41,7 +41,7 @@ export function PageHead({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden border-b-2 border-ink" style={{ background: "linear-gradient(180deg, #EEF6F8 0%, #DCEBF0 100%)" }}>
+    <div className="relative overflow-hidden border-b-2 border-edge" style={{ background: "linear-gradient(180deg, #F1FAF9 0%, #DDF1EF 100%)" }}>
       <Cloud className="anim-bob absolute right-[8%] top-24 hidden w-32 md:block" />
       <Cloud className="anim-bob absolute right-[26%] top-40 hidden w-16 [animation-delay:-2s] lg:block" />
       <div className="relative mx-auto max-w-[1200px] px-4 pb-14 pt-28 sm:px-6 sm:pt-32">
@@ -49,7 +49,7 @@ export function PageHead({
         <h1 className="section-title mt-6">{title}</h1>
         <p className="eyebrow mt-2 flex items-center gap-3">
           {eyebrow}
-          <Squiggle className="h-2.5 w-12" color="#35635B" />
+          <Squiggle className="h-2.5 w-12" color="#00A6A1" />
         </p>
         {lead && <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.9] text-ink-soft">{lead}</p>}
         {children}

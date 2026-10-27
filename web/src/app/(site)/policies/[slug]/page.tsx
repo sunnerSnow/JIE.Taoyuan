@@ -56,7 +56,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
 
   return (
     <article aria-labelledby="policy-title">
-      <header className="relative overflow-hidden border-b-2 border-ink" style={{ background: color.soft }}>
+      <header className="relative overflow-hidden border-b-2 border-edge" style={{ background: color.soft }}>
         <div className="mx-auto max-w-[1200px] px-4 pb-12 pt-28 sm:px-6 sm:pt-32">
           <Breadcrumbs
             items={[
@@ -74,7 +74,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
           <h1 id="policy-title" className="section-title mt-4 max-w-4xl">
             {policy.title}
           </h1>
-          <p className="mt-5 max-w-3xl rounded-2xl border-2 border-ink bg-paper px-5 py-4 text-[16.5px] font-bold leading-[1.8] shadow-[0_5px_0_#193A42]">
+          <p className="mt-5 max-w-3xl rounded-2xl border-2 border-edge bg-paper px-5 py-4 text-[16.5px] font-bold leading-[1.8] shadow-soft">
             <span className="mr-2 rounded bg-sun px-1.5 py-0.5 text-[12px] font-black tracking-[0.1em]">一句話摘要</span>
             {policy.summary}
           </p>
@@ -99,10 +99,10 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
             {policy.pillars && policy.pillars.length > 0 && (
               <ol className="mt-6 grid gap-4 md:grid-cols-2">
                 {policy.pillars.map((pillar, i) => (
-                  <li key={pillar.title} className="rounded-[22px] border-2 border-ink bg-paper p-5 shadow-[0_5px_0_#BFE0CF]">
+                  <li key={pillar.title} className="rounded-[22px] border-2 border-edge bg-paper p-5 shadow-soft">
                     <div className="flex items-start gap-3">
                       <span
-                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-ink text-[14px] font-black text-ink"
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-edge text-[14px] font-black text-ink"
                         style={{ background: color.base }}
                         aria-hidden="true"
                       >
@@ -113,10 +113,10 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
                         {pillar.tagline && <p className="text-[13.5px] font-bold text-teal-deep">{pillar.tagline}</p>}
                       </div>
                     </div>
-                    <ul className="mt-4 space-y-2 border-t-2 border-dashed border-ink/20 pt-4 text-[14.5px] leading-relaxed">
+                    <ul className="mt-4 space-y-2 border-t-2 border-dashed border-teal-deep/20 pt-4 text-[14.5px] leading-relaxed">
                       {pillar.items.map((item) => (
                         <li key={item} className="flex items-start gap-2 text-ink">
-                          <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-ink" aria-hidden="true" />
+                          <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-teal-deep" aria-hidden="true" />
                           {item}
                         </li>
                       ))}
@@ -130,7 +130,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
                 {policy.approach.map((a, i) => (
                   <li key={a} className="flex items-start gap-3">
                     <span
-                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-ink text-[12px] font-black text-ink"
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-edge text-[12px] font-black text-ink"
                       style={{ background: color.base }}
                       aria-hidden="true"
                     >
@@ -156,9 +156,9 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
               </PenguinSays>
               <ul className="grid gap-4 md:grid-cols-2">
                 {policy.scenarios.map((s) => (
-                  <li key={s.persona} className="rounded-[22px] border-2 border-ink bg-paper p-5">
+                  <li key={s.persona} className="rounded-[22px] border-2 border-edge bg-paper p-5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full border-2 border-dashed border-ink/45 px-2.5 py-0.5 text-[12px] font-bold">虛構情境</span>
+                      <span className="rounded-full border-2 border-dashed border-teal-deep/45 px-2.5 py-0.5 text-[12px] font-bold">虛構情境</span>
                       {s.district && (
                         <span className="chip !min-h-7 !text-[12px]" style={{ background: color.soft }}>
                           <PinIcon className="h-3.5 w-3" color={color.base} />
@@ -181,10 +181,10 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
           {/* 時程只在有可靠來源時呈現（規格書第 6 節） */}
           {policy.timeline && policy.timeline.length > 0 && (
             <Block id="timeline" title="相關時程">
-              <ol className="relative space-y-4 border-l-2 border-dashed border-ink/30 pl-6">
+              <ol className="relative space-y-4 border-l-2 border-dashed border-teal-deep/30 pl-6">
                 {policy.timeline.map((t) => (
                   <li key={t.label} className="relative">
-                    <span className="absolute -left-[33px] top-1.5 h-4 w-4 rounded-full border-2 border-ink bg-sun" aria-hidden="true" />
+                    <span className="absolute -left-[33px] top-1.5 h-4 w-4 rounded-full border-2 border-edge bg-sun" aria-hidden="true" />
                     <time dateTime={t.date} className="text-[15px] font-black tracking-[0.06em] text-ink">
                       {formatDate(t.date)}
                     </time>
@@ -199,17 +199,17 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
             <Block id="faq" title="常見問題">
               <ul className="space-y-3">
                 {policy.faqs.map((f) => (
-                  <li key={f.q} className="rounded-2xl border-2 border-ink bg-paper">
+                  <li key={f.q} className="rounded-2xl border-2 border-edge bg-paper">
                     <details className="group">
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 font-black text-ink [&::-webkit-details-marker]:hidden">
                         {f.q}
-                        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-ink transition-transform group-open:rotate-45" aria-hidden="true">
+                        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-edge transition-transform group-open:rotate-45" aria-hidden="true">
                           <svg viewBox="0 0 16 16" className="h-3 w-3">
                             <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" />
                           </svg>
                         </span>
                       </summary>
-                      <p className="border-t-2 border-dashed border-ink/20 px-5 py-4">{f.a}</p>
+                      <p className="border-t-2 border-dashed border-teal-deep/20 px-5 py-4">{f.a}</p>
                     </details>
                   </li>
                 ))}
@@ -254,7 +254,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
               </Row>
               <Row label="目前狀態">{statusInfo[policy.status].label}</Row>
             </dl>
-            <p className="mt-5 border-t-2 border-dashed border-ink/20 pt-4 text-[13px] leading-relaxed text-ink-soft">
+            <p className="mt-5 border-t-2 border-dashed border-teal-deep/20 pt-4 text-[13px] leading-relaxed text-ink-soft">
               發現資料有誤或過期？
               <Link href="/about#contact" className="link-ink font-bold text-ink">
                 告訴我們
@@ -276,7 +276,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
       </div>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="border-t-2 border-ink bg-paper py-14">
+        <section aria-labelledby="related-title" className="border-t-2 border-edge bg-paper py-14">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
             <h2 id="related-title" className="text-[22px] font-black tracking-[0.08em]">
               相關政策
@@ -320,8 +320,8 @@ function SourcesBlock({ policy }: { policy: Policy }) {
       {policy.notes && policy.notes.length > 0 && (
         <ul className="mb-5 space-y-3">
           {policy.notes.map((n) => (
-            <li key={n.text} className="flex items-start gap-3 rounded-2xl border-2 border-ink/15 bg-sun-soft px-4 py-3 text-[14.5px] leading-[1.8] text-ink">
-              <span className="mt-1 shrink-0 rounded-md bg-ink px-2 py-0.5 text-[12px] font-black leading-snug tracking-[0.1em] text-paper">
+            <li key={n.text} className="flex items-start gap-3 rounded-2xl border-2 border-teal-deep/15 bg-sun-soft px-4 py-3 text-[14.5px] leading-[1.8] text-ink">
+              <span className="mt-1 shrink-0 rounded-md bg-teal-deep px-2 py-0.5 text-[12px] font-black leading-snug tracking-[0.1em] text-paper">
                 {noteLabel[n.kind]}
               </span>
               <span>{n.text}</span>
@@ -336,7 +336,7 @@ function SourcesBlock({ policy }: { policy: Policy }) {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-2xl border-2 border-ink bg-paper px-4 py-3 transition-colors hover:bg-mint"
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-2xl border-2 border-edge bg-paper px-4 py-3 transition-colors hover:bg-mint"
             >
               <span className="text-[13px] font-bold text-teal-deep">{s.outlet}</span>
               <span className="min-w-0 flex-1 font-bold text-ink">
@@ -370,7 +370,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 function StatusLadder({ policy }: { policy: Policy }) {
   if (policy.status === "unknown") {
     return (
-      <div className="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-ink/40 bg-paper p-5 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-teal-deep/40 bg-paper p-5 sm:flex-row sm:items-center">
         <StatusBadge status="unknown" />
         <p>{statusInfo.unknown.desc}</p>
       </div>
@@ -389,14 +389,14 @@ function StatusLadder({ policy }: { policy: Policy }) {
               {i > 0 && (
                 <span
                   aria-hidden="true"
-                  className={`absolute top-[17px] hidden h-0.5 sm:right-1/2 sm:block sm:w-full ${done ? "bg-ink" : "border-t-2 border-dashed border-ink/25"}`}
+                  className={`absolute top-[17px] hidden h-0.5 sm:right-1/2 sm:block sm:w-full ${done ? "bg-teal-deep" : "border-t-2 border-dashed border-teal-deep/25"}`}
                 />
               )}
               <span
                 className={`relative z-[1] grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 text-[13px] font-black ${
-                  done ? "border-ink text-ink" : "border-ink/30 bg-paper text-ink/40"
+                  done ? "border-edge text-ink" : "border-teal-deep/30 bg-paper text-ink/40"
                 }`}
-                style={done ? { background: current ? statusInfo[s].tone : "#FFFDF7" } : undefined}
+                style={done ? { background: current ? statusInfo[s].tone : "#FFFFFF" } : undefined}
               >
                 {done && !current ? (
                   <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden="true">
@@ -408,7 +408,7 @@ function StatusLadder({ policy }: { policy: Policy }) {
               </span>
               <span className={`text-[14px] font-bold ${done ? "text-ink" : "text-ink/45"}`}>
                 {statusInfo[s].label}
-                {current && <span className="ml-1.5 rounded bg-ink px-1.5 py-0.5 text-[11px] text-paper sm:mx-auto sm:mt-1 sm:block sm:w-fit">目前</span>}
+                {current && <span className="ml-1.5 rounded bg-teal-deep px-1.5 py-0.5 text-[11px] text-paper sm:mx-auto sm:mt-1 sm:block sm:w-fit">目前</span>}
               </span>
             </li>
           );

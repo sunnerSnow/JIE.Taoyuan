@@ -1,24 +1,30 @@
 @import "tailwindcss";
 
-/* 色票依規格書第 7 節；版面語彙（線稿、實心位移陰影、超粗英文標題）參考 sunbousai.jp */
+/* 版面語彙參考 unouplus.com：淡水藍底、青綠主色、圓體字、白色圓角卡片與柔和陰影、無描邊的扁平插畫 */
 @theme {
-  --color-ink: #193a42;
-  --color-ink-soft: #3e5e66;
-  --color-teal: #477d73;
-  --color-teal-deep: #35635b;
-  --color-cream: #f7f4eb;
-  --color-paper: #fffdf7;
-  --color-sun: #f5d45e;
-  --color-sun-soft: #fbf0c8;
-  --color-peach: #f9e3d8;
-  --color-mist: #dcebf0;
-  --color-mint: #cfe6da;
-  --color-mint-deep: #bfe0cf;
-  --color-sea: #cfe4eb;
-  --color-coral: #b14a2f;
+  --color-ink: #234647;
+  --color-ink-soft: #4a6768;
+  --color-teal: #00a6a1;
+  --color-teal-deep: #007a74;
+  --color-teal-dark: #005e59;
+  --color-cream: #e8f5f4;
+  --color-paper: #ffffff;
+  --color-sun: #f9de3a;
+  --color-sun-soft: #fff5c4;
+  --color-peach: #fbe4d8;
+  --color-mist: #d3eeec;
+  --color-mint: #c8ebe8;
+  --color-mint-deep: #a6dcd8;
+  --color-sea: #cdeceb;
+  --color-coral: #b5452d;
+  /* 卡片、按鈕的淡框線（取代原本的深色描邊） */
+  --color-edge: rgb(0 122 116 / 0.16);
 
-  --font-sans: "Inter Variable", "Noto Sans TC Variable", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-  --font-display: "BBH Bartle", "Inter Variable", "Noto Sans TC Variable", sans-serif;
+  --font-sans: "Chiron GoRound TC Variable", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-display: "Fredoka Variable", "Chiron GoRound TC Variable", sans-serif;
+
+  --shadow-soft: 0 12px 28px -16px rgb(0 90 85 / 0.38), 0 2px 6px -2px rgb(0 90 85 / 0.1);
+  --shadow-lift: 0 18px 36px -18px rgb(0 90 85 / 0.45), 0 3px 8px -3px rgb(0 90 85 / 0.12);
 
   --ease-out-soft: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -33,13 +39,13 @@ body {
   background: var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  letter-spacing: 0.03em;
-  line-height: 1.75;
+  letter-spacing: 0.06em;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-ink);
+  outline: 3px solid var(--color-teal-deep);
   outline-offset: 3px;
 }
 
@@ -69,10 +75,9 @@ html[data-menu-open="true"] {
   left: 16px;
   top: -80px;
   z-index: 100;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
   background: var(--color-sun);
-  border: 2px solid var(--color-ink);
   font-weight: 800;
 }
 
@@ -87,14 +92,13 @@ html[data-menu-open="true"] {
     justify-content: center;
     gap: 0.6em;
     min-height: 52px;
-    padding: 0 1.5em;
-    border: 2px solid var(--color-ink);
-    border-radius: 12px;
+    padding: 0 1.6em;
+    border-radius: 999px;
     background: var(--color-paper);
-    color: var(--color-ink);
+    color: var(--color-teal-deep);
     font-weight: 800;
-    letter-spacing: 0.08em;
-    box-shadow: 0 5px 0 var(--color-ink);
+    letter-spacing: 0.1em;
+    box-shadow: var(--shadow-soft);
     transition:
       transform 0.25s var(--ease-out-soft),
       box-shadow 0.25s var(--ease-out-soft),
@@ -103,61 +107,70 @@ html[data-menu-open="true"] {
   }
 
   .btn:hover {
-    transform: translateY(2px);
-    box-shadow: 0 3px 0 var(--color-ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
   }
 
   .btn:active {
-    transform: translateY(5px);
-    box-shadow: 0 0 0 var(--color-ink);
+    transform: translateY(1px);
   }
 
   .btn-sun {
     background: var(--color-sun);
+    color: var(--color-ink);
   }
 
   .btn-sun:hover {
-    background: #f8dc76;
+    background: #fbe565;
   }
 
   .btn-ink {
-    background: var(--color-ink);
+    background: var(--color-teal-deep);
     color: var(--color-paper);
   }
 
-  .btn-sm {
-    min-height: 40px;
-    padding: 0 1em;
-    border-radius: 10px;
-    font-size: 14px;
-    box-shadow: 0 3px 0 var(--color-ink);
+  .btn-ink:hover {
+    background: var(--color-teal-dark);
   }
 
-  .btn-sm:hover {
-    box-shadow: 0 1px 0 var(--color-ink);
+  .btn-sm {
+    min-height: 42px;
+    padding: 0 1.15em;
+    font-size: 14px;
   }
 
   .ink-card {
     background: var(--color-paper);
-    border: 2px solid var(--color-ink);
-    border-radius: 24px;
-    box-shadow: 0 8px 0 var(--color-mint-deep);
+    border-radius: 28px;
+    box-shadow: var(--shadow-soft);
   }
 
   .eyebrow {
-    font-family: "Inter Variable", sans-serif;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.24em;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-teal-deep);
+    color: var(--color-teal);
   }
 
   .section-title {
-    font-size: clamp(28px, 4.2vw, 46px);
-    font-weight: 900;
-    line-height: 1.35;
-    letter-spacing: 0.06em;
+    font-size: clamp(28px, 4.2vw, 44px);
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    color: var(--color-teal-deep);
+  }
+
+  /* 標題下方的波浪線（unouplus 主標的語彙） */
+  .wavy {
+    padding-bottom: 0.18em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='8' viewBox='0 0 24 8'%3E%3Cpath d='M0 4c3-4 9-4 12 0s9 4 12 0' fill='none' stroke='%2300a6a1' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 24px 8px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   .chip {
@@ -165,12 +178,12 @@ html[data-menu-open="true"] {
     align-items: center;
     gap: 0.4em;
     min-height: 28px;
-    padding: 0 0.8em;
+    padding: 0 0.85em;
     border-radius: 999px;
     font-size: 13px;
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     background: var(--color-mint);
     color: var(--color-ink);
   }
@@ -183,11 +196,30 @@ html[data-menu-open="true"] {
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 4px;
-    text-decoration-color: var(--color-sun);
+    text-decoration-color: var(--color-teal);
   }
 
   .link-ink:hover {
-    text-decoration-color: var(--color-ink);
+    text-decoration-color: var(--color-teal-deep);
+  }
+
+  /* 直書（unouplus 首頁的直排導覽與標語） */
+  .vertical {
+    writing-mode: vertical-rl;
+  }
+
+  /* 直書版的波浪線：畫在字的左側 */
+  .wavy-v {
+    padding-left: 0.2em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='24' viewBox='0 0 8 24'%3E%3Cpath d='M4 0c-4 3-4 9 0 12s4 9 0 12' fill='none' stroke='%2300a6a1' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-y;
+    background-position: 0 0;
+    background-size: 8px 24px;
+  }
+
+  /* Fredoka 預設字重太細，展示字一律用半粗 */
+  .font-display {
+    font-weight: 600;
   }
 }
 

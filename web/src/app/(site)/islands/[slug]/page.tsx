@@ -45,7 +45,7 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
 
   return (
     <>
-      <section aria-labelledby="island-title" className="relative overflow-hidden border-b-2 border-ink" style={{ background: color.soft }}>
+      <section aria-labelledby="island-title" className="relative overflow-hidden border-b-2 border-edge" style={{ background: color.soft }}>
         <div className="relative mx-auto grid max-w-[1200px] items-center gap-10 px-4 pb-14 pt-28 sm:px-6 sm:pt-32 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
           <div>
             <Breadcrumbs items={[{ href: "/", label: "首頁" }, { href: "/explore", label: "探索政策島" }]} current={category.name} />
@@ -56,7 +56,7 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
               <div>
                 <p className="eyebrow flex items-center gap-3">
                   Policy Island {category.no}
-                  <Squiggle className="h-2.5 w-12" color="#35635B" />
+                  <Squiggle className="h-2.5 w-12" color="#00A6A1" />
                 </p>
                 <h1 id="island-title" className="section-title">
                   {category.name}
@@ -68,7 +68,7 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
             <h2 className="mt-6 text-[13px] font-bold tracking-[0.2em] text-teal-deep">可能涵蓋</h2>
             <ul className="mt-2 flex flex-wrap gap-2">
               {category.topics.map((t) => (
-                <li key={t} className="chip border-2 border-ink !bg-paper">
+                <li key={t} className="chip border-2 border-edge !bg-paper">
                   {t}
                 </li>
               ))}
@@ -117,14 +117,14 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
               ))}
             </ol>
           ) : (
-            <p className="mt-8 rounded-2xl border-2 border-dashed border-ink/30 bg-paper p-6 text-center text-ink-soft">
+            <p className="mt-8 rounded-2xl border-2 border-dashed border-teal-deep/30 bg-paper p-6 text-center text-ink-soft">
               這座島的政策還在整理中，目前尚無可查證資訊。
             </p>
           )}
         </div>
       </section>
 
-      <nav aria-labelledby="other-islands-title" className="border-t-2 border-ink bg-paper py-14">
+      <nav aria-labelledby="other-islands-title" className="border-t-2 border-edge bg-paper py-14">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
           <h2 id="other-islands-title" className="text-[20px] font-black tracking-[0.08em]">
             繼續逛其他島
@@ -134,7 +134,7 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
               <li key={c.slug}>
                 <Link
                   href={`/islands/${c.slug}`}
-                  className="group flex items-center gap-3 rounded-2xl border-2 border-ink p-4 shadow-[0_4px_0_#193A42] transition-transform hover:-translate-y-0.5"
+                  className="group flex items-center gap-3 rounded-2xl border-2 border-edge p-4 shadow-soft transition-transform hover:-translate-y-0.5"
                   style={{ background: categoryColor[c.slug].soft }}
                 >
                   <Scallop color={categoryColor[c.slug].base} size={44} className="text-[12px]">

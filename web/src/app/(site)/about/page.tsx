@@ -51,7 +51,7 @@ export default function AboutPage() {
               ["#contact", "聯絡與更正"],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="inline-flex min-h-10 items-center rounded-full border-2 border-ink bg-paper px-4 hover:bg-mint">
+                <a href={href} className="inline-flex min-h-10 items-center rounded-full border-2 border-edge bg-paper px-4 hover:bg-mint">
                   {label}
                 </a>
               </li>
@@ -67,7 +67,7 @@ export default function AboutPage() {
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {brandIdeas.map((b) => (
-              <li key={b.char} className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-paper p-4">
+              <li key={b.char} className="flex items-center gap-4 rounded-2xl border-2 border-edge bg-paper p-4">
                 <Scallop size={52} className="text-[20px] !font-sans">
                   <span className="font-black">{b.char}</span>
                 </Scallop>
@@ -78,7 +78,7 @@ export default function AboutPage() {
         </Section>
 
         <Section id="organizer" title="網站立場與維護">
-          <dl className="grid grid-cols-[6em_1fr] gap-x-4 gap-y-2 rounded-2xl border-2 border-ink bg-paper p-5">
+          <dl className="grid grid-cols-[6em_1fr] gap-x-4 gap-y-2 rounded-2xl border-2 border-edge bg-paper p-5">
             <dt className="font-bold text-ink">支持候選人</dt>
             <dd>
               {site.candidate.office} {site.candidate.ballotNo} 號 {site.candidate.name}
@@ -107,7 +107,7 @@ export default function AboutPage() {
           <p>不同來源會清楚標示，不混為一談。每一項政策的詳情頁都會列出來源類型、原始資料、發布日期與最後更新日期。</p>
           <dl className="mt-6 space-y-3">
             {(Object.keys(sourceTypeLabel) as SourceType[]).map((t) => (
-              <div key={t} className="rounded-2xl border-2 border-ink bg-paper p-4">
+              <div key={t} className="rounded-2xl border-2 border-edge bg-paper p-4">
                 <dt className="font-black text-ink">{sourceTypeLabel[t]}</dt>
                 <dd className="mt-1 text-[14.5px]">{sourceTypeDesc[t]}</dd>
               </div>
@@ -117,7 +117,7 @@ export default function AboutPage() {
           <ol className="mt-4 space-y-3">
             {process.map((step, i) => (
               <li key={step} className="flex items-start gap-3">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-ink bg-sun text-[13px] font-black text-ink" aria-hidden="true">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-edge bg-sun text-[13px] font-black text-ink" aria-hidden="true">
                   {i + 1}
                 </span>
                 <span className="pt-1">{step}</span>

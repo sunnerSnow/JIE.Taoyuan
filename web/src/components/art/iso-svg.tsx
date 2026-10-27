@@ -1,4 +1,4 @@
-import type { IsoBounds, Shape } from "@/lib/iso";
+import { flatStroke, type IsoBounds, type Shape } from "@/lib/iso";
 
 type Props = {
   shapes: Shape[];
@@ -8,7 +8,7 @@ type Props = {
   label?: string;
 };
 
-// 線條用 non-scaling-stroke，不論插畫縮放多少，描邊都維持同樣粗細（像 sunbousai 的線稿）。
+// 線條用 non-scaling-stroke，不論插畫縮放多少，線寬都維持同樣粗細。
 // 所以 sw 與虛線長度是「螢幕像素」的倍數，不是世界座標。
 const LINE = 1.4;
 const DASH = 3;
@@ -24,18 +24,21 @@ export function IsoSvg({ shapes, viewBox, className, label }: Props) {
       aria-hidden={label ? undefined : true}
       focusable="false"
     >
-      {shapes.map((s, i) => (
-        <path
-          key={i}
-          d={s.d}
-          fill={s.fill}
-          stroke={s.stroke}
-          strokeWidth={s.stroke ? (s.sw ?? 1) * LINE : undefined}
-          strokeDasharray={s.dash?.split(" ").map((n) => Number(n) * DASH).join(" ")}
-          strokeLinecap={s.cap}
-          opacity={s.opacity}
-        />
-      ))}
+      {shapes.map((s, i) => {
+        const line = flatStroke(s, LINE);
+        return (
+          <path
+            key={i}
+            d={s.d}
+            fill={s.fill}
+            stroke={line.stroke}
+            strokeWidth={line.width}
+            strokeDasharray={line.dash?.split(" ").map((n) => Number(n) * DASH).join(" ")}
+            strokeLinecap={s.cap}
+            opacity={s.opacity}
+          />
+        );
+      })}
     </svg>
   );
 }

@@ -4,7 +4,7 @@ import { ArrowCurve, Cloud } from "@/components/ui/decor";
 
 export function NotFoundContent() {
   return (
-    <div className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #EEF6F8 0%, #CFE4EB 100%)" }}>
+    <div className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #F1FAF9 0%, #DDF1EF 100%)" }}>
       <Cloud className="anim-bob absolute left-[8%] top-28 w-32" />
       <Cloud className="anim-bob absolute right-[10%] top-44 w-20 [animation-delay:-2s]" />
       <div className="relative mx-auto flex min-h-[80svh] max-w-[720px] flex-col items-center justify-center px-4 pb-20 pt-32 text-center">

@@ -34,7 +34,7 @@ export function PolicyIndex({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b-2 border-ink px-6 pb-5 pt-7">
+      <div className="border-b-2 border-edge px-6 pb-5 pt-7">
         <p className="eyebrow">The Policy Index</p>
         <h2 className="mt-2 text-[24px] font-black leading-snug tracking-[0.06em]">選一座島，走進生活場景。</h2>
         <p className="mt-1 text-[13px] text-ink-soft">
@@ -50,7 +50,7 @@ export function PolicyIndex({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="搜尋政策、關鍵字…"
-            className="h-12 w-full rounded-xl border-2 border-ink bg-cream pl-11 pr-4 text-[15px] placeholder:text-ink-soft/70 focus:bg-paper focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            className="h-12 w-full rounded-xl border-2 border-edge bg-cream pl-11 pr-4 text-[15px] placeholder:text-ink-soft/70 focus:bg-paper focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-teal-deep"
           />
           <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2" aria-hidden="true">
             <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" strokeWidth={2.2} />
@@ -104,7 +104,7 @@ export function PolicyIndex({
                     }}
                     aria-current={selected === island.pin.slug ? "true" : undefined}
                     className={`flex items-center gap-4 rounded-2xl px-3 py-3 ${
-                      selected === island.pin.slug && !listMode ? "border-l-4 border-ink" : "hover:bg-mint/40"
+                      selected === island.pin.slug && !listMode ? "border-l-4 border-edge" : "hover:bg-mint/40"
                     }`}
                   >
                     <span className="w-10 text-[24px] font-black italic leading-none tracking-tight text-teal" aria-hidden="true">
@@ -126,7 +126,7 @@ export function PolicyIndex({
                           <li key={p.slug}>
                             <Link href={`/policies/${p.slug}`} className="flex items-start gap-2.5 rounded-lg py-1.5 pr-1 hover:bg-paper">
                               <span
-                                className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-[1.5px] border-ink text-[11px] font-black"
+                                className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-[1.5px] border-edge text-[11px] font-black"
                                 style={{ background: island.pin.color }}
                               >
                                 {p.n}

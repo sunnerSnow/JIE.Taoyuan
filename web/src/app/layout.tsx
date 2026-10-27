@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/noto-sans-tc/wght.css";
-import "@fontsource-variable/inter/wght.css";
-import "@fontsource/bbh-bartle/latin-400.css";
+import "@fontsource-variable/chiron-goround-tc/wght.css";
+import "@fontsource-variable/fredoka/wght.css";
 import "./globals.css";
 import { site } from "@/lib/site";
 
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F7F4EB",
+  themeColor: "#E8F5F4",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

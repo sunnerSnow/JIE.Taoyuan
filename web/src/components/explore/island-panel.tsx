@@ -22,7 +22,7 @@ export function IslandPanel({ island, onClose, headingId }: { island: ExploreIsl
         <button
           type="button"
           onClick={onClose}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-ink bg-paper hover:bg-mint"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-edge bg-paper hover:bg-mint"
           aria-label="關閉島嶼說明，回到全景"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -44,10 +44,10 @@ export function IslandPanel({ island, onClose, headingId }: { island: ExploreIsl
           <li key={p.slug}>
             <Link
               href={`/policies/${p.slug}`}
-              className="group flex items-start gap-3 rounded-2xl border-2 border-ink bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5"
+              className="group flex items-start gap-3 rounded-2xl border-2 border-edge bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5"
             >
               <span
-                className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-ink text-[12px] font-black"
+                className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-edge text-[12px] font-black"
                 style={{ background: pin.color }}
               >
                 {p.n}

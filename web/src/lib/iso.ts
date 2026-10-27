@@ -44,6 +44,16 @@ export type Shape = {
   cap?: "round" | "butt";
 };
 
+/**
+ * 扁平風（參考 unouplus）：填色面不描邊，只用同色細線補面與面之間的接縫；線條類改成柔和的深青灰。
+ * line 是原本 sw=1 時的線寬（網頁用螢幕 px，分享圖用換算後的世界座標）。
+ */
+export function flatStroke(s: Shape, line: number): { stroke?: string; width?: number; dash?: string } {
+  if (!s.stroke) return {};
+  if (s.fill !== "none" && s.stroke === INK) return { stroke: s.fill, width: line / 2 };
+  return { stroke: s.stroke === INK ? "#3b6466" : s.stroke, width: (s.sw ?? 1) * line, dash: s.dash };
+}
+
 type FaceColors = { top: string; left?: string; right?: string };
 type Opts = { stroke?: string | null; sw?: number; dash?: string; opacity?: number };
 

@@ -43,7 +43,7 @@ export function ShareButtons({ title, fileName }: { title: string; fileName: str
   };
 
   const btn =
-    "inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-ink bg-paper px-3.5 text-[13.5px] font-bold transition-colors hover:bg-mint";
+    "inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-edge bg-paper px-3.5 text-[13.5px] font-bold transition-colors hover:bg-mint";
 
   return (
     <div role="group" aria-label="分享這項政見" className="flex flex-wrap items-center gap-2">

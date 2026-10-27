@@ -50,7 +50,7 @@ export function IslandPins({ spots, color, label }: { spots: SpotPin[]; color: s
               ref={(el) => {
                 pinRefs.current[i] = el;
               }}
-              className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink text-[14px] font-black shadow-[0_3px_0_#193A42] transition-transform group-hover:-translate-y-0.5"
+              className="grid h-9 w-9 place-items-center rounded-full border-2 border-edge text-[14px] font-black shadow-soft transition-transform group-hover:-translate-y-0.5"
               style={{ background: color }}
             >
               {s.n}
@@ -59,13 +59,13 @@ export function IslandPins({ spots, color, label }: { spots: SpotPin[]; color: s
               ref={(el) => {
                 stemRefs.current[i] = el;
               }}
-              className="h-3 w-0.5 bg-ink"
+              className="h-3 w-0.5 bg-teal-deep"
               aria-hidden="true"
             />
-            <span className="h-2.5 w-2.5 rounded-full border-2 border-ink bg-sun" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-full border-2 border-edge bg-sun" aria-hidden="true" />
             <span
               role="presentation"
-              className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-max max-w-[220px] -translate-x-1/2 rounded-xl border-2 border-ink bg-paper px-3 py-1.5 text-[13px] font-black opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 lg:block"
+              className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-max max-w-[220px] -translate-x-1/2 rounded-xl border-2 border-edge bg-paper px-3 py-1.5 text-[13px] font-black opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 lg:block"
             >
               {s.title}
             </span>

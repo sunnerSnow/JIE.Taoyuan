@@ -4,7 +4,7 @@ import type { PolicyStatus } from "@/data/types";
 // 狀態不只靠顏色：每個狀態都有自己的圖形＋文字
 
 function StatusGlyph({ status }: { status: PolicyStatus }) {
-  const common = { fill: "none", stroke: "#193A42", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const common = { fill: "none", stroke: "#234647", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   switch (status) {
     case "proposed":
       return <path d="M6 3v10M6 3h7l-1.5 2.5L13 8H6" {...common} />;
@@ -26,7 +26,7 @@ function StatusGlyph({ status }: { status: PolicyStatus }) {
       return (
         <>
           <circle cx="8" cy="8" r="5.5" {...common} />
-          <path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="#193A42" />
+          <path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="#234647" />
         </>
       );
     case "completed":
@@ -50,7 +50,7 @@ export function StatusBadge({ status, size = "md" }: { status: PolicyStatus; siz
   const info = statusInfo[status];
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-ink font-bold leading-none tracking-wide ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-edge font-bold leading-none tracking-wide ${
         size === "sm" ? "h-7 px-2.5 text-[12px]" : "h-8 px-3 text-[13px]"
       }`}
       style={{ background: info.tone }}

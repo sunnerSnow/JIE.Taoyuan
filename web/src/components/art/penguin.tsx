@@ -1,11 +1,11 @@
 // 企鵝阿爸：導覽角色的暫代插畫（原創線稿）。
 // 規格書要求沿用既有角色識別並取得授權；拿到正式素材後只要替換這個元件。
 
-const INK = "#193A42";
+const INK = "#234647";
 const BODY = "#2E5560";
-const BELLY = "#FFFDF7";
-const SUN = "#F5D45E";
-const TEAL = "#477D73";
+const BELLY = "#FFFFFF";
+const SUN = "#F9DE3A";
+const TEAL = "#00A6A1";
 const BLUSH = "#F2B39B";
 
 type Pose = "wave" | "point" | "stand";
@@ -20,7 +20,7 @@ export function Penguin({ pose = "wave", className, title }: { pose?: Pose; clas
       aria-hidden={title ? undefined : true}
       focusable="false"
     >
-      <g strokeLinejoin="round" strokeLinecap="round" stroke={INK} strokeWidth={3}>
+      <g strokeLinejoin="round" strokeLinecap="round" stroke="none">
         <ellipse cx="62" cy="148" rx="36" ry="5.5" fill={INK} opacity={0.12} stroke="none" />
         <path d="M40 134c-6 10 2 13 9 13h10c5 0 5-6 1-10z" fill={SUN} />
         <path d="M84 134c6 10-2 13-9 13H65c-5 0-5-6-1-10z" fill={SUN} />
@@ -35,9 +35,9 @@ export function Penguin({ pose = "wave", className, title }: { pose?: Pose; clas
         <circle cx="73" cy="45" r="3.8" fill={INK} stroke="none" />
         <circle cx="52.4" cy="43.6" r="1.2" fill="#fff" stroke="none" />
         <circle cx="74.4" cy="43.6" r="1.2" fill="#fff" stroke="none" />
-        <circle cx="51" cy="45" r="9.5" fill="none" strokeWidth={2.6} />
-        <circle cx="73" cy="45" r="9.5" fill="none" strokeWidth={2.6} />
-        <path d="M60.5 44.5h3" fill="none" strokeWidth={2.6} />
+        <circle cx="51" cy="45" r="9.5" fill="none" stroke={INK} strokeWidth={2.6} />
+        <circle cx="73" cy="45" r="9.5" fill="none" stroke={INK} strokeWidth={2.6} />
+        <path d="M60.5 44.5h3" fill="none" stroke={INK} strokeWidth={2.6} />
         <path d="M55 56c5-3.6 9-3.6 14 0-4 7.4-10 7.4-14 0z" fill={SUN} strokeWidth={2.6} />
         {pose === "wave" && (
           <g className="penguin-wave" style={{ transformOrigin: "98px 76px", animation: "wave-hand 2.6s ease-in-out infinite" }}>

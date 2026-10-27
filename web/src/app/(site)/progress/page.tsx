@@ -39,7 +39,7 @@ export default function ProgressPage() {
         </div>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {statusOrder.map((s) => (
-            <li key={s} className="rounded-[22px] border-2 border-ink bg-paper p-5 shadow-[0_5px_0_#BFE0CF]">
+            <li key={s} className="rounded-[22px] border-2 border-edge bg-paper p-5 shadow-soft">
               <StatusBadge status={s} />
               <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{statusInfo[s].desc}</p>
             </li>
@@ -47,14 +47,14 @@ export default function ProgressPage() {
         </ul>
       </section>
 
-      <section aria-labelledby="matrix-title" className="border-y-2 border-ink bg-paper py-14">
+      <section aria-labelledby="matrix-title" className="border-y-2 border-edge bg-paper py-14">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
           <h2 id="matrix-title" className="text-[24px] font-black tracking-[0.08em]">
             各島政策進度一覽
           </h2>
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">點數字可以看該分類、該狀態的政策清單。</p>
           <SampleNotice className="mt-6" />
-          <div className="mt-6 overflow-x-auto rounded-[22px] border-2 border-ink">
+          <div className="mt-6 overflow-x-auto rounded-[22px] border-2 border-edge">
             <table className="w-full min-w-[720px] border-collapse text-[14px]">
               <caption className="sr-only">各分類政策在不同狀態的項目數</caption>
               <thead>
@@ -76,7 +76,7 @@ export default function ProgressPage() {
                 {categories.map((c) => {
                   const list = policies.filter((p) => p.category === c.slug);
                   return (
-                    <tr key={c.slug} className="border-t-2 border-dashed border-ink/15">
+                    <tr key={c.slug} className="border-t-2 border-dashed border-teal-deep/15">
                       <th scope="row" className="px-4 py-3 text-left">
                         <Link href={`/islands/${c.slug}`} className="hover:underline">
                           <CategoryChip slug={c.slug} />
@@ -89,7 +89,7 @@ export default function ProgressPage() {
                             {n > 0 ? (
                               <Link
                                 href={`/policies?category=${c.slug}&status=${s}`}
-                                className="inline-grid h-9 min-w-9 place-items-center rounded-full border-2 border-ink px-2 text-[15px] font-black hover:-translate-y-0.5"
+                                className="inline-grid h-9 min-w-9 place-items-center rounded-full border-2 border-edge px-2 text-[15px] font-black hover:-translate-y-0.5"
                                 style={{ background: statusInfo[s].tone }}
                                 aria-label={`${c.name}${statusInfo[s].label} ${n} 項`}
                               >
@@ -122,7 +122,7 @@ export default function ProgressPage() {
             const list = policies.filter((p) => p.status === s).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
             return (
               <section key={s} aria-labelledby={`status-${s}`}>
-                <div className="flex flex-wrap items-center gap-3 border-b-2 border-ink pb-3">
+                <div className="flex flex-wrap items-center gap-3 border-b-2 border-edge pb-3">
                   <h3 id={`status-${s}`} className="flex items-center gap-3">
                     <StatusBadge status={s} />
                     <span className="text-[15px] font-bold">{list.length} 項</span>
@@ -134,7 +134,7 @@ export default function ProgressPage() {
                   )}
                 </div>
                 {list.length > 0 ? (
-                  <ul className="divide-y-2 divide-dashed divide-ink/15">
+                  <ul className="divide-y-2 divide-dashed divide-teal-deep/15">
                     {list.map((p) => (
                       <li key={p.id}>
                         <Link href={`/policies/${p.slug}`} className="group flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:gap-4">

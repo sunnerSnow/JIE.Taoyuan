@@ -8,7 +8,7 @@ import { Logo } from "./logo";
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t-2 border-ink bg-mist">
+    <footer className="relative overflow-hidden border-t-2 border-edge bg-mist">
       <Cloud className="anim-bob absolute left-[8%] top-10 hidden w-32 md:block" />
       <Cloud className="anim-bob absolute right-[3%] top-8 hidden w-20 [animation-delay:-2s] md:block" />
 
@@ -32,14 +32,14 @@ export function SiteFooter() {
             </div>
           </dl>
           <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
-            <Link href="/explore" className="group inline-flex items-end gap-3 border-b-2 border-ink pb-1">
+            <Link href="/explore" className="group inline-flex items-end gap-3 border-b-2 border-edge pb-1">
               <span className="font-display text-[34px] leading-none">Explore</span>
               <span className="pb-0.5 text-[13px] font-bold">探索政策島</span>
               <span className="mb-0.5 grid h-7 w-7 place-items-center rounded-md bg-sun transition-transform group-hover:rotate-12">
                 <ArrowCurve className="h-4 w-4" />
               </span>
             </Link>
-            <Link href="/about" className="group inline-flex items-end gap-3 border-b-2 border-ink pb-1">
+            <Link href="/about" className="group inline-flex items-end gap-3 border-b-2 border-edge pb-1">
               <span className="font-display text-[34px] leading-none">Contact</span>
               <span className="pb-0.5 text-[13px] font-bold">關於與聯絡</span>
               <span className="mb-0.5 grid h-7 w-7 place-items-center rounded-md bg-sun transition-transform group-hover:rotate-12">
@@ -69,7 +69,7 @@ export function SiteFooter() {
               {categories.map((c) => (
                 <li key={c.slug}>
                   <Link href={`/islands/${c.slug}`} className="inline-flex items-center gap-1.5 font-bold hover:underline">
-                    <PinIcon className="h-4 w-3.5" color="#9ED3BF" />
+                    <PinIcon className="h-4 w-3.5" color="#7FD3CE" />
                     {c.name}
                   </Link>
                 </li>
@@ -93,7 +93,7 @@ export function SiteFooter() {
       </div>
 
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6">
-        <p className="rounded-2xl border-2 border-dashed border-ink/40 bg-paper/70 px-4 py-3 text-[13px] leading-relaxed text-ink-soft">
+        <p className="rounded-2xl border-2 border-dashed border-teal-deep/40 bg-paper/70 px-4 py-3 text-[13px] leading-relaxed text-ink-soft">
           {site.sampleContent && <strong className="text-coral">本站目前為示範版本，標示「示範資料」的政策條目、狀態與來源皆為版型示意。</strong>}
           {site.stanceLong}網站內容區分候選人公開政見、政府已核定政策、媒體報導與市民提案。
         </p>
@@ -101,11 +101,11 @@ export function SiteFooter() {
 
       <p
         aria-hidden="true"
-        className="pointer-events-none relative mt-10 select-none whitespace-nowrap text-center font-display text-[7.6vw] leading-[0.8] text-ink"
+        className="pointer-events-none relative mt-10 select-none whitespace-nowrap text-center font-display text-[7.6vw] leading-[0.8] text-teal"
       >
         JIE.TAOYUAN
       </p>
-      <div className="relative border-t-2 border-ink bg-ink py-4 text-center text-[12px] tracking-[0.12em] text-paper">
+      <div className="relative border-t-2 border-edge bg-teal-deep py-4 text-center text-[12px] tracking-[0.12em] text-paper">
         © 2026 {site.name}・{site.stance}
       </div>
     </footer>

@@ -42,7 +42,7 @@ export function IntroDialog({ open, onClose }: { open: boolean; onClose: () => v
         onClose();
       }}
       aria-labelledby="intro-title"
-      className="m-auto w-[min(92vw,460px)] overflow-visible rounded-[28px] border-2 border-ink bg-paper p-0 text-ink shadow-[0_10px_0_#BFE0CF] backdrop:bg-ink/40 backdrop:backdrop-blur-[3px]"
+      className="m-auto w-[min(92vw,460px)] overflow-visible rounded-[28px] border-2 border-edge bg-paper p-0 text-ink shadow-lift backdrop:bg-teal-deep/40 backdrop:backdrop-blur-[3px]"
     >
       <div className="relative p-7 pt-8 sm:p-8">
         <Penguin pose={step === 1 ? "point" : "wave"} className="absolute -top-[88px] right-6 h-24 w-20" />
@@ -53,7 +53,7 @@ export function IntroDialog({ open, onClose }: { open: boolean; onClose: () => v
         <p className="mt-3 text-[15px] leading-[1.9] text-ink-soft">{s.body}</p>
         <div className="mt-5 flex gap-1.5" aria-hidden="true">
           {STEPS.map((_, i) => (
-            <span key={i} className={`h-2 rounded-full border-[1.5px] border-ink transition-all ${i === step ? "w-7 bg-sun" : "w-2 bg-paper"}`} />
+            <span key={i} className={`h-2 rounded-full border-[1.5px] border-edge transition-all ${i === step ? "w-7 bg-sun" : "w-2 bg-paper"}`} />
           ))}
         </div>
         <p className="sr-only" aria-live="polite">

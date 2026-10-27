@@ -16,7 +16,7 @@ const SCALLOP = scallopPath(50, 50, 44, 12, 4);
 /** 島嶼編號圓章（像 sunbousai 的「防災設備業」標籤） */
 export function Scallop({
   children,
-  color = "#F5D45E",
+  color = "#F9DE3A",
   className = "",
   size = 64,
 }: {
@@ -28,14 +28,14 @@ export function Scallop({
   return (
     <span className={`relative inline-grid shrink-0 place-items-center ${className}`} style={{ width: size, height: size }}>
       <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden="true">
-        <path d={SCALLOP} fill={color} stroke="#193A42" strokeWidth={3} strokeLinejoin="round" />
+        <path d={SCALLOP} fill={color} />
       </svg>
       <span className="relative font-display leading-none">{children}</span>
     </span>
   );
 }
 
-export function Squiggle({ className = "", color = "#193A42" }: { className?: string; color?: string }) {
+export function Squiggle({ className = "", color = "#00A6A1" }: { className?: string; color?: string }) {
   return (
     <svg viewBox="0 0 54 10" className={className} aria-hidden="true" fill="none">
       <path d="M2 6c4-5 8-5 12 0s8 5 12 0 8-5 12 0 8 5 12 0" stroke={color} strokeWidth={2.2} strokeLinecap="round" />
@@ -62,17 +62,17 @@ export function ArrowRight({ className = "" }: { className?: string }) {
 }
 
 /** 地圖圖釘 */
-export function PinIcon({ className = "", color = "#F5D45E" }: { className?: string; color?: string }) {
+export function PinIcon({ className = "", color = "#F9DE3A" }: { className?: string; color?: string }) {
   return (
     <svg viewBox="0 0 24 30" className={className} aria-hidden="true">
       <path
         d="M12 28.5s-9.5-9.6-9.5-16.5a9.5 9.5 0 0 1 19 0c0 6.9-9.5 16.5-9.5 16.5z"
         fill={color}
-        stroke="#193A42"
+        stroke="#007A74"
         strokeWidth={2}
         strokeLinejoin="round"
       />
-      <circle cx="12" cy="11.6" r="3.6" fill="#FFFDF7" stroke="#193A42" strokeWidth={1.8} />
+      <circle cx="12" cy="11.6" r="3.6" fill="#FFFFFF" />
     </svg>
   );
 }
@@ -83,9 +83,6 @@ export function Cloud({ className = "" }: { className?: string }) {
       <path
         d="M14 34a10 10 0 0 1 2-19 14 14 0 0 1 26-6 12 12 0 0 1 20 4 11 11 0 0 1 14 11 9 9 0 0 1-2 10z"
         fill="#FFFFFF"
-        stroke="#193A42"
-        strokeWidth={2}
-        strokeLinejoin="round"
       />
     </svg>
   );

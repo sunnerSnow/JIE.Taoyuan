@@ -19,7 +19,16 @@ export default function HomePage() {
     <>
       <Hero />
 
-      {/* 政策分類：手機是可滑動的卡片，桌機是 3＋2 的拼貼 */}
+      {/* 直書標語（unouplus 首頁的語彙） */}
+      <div className="flex justify-center gap-5 pt-20 sm:gap-8 sm:pt-28" aria-hidden="true">
+        <p className="vertical text-[clamp(24px,3.2vw,36px)] font-black leading-[1.6] tracking-[0.2em] text-teal-deep">
+          <span className="wavy-v">都更有感。</span>
+        </p>
+        <p className="vertical mt-[2.2em] text-[clamp(24px,3.2vw,36px)] font-black leading-[1.6] tracking-[0.2em] text-teal">讓每一個桃園人的生活，</p>
+      </div>
+      <p className="sr-only">{site.tagline}</p>
+
+      {/* 政策分類：圓形島嶼卡（手機可左右滑動） */}
       <section aria-labelledby="islands-title" className="relative py-20 sm:py-28">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
           <SectionHead
@@ -29,9 +38,9 @@ export default function HomePage() {
             lead="選擇生活中的一個議題，了解政策內容、公開來源與目前進度。"
           />
         </div>
-        <ul className="mx-auto mt-12 flex max-w-[1200px] snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-6 sm:px-6 lg:grid lg:grid-cols-6 lg:gap-6 lg:overflow-visible lg:pb-0">
-          {categories.map((c, i) => (
-            <li key={c.slug} className={`w-[78vw] max-w-[320px] shrink-0 snap-center lg:w-auto lg:max-w-none ${i < 3 ? "lg:col-span-2" : "lg:col-span-3"}`}>
+        <ul className="mx-auto mt-14 flex max-w-[1200px] snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-6 sm:px-6 lg:grid lg:grid-cols-5 lg:gap-8 lg:overflow-visible lg:pb-0">
+          {categories.map((c) => (
+            <li key={c.slug} className="w-[64vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none">
               <IslandCard category={c} />
             </li>
           ))}
@@ -39,10 +48,11 @@ export default function HomePage() {
       </section>
 
       {/* 政策焦點 */}
-      <section aria-labelledby="latest-title" className="border-y-2 border-ink bg-paper py-20 sm:py-24">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+      <section aria-labelledby="latest-title" className="relative overflow-hidden py-20 sm:py-24">
+        <div aria-hidden="true" className="absolute left-0 top-0 h-[480px] w-[min(100%,1040px)] rounded-br-[200px] bg-teal sm:h-[440px]" />
+        <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <SectionHead id="latest-title" eyebrow="Latest Updates" title="最近更新的政策" lead="每張卡片都標示分類、狀態、資料來源與更新日期。" />
+            <SectionHead id="latest-title" eyebrow="Latest Updates" title="最近更新的政策" lead="每張卡片都標示分類、狀態、資料來源與更新日期。" light />
             <Link href="/policies" className="btn btn-sm shrink-0 self-start md:self-auto">
               查看全部政策
               <ArrowCurve className="h-4 w-4" />
@@ -90,7 +100,7 @@ export default function HomePage() {
       <section
         aria-labelledby="progress-title"
         className="relative overflow-hidden py-20 sm:py-28"
-        style={{ background: "linear-gradient(160deg, #F9E3D8 0%, #FBF0C8 55%, #F7F4EB 100%)" }}
+        style={{ background: "linear-gradient(170deg, #FFF5C4 0%, #F3F9EE 45%, #E8F5F4 100%)" }}
       >
         <Cloud className="anim-bob absolute right-[6%] top-12 w-28 sm:w-36" />
         <Cloud className="anim-bob absolute left-[46%] top-6 hidden w-16 [animation-delay:-1.5s] md:block" />
@@ -108,9 +118,9 @@ export default function HomePage() {
                 <li key={s}>
                   <Link
                     href={`/policies?status=${s}`}
-                    className="group flex h-full items-start gap-4 rounded-[22px] border-2 border-ink bg-paper p-5 shadow-[0_5px_0_#193A42] transition-transform hover:-translate-y-1"
+                    className="group flex h-full items-start gap-4 rounded-[22px] border-2 border-edge bg-paper p-5 shadow-soft transition-transform hover:-translate-y-1"
                   >
-                    <span className="text-[44px] font-black leading-none tracking-tight" aria-hidden="true">
+                    <span className="font-display text-[46px] leading-none text-teal" aria-hidden="true">
                       {String(count).padStart(2, "0")}
                     </span>
                     <span className="flex-1">
@@ -135,17 +145,18 @@ export default function HomePage() {
   }
 }
 
-function SectionHead({ id, eyebrow, title, lead }: { id: string; eyebrow: string; title: string; lead?: string }) {
+/** 區塊標題：上方英文小標＋青綠中文大標（light：放在青綠色塊上時反白） */
+function SectionHead({ id, eyebrow, title, lead, light = false }: { id: string; eyebrow: string; title: string; lead?: string; light?: boolean }) {
   return (
     <div>
-      <h2 id={id} className="section-title">
+      <p className={`eyebrow flex items-center gap-3 ${light ? "!text-sun" : ""}`}>
+        {eyebrow}
+        <Squiggle className="h-2.5 w-12" color={light ? "#F9DE3A" : "#00A6A1"} />
+      </p>
+      <h2 id={id} className={`section-title mt-2 ${light ? "!text-paper" : ""}`}>
         {title}
       </h2>
-      <p className="eyebrow mt-2 flex items-center gap-3">
-        {eyebrow}
-        <Squiggle className="h-2.5 w-12" color="#35635B" />
-      </p>
-      {lead && <p className="mt-5 max-w-xl text-[15.5px] leading-[1.9] text-ink-soft">{lead}</p>}
+      {lead && <p className={`mt-4 max-w-xl text-[15.5px] leading-[1.9] ${light ? "text-paper/90" : "text-ink-soft"}`}>{lead}</p>}
     </div>
   );
 }
@@ -159,8 +170,8 @@ function HeroSea() {
       <Squiggle className="absolute left-[4%] top-[42%] h-3 w-12" color="#7FB2C2" />
       <Squiggle className="absolute left-[18%] top-[52%] h-3 w-10" color="#7FB2C2" />
       <svg viewBox="0 0 40 36" className="anim-bob absolute left-[22%] top-[38%] w-10 [animation-delay:-2s]">
-        <path d="M4 28h32l-5 6H9z" fill="#FFFDF7" stroke="#193A42" strokeWidth={2} strokeLinejoin="round" />
-        <path d="M19 27V3l13 22z" fill="#F9E3D8" stroke="#193A42" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M4 28h32l-5 6H9z" fill="#FFFFFF" />
+        <path d="M19 27V3l13 22z" fill="#F9DE3A" />
       </svg>
     </div>
   );
@@ -168,7 +179,7 @@ function HeroSea() {
 
 function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #EEF6F8 0%, #D6E9EF 46%, #CFE4EB 100%)" }}>
+    <section aria-labelledby="hero-title" className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #F1FAF9 0%, #E2F4F2 55%, #D3EEEC 100%)" }}>
       {/* 手機：文字在上、地圖在下；桌機：文字卡片在左側海面，地圖等比塞滿右側 */}
       <div className="relative mx-auto max-w-[1680px] lg:h-[max(680px,100svh)]">
         <HeroSea />
@@ -176,16 +187,16 @@ function Hero() {
           <PenguinSays side="right" className="absolute -top-[150px] right-2 hidden lg:flex" penguinClassName="h-28 w-24 anim-bob" bubbleClassName="w-56 text-[14px]">
             嗨！我是企鵝阿爸，帶你來逛桃園政策島。
           </PenguinSays>
-          <div className="lg:rounded-[28px] lg:border-2 lg:border-ink lg:bg-paper lg:p-8 lg:shadow-[0_10px_0_#BFE0CF]">
-            <p className="font-display text-[22px] leading-none sm:text-[28px]">
+          <div className="lg:rounded-[28px] lg:border-2 lg:border-edge lg:bg-paper lg:p-8 lg:shadow-lift">
+            <p className="font-display text-[24px] leading-none text-teal-deep sm:text-[30px]">
               JIE.<span className="text-teal">Taoyuan</span>
             </p>
             <BallotBadge className="mt-4" />
-            <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-ink/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
-            <h1 id="hero-title" className="mt-4 text-[30px] font-black leading-[1.35] tracking-[0.06em] sm:text-[36px]">
-              桃園的未來，
+            <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-teal-deep/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
+            <h1 id="hero-title" className="mt-5 text-[30px] font-black leading-[1.55] tracking-[0.08em] text-teal-deep sm:text-[38px]">
+              <span className="wavy">桃園的未來，</span>
               <br />
-              一起來探索。
+              <span className="wavy">一起來探索。</span>
             </h1>
             <p className="mt-3 text-[15.5px] leading-[1.9] text-ink-soft">從每天的生活出發，看看一座城市可以如何改變。</p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -201,7 +212,14 @@ function Hero() {
         </div>
 
         <div className="relative lg:absolute lg:bottom-6 lg:left-[400px] lg:right-2 lg:top-24 lg:grid lg:place-items-center lg:[container-type:size] xl:left-[440px]">
-          <HomeMap contain className="mx-auto w-full" />
+          {/* 地圖後方的大圓與太陽（unouplus 主視覺的語彙） */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 grid place-items-center">
+            <div className="relative aspect-square w-[96%] max-w-[860px] lg:h-[98cqh] lg:w-auto">
+              <div className="absolute inset-0 rounded-full bg-white/55" />
+              <div className="absolute right-[6%] top-[2%] aspect-square w-[26%] rounded-full bg-sun/90" />
+            </div>
+          </div>
+          <HomeMap contain className="relative mx-auto w-full" />
         </div>
 
         <div className="px-4 pb-10 pt-2 sm:px-6 lg:hidden">

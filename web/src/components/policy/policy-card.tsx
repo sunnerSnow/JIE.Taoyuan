@@ -9,7 +9,7 @@ export function CategoryChip({ slug }: { slug: Policy["category"] }) {
   const c = categoryMap[slug];
   return (
     <span className="chip" style={{ background: categoryColor[slug].soft }}>
-      <span className="h-2.5 w-2.5 rounded-full border-[1.5px] border-ink" style={{ background: categoryColor[slug].base }} aria-hidden="true" />
+      <span className="h-2.5 w-2.5 rounded-full border-[1.5px] border-edge" style={{ background: categoryColor[slug].base }} aria-hidden="true" />
       {c.no} {c.name}
     </span>
   );
@@ -23,7 +23,7 @@ export function PolicyCard({ policy, headingLevel = 3, n }: { policy: Policy; he
       <div className="flex flex-wrap items-center gap-2">
         {n !== undefined && (
           <span
-            className="grid h-7 w-7 place-items-center rounded-full border-2 border-ink text-[12px] font-black"
+            className="grid h-7 w-7 place-items-center rounded-full border-2 border-edge text-[12px] font-black"
             style={{ background: categoryColor[policy.category].base }}
             aria-hidden="true"
           >
@@ -40,7 +40,7 @@ export function PolicyCard({ policy, headingLevel = 3, n }: { policy: Policy; he
       </H>
       <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{policy.summary}</p>
       <div className="mt-auto pt-5">
-        <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 border-t-2 border-dashed border-ink/20 pt-3 text-[12.5px] leading-relaxed">
+        <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 border-t-2 border-dashed border-teal-deep/20 pt-3 text-[12.5px] leading-relaxed">
           <dt className="font-bold">來源</dt>
           <dd className="text-ink-soft">{sourceTypeLabel[policy.sourceType]}</dd>
           <dt className="font-bold">更新</dt>
@@ -50,7 +50,7 @@ export function PolicyCard({ policy, headingLevel = 3, n }: { policy: Policy; he
         </dl>
         <div className="mt-3 flex items-center justify-between">
           {policy.sample ? <SampleTag /> : <span />}
-          <span className="grid h-9 w-9 place-items-center rounded-lg border-2 border-ink bg-sun transition-transform duration-300 group-hover:rotate-12" aria-hidden="true">
+          <span className="grid h-9 w-9 place-items-center rounded-lg border-2 border-edge bg-sun transition-transform duration-300 group-hover:rotate-12" aria-hidden="true">
             <ArrowCurve className="h-4 w-4" />
           </span>
         </div>

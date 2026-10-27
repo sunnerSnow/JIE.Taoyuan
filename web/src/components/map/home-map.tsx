@@ -39,7 +39,7 @@ export function HomeMap({ className = "", contain = false }: { className?: strin
               </span>
               <span
                 role="presentation"
-                className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden w-60 -translate-x-1/2 translate-y-1 rounded-2xl border-2 border-ink bg-paper p-3.5 text-left opacity-0 shadow-[0_6px_0_#BFE0CF] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 lg:block"
+                className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden w-60 -translate-x-1/2 translate-y-1 rounded-2xl border-2 border-edge bg-paper p-3.5 text-left opacity-0 shadow-soft transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 lg:block"
               >
                 <span className="block text-[15px] font-black tracking-[0.06em]">{pin.name}</span>
                 <span className="mt-1 block text-[13px] leading-relaxed text-ink-soft">{pin.tagline}</span>
