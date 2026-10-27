@@ -121,7 +121,7 @@ export default function AboutPage() {
           <p className="mt-6">
             政策狀態必須由可查證的公開資料支持；找不到時一律標示「暫無可查證進度」。狀態定義請見
             <Link href="/progress" className="link-ink mx-1 font-bold text-ink">
-              政策進度
+              政見追蹤
             </Link>
             。
           </p>

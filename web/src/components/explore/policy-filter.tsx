@@ -56,6 +56,8 @@ type Filter = ReturnType<typeof useExploreFilter>;
 /** 搜尋框＋分類、狀態篩選按鈕 */
 export function FilterBar({ islands, filter }: { islands: ExploreIsland[]; filter: Filter }) {
   const inputId = useId();
+  // 只列出目前有政策的狀態；全部都在同一個狀態時（例如選舉期間都是「已提出」）不顯示狀態篩選
+  const usedStatuses = statusOrder.filter((s) => s === filter.status || islands.some((i) => i.policies.some((p) => p.status === s)));
   const chip = (pressed: boolean) =>
     `inline-flex min-h-8 items-center gap-1.5 rounded-full border-2 px-2.5 text-[12.5px] font-bold transition-colors ${
       pressed ? "border-teal-deep bg-teal-deep text-paper" : "border-edge bg-paper hover:bg-mint"
@@ -98,22 +100,24 @@ export function FilterBar({ islands, filter }: { islands: ExploreIsland[]; filte
           </button>
         ))}
       </div>
-      <div role="group" aria-label="依狀態篩選" className="flex flex-wrap gap-1.5">
-        <button type="button" aria-pressed={!filter.status} onClick={() => filter.setStatus(null)} className={chip(!filter.status)}>
-          全部狀態
-        </button>
-        {statusOrder.map((s) => (
-          <button
-            key={s}
-            type="button"
-            aria-pressed={filter.status === s}
-            onClick={() => filter.setStatus(filter.status === s ? null : s)}
-            className={chip(filter.status === s)}
-          >
-            {statusInfo[s].label} <span className="opacity-70">{filter.statusCount(s)}</span>
+      {usedStatuses.length > 1 && (
+        <div role="group" aria-label="依狀態篩選" className="flex flex-wrap gap-1.5">
+          <button type="button" aria-pressed={!filter.status} onClick={() => filter.setStatus(null)} className={chip(!filter.status)}>
+            全部狀態
           </button>
-        ))}
-      </div>
+          {usedStatuses.map((s) => (
+            <button
+              key={s}
+              type="button"
+              aria-pressed={filter.status === s}
+              onClick={() => filter.setStatus(filter.status === s ? null : s)}
+              className={chip(filter.status === s)}
+            >
+              {statusInfo[s].label} <span className="opacity-70">{filter.statusCount(s)}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

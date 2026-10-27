@@ -16,7 +16,8 @@ const isStatus = (v: string | null): v is PolicyStatus => statusOrder.includes(v
 
 /**
  * 政策總覽的搜尋與篩選。
- * 分類、狀態寫在網址（?category=&status=），首頁的進度看板可以直接連過來；
+ * 分類、狀態寫在網址（?category=&status=），篩選結果可以直接分享；
+ * 狀態只列出目前有政策的（選舉期間全部都是「已提出」時，整組狀態篩選不顯示）；
  * 關鍵字只放在元件裡，避免中文輸入法組字時被網址同步打斷。
  */
 export function PolicyBrowser({ policies }: { policies: Policy[] }) {
@@ -34,6 +35,8 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
     else url.searchParams.delete(key);
     window.history.replaceState(null, "", url);
   };
+
+  const usedStatuses = statusOrder.filter((s) => s === status || policies.some((p) => p.status === s));
 
   const q = query.trim();
   const results = useMemo(() => {
@@ -91,16 +94,18 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
           ))}
         </FilterGroup>
 
-        <FilterGroup label="狀態">
-          <FilterChip pressed={!status} onClick={() => setParam("status", null)}>
-            全部狀態
-          </FilterChip>
-          {statusOrder.map((s) => (
-            <FilterChip key={s} pressed={status === s} onClick={() => setParam("status", s)} dot={statusInfo[s].tone}>
-              {statusInfo[s].label}
+        {usedStatuses.length > 1 && (
+          <FilterGroup label="狀態">
+            <FilterChip pressed={!status} onClick={() => setParam("status", null)}>
+              全部狀態
             </FilterChip>
-          ))}
-        </FilterGroup>
+            {usedStatuses.map((s) => (
+              <FilterChip key={s} pressed={status === s} onClick={() => setParam("status", s)} dot={statusInfo[s].tone}>
+                {statusInfo[s].label}
+              </FilterChip>
+            ))}
+          </FilterGroup>
+        )}
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">

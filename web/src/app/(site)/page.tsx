@@ -6,11 +6,11 @@ import { LessonList } from "@/components/policy/lesson-list";
 import { PolicyCard } from "@/components/policy/policy-card";
 import { BallotBadge } from "@/components/site/ballot-badge";
 import { SampleNotice } from "@/components/site/sample-notice";
-import { ArrowCurve, Cloud, Squiggle } from "@/components/ui/decor";
-import { StatusBadge } from "@/components/ui/status-badge";
-import { categories } from "@/data/categories";
+import { ArrowCurve, ArrowRight, Cloud, Squiggle } from "@/components/ui/decor";
+import { categories, categoryColor } from "@/data/categories";
 import { lessons } from "@/data/learn";
-import { latestPolicies, policies, statusInfo, statusOrder } from "@/data/policies";
+import { latestPolicies, policies, policiesIn } from "@/data/policies";
+import { featuredRecords, records, roles } from "@/data/record";
 import { site } from "@/lib/site";
 
 export default function HomePage() {
@@ -69,7 +69,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ProgressBoard />
+      <TrackerBoard />
 
       {/* 企鵝阿爸的政策小教室 */}
       <section aria-labelledby="classroom-title" className="relative py-20 sm:py-28">
@@ -95,10 +95,12 @@ export default function HomePage() {
     </>
   );
 
-  function ProgressBoard() {
+  /** 政見與過去貢獻並列：選舉期間政見都還是「已提出」，旁邊放已經做到的事 */
+  function TrackerBoard() {
+    const most = Math.max(...categories.map((c) => policiesIn(c.slug).length));
     return (
       <section
-        aria-labelledby="progress-title"
+        aria-labelledby="tracker-title"
         className="relative overflow-hidden py-20 sm:py-28"
         style={{ background: "linear-gradient(170deg, #FFF5C4 0%, #F3F9EE 45%, #E8F5F4 100%)" }}
       >
@@ -106,38 +108,72 @@ export default function HomePage() {
         <Cloud className="anim-bob absolute left-[46%] top-6 hidden w-16 [animation-delay:-1.5s] md:block" />
         <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6">
           <SectionHead
-            id="progress-title"
-            eyebrow="Progress"
-            title="政策走到哪裡了？"
-            lead="狀態必須由可查證的公開資料支持；找不到資料時，我們會直接寫「暫無可查證進度」。"
+            id="tracker-title"
+            eyebrow="Tracker"
+            title="說了什麼、做過什麼"
+            lead="政見是參選期間提出的主張，當選上任後才會開始執行；參選以前在市府、立法院和法務部做過的事，整理在「過去的貢獻」。"
           />
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {statusOrder.map((s) => {
-              const count = policies.filter((p) => p.status === s).length;
-              return (
-                <li key={s}>
-                  <Link
-                    href={`/policies?status=${s}`}
-                    className="group flex h-full items-start gap-4 rounded-[22px] border-2 border-edge bg-paper p-5 shadow-soft transition-transform hover:-translate-y-1"
-                  >
-                    <span className="font-display text-[46px] leading-none text-teal" aria-hidden="true">
-                      {String(count).padStart(2, "0")}
-                    </span>
-                    <span className="flex-1">
-                      <StatusBadge status={s} />
-                      <span className="mt-2 block text-[13.5px] leading-relaxed text-ink-soft">{statusInfo[s].desc}</span>
-                      <span className="sr-only">，共 {count} 項</span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="mt-10">
-            <Link href="/progress" className="btn btn-sun">
-              看完整政策進度
-              <ArrowCurve className="h-5 w-5" />
-            </Link>
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="flex flex-col rounded-[26px] border-2 border-edge bg-paper p-6 shadow-soft sm:p-7">
+              <h3 className="text-[15px] font-black tracking-[0.1em] text-teal-deep">提出的政見</h3>
+              <p className="mt-2 flex items-baseline gap-2">
+                <span className="font-display text-[56px] leading-none text-teal">{policies.length}</span>
+                <span className="text-[16px] font-bold">項，分布在 {categories.length} 座政策島</span>
+              </p>
+              <ul className="mt-6 space-y-2.5">
+                {categories.map((c) => {
+                  const n = policiesIn(c.slug).length;
+                  return (
+                    <li key={c.slug}>
+                      <Link href={`/islands/${c.slug}`} className="group grid grid-cols-[6.5em_1fr_2em] items-center gap-3 text-[14.5px] font-bold">
+                        <span className="group-hover:underline">{c.short}</span>
+                        <span className="h-3 overflow-hidden rounded-full bg-mist" aria-hidden="true">
+                          <span className="block h-full rounded-full" style={{ width: `${(n / most) * 100}%`, background: categoryColor[c.slug].base }} />
+                        </span>
+                        <span className="text-right font-display text-[17px] text-teal-deep">
+                          {n}
+                          <span className="sr-only"> 項</span>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="mt-auto pt-7">
+                <Link href="/progress" className="btn btn-sun">
+                  看政見追蹤
+                  <ArrowCurve className="h-5 w-5" />
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-col rounded-[26px] border-2 border-edge bg-paper p-6 shadow-soft sm:p-7">
+              <h3 className="text-[15px] font-black tracking-[0.1em] text-teal-deep">過去的貢獻</h3>
+              <p className="mt-2 flex items-baseline gap-2">
+                <span className="font-display text-[56px] leading-none text-teal">{records.length}</span>
+                <span className="text-[16px] font-bold">項，每一句都附出處</span>
+              </p>
+              <ul className="mt-6 divide-y-2 divide-dashed divide-teal-deep/15">
+                {featuredRecords().map((r) => (
+                  <li key={r.id}>
+                    <Link href={`/record#${r.id}`} className="group flex items-center gap-3 py-3">
+                      <span className="flex-1">
+                        <span className="block text-[13px] font-bold text-ink-soft">
+                          {roles[r.role].label}・{r.when}
+                        </span>
+                        <span className="mt-0.5 block text-[16px] font-black tracking-[0.04em] group-hover:underline">{r.title}</span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 shrink-0" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto pt-7">
+                <Link href="/record" className="btn">
+                  看過去的貢獻
+                  <ArrowCurve className="h-5 w-5" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
