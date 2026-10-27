@@ -38,11 +38,14 @@ function transport(g: Iso) {
   g.line([[27.8, 13.5, 0], [31, 13.5, 0]], "#FFFFFF", 1.1, "1.6 1.6");
   g.line([[24.5, 1, 0], [24.5, 10.2, 0]], "#FFFFFF", 1.1, "1.6 1.6");
   g.line([[24.5, 16.8, 0], [24.5, 25, 0]], "#FFFFFF", 1.1, "1.6 1.6");
+  g.building(2);
   for (let i = 0; i < 5; i++) g.flat(22.3 + i * 0.95, 9, 0, 0.5, 1.6, "#FFFFFF", { stroke: null });
   for (let i = 0; i < 5; i++) g.flat(20, 11.3 + i * 0.95, 0, 1.6, 0.5, "#FFFFFF", { stroke: null });
   for (let i = 0; i < 5; i++) g.flat(22.3 + i * 0.95, 16.4, 0, 0.5, 1.6, "#FFFFFF", { stroke: null });
+  g.building(null);
 
   // 高架捷運：橋墩 → 車站 → 軌道 → 列車
+  g.building(0);
   for (const px of [3, 19, 29]) g.box(px, 4.4, 0, 1, 1, 7, "#E9E4D8");
   g.box(8, 1.5, 0, 9, 8, 7, { top: "#F1EEE4", left: WALL, right: "#ECE5D4" });
   g.windowsL(9.5, 8.4, 16.6, 1.6, 4.6, 3, GLASS);
@@ -58,12 +61,14 @@ function transport(g: Iso) {
   g.winR(23, 4.4, 5.6, 8.9, 10, GLASS);
 
   // 科技執法：路口桿與監測站
+  g.building(3);
   g.box(28, 6.5, 0, 3, 3, 3.2, { top: "#EDEAE0", left: WALL2, right: "#EADCC6" });
   g.winL(9.5, 28.6, 30.4, 1.2, 2.4, GLASS);
   g.line([[21, 9.6, 0], [21, 9.6, 5.5], [23, 9.6, 5.5]], INK, 1);
   g.box(22.6, 9.3, 4.6, 0.8, 0.6, 1.4, "#3E5E66");
 
   // 公車
+  g.building(1);
   g.box(5, 11.8, 0.5, 10.5, 3.4, 3.6, { top: WALL, left: SUN, right: shade(SUN, -0.14) });
   g.windowsL(15.2, 5.4, 13.6, 2, 3.5, 4, GLASS);
   g.winR(15.5, 12.2, 14.8, 1.9, 3.6, GLASS);
@@ -76,6 +81,7 @@ function transport(g: Iso) {
   g.box(4.2, 18, 0, 4.5, 0.8, 0.8, WOOD);
   g.person(5.2, 19.8, 0, CORAL);
   g.person(7.4, 20.2, 0, "#8DA8C9", { h: 0.95 });
+  g.building(null);
 
   // 共享單車站
   for (let i = 0; i < 4; i++) {
@@ -88,14 +94,19 @@ function transport(g: Iso) {
   g.tree(2.6, 22.5, 0, 0.9);
   g.tree(13, 22.6, 0, 1.05);
   g.pine(17.5, 21.5, 0, 0.8);
+  g.building(2);
   g.person(19.5, 18.8, 0, TEAL, { h: 0.9 });
+  g.building(null);
 }
 
 function family(g: Iso) {
   g.slab(0, 0, 28, 24, 5, 3, "#FBE7DB", SIDE);
+  g.building(4);
   g.flat(0.4, 10, 0, 27.2, 2.2, PATH, { sw: 0.8 });
+  g.building(null);
 
   // 托育中心
+  g.building(0);
   g.box(2, 1.5, 0, 12, 7, 4.5, { top: WALL, left: WALL, right: "#F1E6D3" });
   g.gable(2, 1.5, 4.5, 12, 7, 3, "x", CORAL, WALL);
   g.windowsL(8.5, 2.4, 13.6, 1.4, 3.3, 4, GLASS);
@@ -103,6 +114,7 @@ function family(g: Iso) {
   g.free(14, 5, 6.1, ([x, y]) => `M${x - 0.9} ${y}a0.9 0.9 0 1 0 1.8 0a0.9 0.9 0 1 0 -1.8 0Z`, SUN, { sw: 0.9 });
 
   // 住宅
+  g.building(2);
   g.box(17.5, 1.5, 0, 6.5, 5, 3.8, { top: WALL2, left: WALL2, right: "#EDDCC2" });
   g.gable(17.5, 1.5, 3.8, 6.5, 5, 2.6, "y", SUN, WALL2);
   g.windowsL(6.5, 18, 23.6, 1.2, 2.7, 2, GLASS);
@@ -110,6 +122,7 @@ function family(g: Iso) {
   g.tree(25.6, 8.4, 0, 0.8);
 
   // 遊戲場
+  g.building(1);
   g.flat(2.5, 13.5, 0, 11, 8.2, SAND, { sw: 0.8 });
   g.box(4, 14.6, 0, 1.8, 1.8, 3.2, "#8DBFB1");
   g.poly([[5.8, 14.6, 3.2], [10, 14.6, 0.2], [10, 16.4, 0.2], [5.8, 16.4, 3.2]], SUN);
@@ -121,12 +134,14 @@ function family(g: Iso) {
   g.person(6.2, 20.4, 0, "#8DA8C9", { h: 0.62 });
 
   // 另一棟住宅與散步的親子
+  g.building(3);
   g.box(17.5, 14, 0, 6, 4.6, 3.6, { top: WALL, left: WALL, right: "#EFE3CE" });
   g.gable(17.5, 14, 3.6, 6, 4.6, 2.4, "x", "#8DBFB1", WALL);
   g.windowsL(18.6, 18, 23, 1.2, 2.6, 2, GLASS);
   g.tree(26, 15.5, 0, 0.85);
   g.person(15.6, 21, 0, TEAL);
   g.person(16.8, 21.6, 0, SUN, { h: 0.64 });
+  g.building(null);
   g.tree(3.4, 22.2, 0, 0.8);
   g.pine(22.5, 21.6, 0, 0.75);
 }
@@ -136,6 +151,7 @@ function health(g: Iso) {
   g.flat(0.4, 11, 0, 27.2, 2.2, PATH, { sw: 0.8 });
 
   // 醫院
+  g.building(0);
   g.box(2, 1.5, 0, 9, 8, 11, { top: "#F1F4EF", left: WALL, right: "#E8ECE6" });
   for (const z of [2, 4.8, 7.6]) {
     g.windowsL(9.5, 2.4, 10.6, z, z + 1.5, 3, GLASS);
@@ -149,6 +165,7 @@ function health(g: Iso) {
   g.winL(9.5, 5.4, 7.8, 0, 2.3, GLASS);
 
   // 社區照顧據點（屋頂花園＋遮陽棚）
+  g.building(1);
   g.box(15, 2.5, 0, 9.5, 6, 4, { top: WALL2, left: WALL2, right: "#EBDCC4" });
   g.flat(15.6, 3.1, 4, 8.3, 4.8, "#BFE3D0", { sw: 0.8 });
   g.tree(18, 5, 4, 0.45);
@@ -158,17 +175,22 @@ function health(g: Iso) {
   g.windowsR(24.5, 3, 8, 1.1, 2.6, 2, GLASS);
 
   // 無障礙坡道與平台
+  g.building(3);
   g.box(18, 14.2, 0, 7.4, 4.8, 1.2, WOOD);
+  g.building(2);
   g.poly([[10, 14.8, 0], [18, 14.8, 1.2], [18, 16.6, 1.2], [10, 16.6, 0]], "#EED9B0");
   g.line([[10, 16.8, 1.3], [18, 16.8, 2.5], [25.4, 16.8, 2.5]], INK, 0.9);
   g.person(13.6, 16.2, 0.6, CORAL, { h: 0.85 });
+  g.building(3);
   g.box(20, 15, 1.2, 3.6, 0.9, 0.7, "#C99C6E");
   g.person(21, 17.6, 1.2, "#8DA8C9", { hair: "#E8E4DA" });
   g.line([[22, 18, 1.2], [22.2, 18, 3]], INK, 0.8);
 
   // 花圃
+  g.building(4);
   g.disk(4.8, 16.6, 0.02, 2.1, "#F7CDBB", { sw: 0.8 });
   for (const [fx, fy] of [[4, 15.8], [5.6, 16.2], [4.6, 17.6], [5.8, 17.4]]) g.disk(fx, fy, 0.05, 0.35, SUN, { sw: 0.6 });
+  g.building(null);
   g.tree(2.6, 12.6, 0, 0.75);
   g.tree(9, 19.6, 0, 0.9);
   g.pine(26, 12.8, 0, 0.75);
@@ -178,15 +200,18 @@ function environment(g: Iso) {
   g.slab(0, 0, 30, 26, 5, 3, "#E1EFCF", SIDE);
 
   // 埤塘
+  g.building(1);
   g.disk(9.5, 9.5, 0.01, 6.6, "#D8C99E", { sw: 0.9 });
   g.disk(9.5, 9.5, 0.03, 5.8, WATER, { sw: 0.9 });
   g.line([[7, 8, 0.05], [9.5, 8, 0.05]], "#FFFFFF", 1, "1 1.2");
   g.line([[9.5, 11.5, 0.05], [12.5, 11.5, 0.05]], "#FFFFFF", 1, "1 1.2");
   g.free(8, 10.4, 0.05, ([x, y]) => `M${x - 0.7} ${y}q0.7 -1 1.4 0z`, WALL, { sw: 0.7 });
+  g.building(null);
   g.pine(3, 3, 0, 0.75);
   g.tree(16.2, 3.6, 0, 0.85);
 
   // 資源回收站＋太陽能板
+  g.building(0);
   g.box(19, 2, 0, 8, 5, 3.6, { top: "#EEE8D8", left: WALL2, right: "#E9D9BF" });
   for (let i = 0; i < 3; i++) {
     const px = 19.5 + i * 2.5;
@@ -196,6 +221,7 @@ function environment(g: Iso) {
   g.box(19.4, 7.6, 0, 1.7, 1.3, 1.9, "#7FB0D6");
   g.box(21.6, 7.6, 0, 1.7, 1.3, 1.9, "#8CC47A");
   g.box(23.8, 7.6, 0, 1.7, 1.3, 1.9, SUN);
+  g.building(null);
 
   // 風力發電
   g.line([[27, 12, 0], [27, 12, 13]], INK, 1.3);
@@ -203,14 +229,17 @@ function environment(g: Iso) {
   g.free(27, 12, 13, ([x, y]) => `M${x - 0.55} ${y}a0.55 0.55 0 1 0 1.1 0a0.55 0.55 0 1 0 -1.1 0Z`, SUN, { sw: 0.8 });
 
   // 步道、慢跑的人、清運車
+  g.building(3);
   g.flat(0.4, 17.2, 0, 29.2, 2.2, PATH, { sw: 0.8 });
   g.box(5.5, 15, 0, 3.2, 0.8, 0.8, WOOD);
   g.tree(17, 13.6, 0, 1);
   g.person(12, 18.2, 0, CORAL);
   g.person(15, 18.4, 0, TEAL, { h: 0.95 });
+  g.building(2);
   g.box(21, 17.3, 0.3, 5.6, 2, 2.4, { top: WALL, left: "#8CC47A", right: shade("#8CC47A", -0.14) });
   g.winR(26.6, 17.6, 19, 1.4, 2.5, GLASS);
   for (const wx of [22.4, 25.4]) g.free(wx, 19.3, 0.3, ([x, y]) => `M${x - 0.7} ${y}a0.7 0.7 0 1 0 1.4 0a0.7 0.7 0 1 0 -1.4 0Z`, "#3E5E66");
+  g.building(null);
   g.tree(4.4, 22.4, 0, 0.95);
   g.pine(9.6, 23, 0, 0.85);
   g.tree(14.6, 23, 0, 0.8);
@@ -222,6 +251,7 @@ function future(g: Iso) {
   g.flat(0.4, 12, 0, 31.2, 2.4, PATH, { sw: 0.8 });
 
   // 學校＋鐘塔
+  g.building(2);
   g.box(2, 2, 0, 10, 6, 5.5, { top: "#F3EEE2", left: WALL, right: "#ECE3D0" });
   g.windowsL(8, 2.4, 11.6, 1.4, 3.6, 4, GLASS);
   g.box(5.5, 3, 5.5, 3, 3, 3.4, { top: WALL, left: WALL, right: "#ECE3D0" });
@@ -231,8 +261,10 @@ function future(g: Iso) {
   g.free(13.2, 9, 7, ([x, y]) => `M${x} ${y}L${x + 2.4} ${y + 0.7}L${x} ${y + 1.6}Z`, SUN, { sw: 0.8 });
 
   // 創新園區：辦公樓＋玻璃塔
+  g.building(1);
   g.box(15, 3, 0, 5.5, 5, 8, { top: "#F4EEE0", left: WALL2, right: "#E9DCC4" });
   for (const z of [1.5, 4, 6.4]) g.windowsL(8, 15.3, 20.2, z, z + 1.2, 2, GLASS);
+  g.building(4);
   g.box(22.5, 1.5, 0, 7, 7, 17, { top: "#E9F2F4", left: "#DCEBF0", right: "#C6DCE3" });
   for (let z = 1.4; z < 16; z += 2.3) {
     g.windowsL(8.5, 22.8, 29.2, z, z + 1.3, 3, "#F7FBFC");
@@ -242,6 +274,7 @@ function future(g: Iso) {
   g.free(26, 5, 20, ([x, y]) => `M${x - 0.5} ${y}a0.5 0.5 0 1 0 1 0a0.5 0.5 0 1 0 -1 0Z`, CORAL, { sw: 0.7 });
 
   // 棒球場
+  g.building(3);
   g.disk(9, 20, 0.02, 5.6, "#B9DC9A", { sw: 0.9 });
   g.poly([[9, 16.4, 0.04], [12.6, 20, 0.04], [9, 23.6, 0.04], [5.4, 20, 0.04]], "#E9C99A", { sw: 0.8 });
   g.disk(9, 20, 0.05, 1.3, "#B9DC9A", { sw: 0.7 });
@@ -249,12 +282,14 @@ function future(g: Iso) {
   g.person(9.6, 21.4, 0.05, CORAL, { h: 0.7 });
 
   // 商圈攤位
+  g.building(0);
   g.box(18.5, 16, 0, 4.2, 3.6, 3, { top: WALL2, left: WALL2, right: "#EAD9BF" });
   g.poly([[18.5, 19.6, 2.6], [22.7, 19.6, 2.6], [22.7, 21, 1.9], [18.5, 21, 1.9]], SUN);
   g.box(24, 16.4, 0, 4.2, 3.6, 3, { top: WALL, left: WALL, right: "#EAD9BF" });
   g.poly([[24, 20, 2.6], [28.2, 20, 2.6], [28.2, 21.4, 1.9], [24, 21.4, 1.9]], CORAL);
   g.person(21, 22.6, 0, TEAL);
   g.person(26.4, 23, 0, "#8DA8C9", { h: 0.9 });
+  g.building(null);
   g.tree(16, 22.6, 0, 0.85);
   g.pine(30, 12, 0, 0.7);
 }
@@ -409,6 +444,7 @@ export function buildWorld(): SceneData {
     const def = islandDefs[key];
     const [ox, oy] = originFor(def.screen, def.w, def.d);
     const g = new Iso(ox, oy);
+    g.island = key;
     def.draw(g);
     islandShapes.push(...g.shapes);
     merge(all, g);
@@ -447,6 +483,7 @@ export function buildIsland(slug: CategorySlug) {
   if (hit) return hit;
   const def = islandDefs[slug];
   const g = new Iso();
+  g.island = slug;
   def.draw(g);
   const viewBox = boundsOf(g, 3);
   const spots = def.spots.map(([x, y, z]) => {

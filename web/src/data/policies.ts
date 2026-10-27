@@ -324,7 +324,7 @@ export const policies: Policy[] = [
     ],
     faqs: [CANDIDATE_FAQ],
     related: ["people-first-streets"],
-    spot: 2,
+    spot: 3,
   },
   // ✅ 可查證內容（依候選人 Threads 貼文與所附承諾書照片整理；承諾細節依媒體對承諾書內容的報導）
   {
@@ -423,7 +423,7 @@ export const policies: Policy[] = [
     ],
     faqs: [CANDIDATE_FAQ],
     related: ["bus-network-reform", "fair-traffic-enforcement"],
-    spot: 3,
+    spot: 2,
   },
 
   // 02 育兒家庭島
@@ -1240,7 +1240,7 @@ export const policies: Policy[] = [
       },
     ],
     faqs: [CANDIDATE_FAQ],
-    spot: 0,
+    spot: 3,
   },
   // ✅ 可查證內容（依中央社、自由時報、聯合報、壹蘋新聞網報導整理，用語照原文）
   {
@@ -1338,7 +1338,7 @@ export const policies: Policy[] = [
     ],
     faqs: [CANDIDATE_FAQ],
     related: ["traditional-markets"],
-    spot: 1,
+    spot: 0,
   },
   // ✅ 可查證內容（依聯合報、壹蘋新聞網、自由時報報導整理，用語照原文）
   {
@@ -1524,7 +1524,7 @@ export const policies: Policy[] = [
       },
     ],
     faqs: [CANDIDATE_FAQ],
-    spot: 3,
+    spot: 1,
   },
 
   // 05 未來發展島
@@ -1649,7 +1649,7 @@ export const policies: Policy[] = [
       },
     ],
     faqs: [CANDIDATE_FAQ],
-    spot: 0,
+    spot: 4,
   },
   // ✅ 可查證內容（依媒體報導整理，用語照原文）
   {
@@ -2020,7 +2020,7 @@ export const policies: Policy[] = [
       },
     ],
     faqs: [CANDIDATE_FAQ],
-    spot: 4,
+    spot: 0,
   },
 ];
 

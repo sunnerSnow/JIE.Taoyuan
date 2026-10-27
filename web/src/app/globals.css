@@ -262,6 +262,15 @@ html[data-menu-open="true"] {
   animation: bob 4s ease-in-out infinite;
 }
 
+/* 探索地圖的「動畫」開關：關掉後鏡頭、面板、圖釘都直接切換 */
+[data-motion="off"] *,
+[data-motion="off"] *::before,
+[data-motion="off"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

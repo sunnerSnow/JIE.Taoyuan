@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IsoSvg } from "@/components/art/iso-svg";
 import { ExploreApp, type ExploreIsland } from "@/components/explore/explore-app";
 import { categories, categoryColor } from "@/data/categories";
-import { policiesIn } from "@/data/policies";
+import { policiesIn, sourceTypeLabel } from "@/data/policies";
 import { worldPins } from "@/lib/map-data";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -29,7 +29,16 @@ export default function ExplorePage() {
         summary: p.summary,
         status: p.status,
         n: i + 1,
+        spot: p.spot,
         sample: !!p.sample,
+        sourceLabel: sourceTypeLabel[p.sourceType],
+        sourceTitle: p.sourceTitle,
+        sourceUrl: p.sourceUrl,
+        publishedAt: p.publishedAt,
+        verifiedAt: p.retrievedAt,
+        updatedAt: p.updatedAt,
+        audience: p.audience,
+        extraSources: p.extraSources?.length ?? 0,
       })),
       spots: spots[c.slug],
     };

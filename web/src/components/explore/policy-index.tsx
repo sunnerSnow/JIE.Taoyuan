@@ -5,18 +5,25 @@ import { useId, useMemo, useState } from "react";
 import { ArrowRight } from "@/components/ui/decor";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { CategorySlug } from "@/data/types";
+import { intercept } from "./intercept";
 import type { ExploreIsland } from "./types";
 
 /** 右側的「政策索引」：島嶼清單＋搜尋。沒有 JS 時連結仍可用（地圖失效的文字替代） */
 export function PolicyIndex({
   islands,
   selected,
+  activePolicy = null,
   onSelect,
+  onOpenPolicy,
   listMode = false,
 }: {
   islands: ExploreIsland[];
   selected: CategorySlug | null;
+  /** 目前開著的政策（標示選取狀態） */
+  activePolicy?: string | null;
   onSelect: (slug: CategorySlug | null) => void;
+  /** 點政策：定位到所屬的島並打開政策面板 */
+  onOpenPolicy: (slug: string) => void;
   listMode?: boolean;
 }) {
   const [query, setQuery] = useState("");
@@ -66,15 +73,21 @@ export function PolicyIndex({
               <li className="px-3 pb-2 text-[13px] text-ink-soft">找到 {results.length} 項</li>
               {results.map(({ island, policy }) => (
                 <li key={policy.slug}>
-                  <Link href={`/policies/${policy.slug}`} className="block rounded-xl px-3 py-3 hover:bg-mint/60">
+                  <a
+                    href={`/policies/${policy.slug}`}
+                    onClick={(e) => intercept(e, () => onOpenPolicy(policy.slug))}
+                    aria-current={activePolicy === policy.slug ? "true" : undefined}
+                    className="block rounded-xl px-3 py-3 hover:bg-mint/60 aria-[current=true]:bg-mint"
+                  >
                     <span className="text-[12px] font-bold text-teal-deep">
                       {island.pin.no} {island.pin.name}
                     </span>
                     <span className="mt-0.5 block font-bold">{policy.title}</span>
-                    <span className="mt-1.5 block">
+                    <span className="mt-1.5 flex flex-wrap items-center gap-2">
                       <StatusBadge status={policy.status} size="sm" />
+                      <span className="text-[12px] text-ink-soft">{policy.sourceLabel}</span>
                     </span>
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -124,7 +137,12 @@ export function PolicyIndex({
                       <ol className="space-y-0.5">
                         {island.policies.map((p) => (
                           <li key={p.slug}>
-                            <Link href={`/policies/${p.slug}`} className="flex items-start gap-2.5 rounded-lg py-1.5 pr-1 hover:bg-paper">
+                            <a
+                              href={`/policies/${p.slug}`}
+                              onClick={(e) => intercept(e, () => onOpenPolicy(p.slug))}
+                              aria-current={activePolicy === p.slug ? "true" : undefined}
+                              className="flex items-start gap-2.5 rounded-lg py-1.5 pl-1 pr-1 hover:bg-paper aria-[current=true]:bg-paper aria-[current=true]:shadow-soft"
+                            >
                               <span
                                 className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-[1.5px] border-edge text-[11px] font-black"
                                 style={{ background: island.pin.color }}
@@ -132,7 +150,7 @@ export function PolicyIndex({
                                 {p.n}
                               </span>
                               <span className="flex-1 text-[14px] font-bold leading-snug">{p.title}</span>
-                            </Link>
+                            </a>
                           </li>
                         ))}
                       </ol>

@@ -2,10 +2,22 @@ import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { ArrowCurve, Scallop } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
+import { intercept } from "./intercept";
 import type { ExploreIsland } from "./types";
 
 /** 選了島之後的說明面板：桌機在左側浮出、手機是底部抽屜 */
-export function IslandPanel({ island, onClose, headingId }: { island: ExploreIsland; onClose: () => void; headingId: string }) {
+export function IslandPanel({
+  island,
+  onClose,
+  onOpenPolicy,
+  headingId,
+}: {
+  island: ExploreIsland;
+  onClose: () => void;
+  /** 點政策：在地圖內打開政策面板 */
+  onOpenPolicy: (slug: string) => void;
+  headingId: string;
+}) {
   const { pin } = island;
   return (
     <div className="flex flex-col">
@@ -42,9 +54,10 @@ export function IslandPanel({ island, onClose, headingId }: { island: ExploreIsl
       <ol className="mt-2 space-y-2">
         {island.policies.map((p) => (
           <li key={p.slug}>
-            <Link
+            <a
               href={`/policies/${p.slug}`}
-              className="group flex items-start gap-3 rounded-2xl border-2 border-edge bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5"
+              onClick={(e) => intercept(e, () => onOpenPolicy(p.slug))}
+              className="group flex items-start gap-3 rounded-2xl border-2 border-edge bg-paper px-3.5 py-3 transition-transform hover:-translate-y-0.5 hover:bg-mint/40"
             >
               <span
                 className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-edge text-[12px] font-black"
@@ -62,7 +75,7 @@ export function IslandPanel({ island, onClose, headingId }: { island: ExploreIsl
               <span className="mt-1 text-ink-soft transition-transform group-hover:translate-x-0.5" aria-hidden="true">
                 ›
               </span>
-            </Link>
+            </a>
           </li>
         ))}
       </ol>

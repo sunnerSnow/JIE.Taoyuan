@@ -42,6 +42,10 @@ export type Shape = {
   dash?: string;
   opacity?: number;
   cap?: "round" | "butt";
+  /** 屬於哪座島（探索地圖用來點島、淡化其他島） */
+  island?: string;
+  /** 屬於哪一個政策圖釘位置的建築（探索地圖用來點建築、高亮選取的政策） */
+  spot?: number;
 };
 
 /**
@@ -85,6 +89,10 @@ function convexHull(points: Pt[]): Pt[] {
 /** 以世界座標下指令的畫布；ox/oy/oz 是整座島的原點位移 */
 export class Iso {
   shapes: Shape[] = [];
+  /** 之後畫的圖形都標上這座島 */
+  island?: string;
+  /** 之後畫的圖形都屬於這個圖釘位置的建築；用 building() 切換 */
+  spot?: number;
   minX = Infinity;
   minY = Infinity;
   maxX = -Infinity;
@@ -105,6 +113,11 @@ export class Iso {
     return p;
   }
 
+  /** 接下來畫的圖形屬於第 i 個圖釘位置的建築；null 結束 */
+  building(i: number | null) {
+    this.spot = i ?? undefined;
+  }
+
   push(d: string, fill: string, o: Opts = {}) {
     this.shapes.push({
       d,
@@ -113,6 +126,8 @@ export class Iso {
       sw: o.sw,
       dash: o.dash,
       opacity: o.opacity,
+      island: this.island,
+      spot: this.spot,
     });
   }
 
@@ -128,6 +143,8 @@ export class Iso {
       sw,
       dash,
       cap: "round",
+      island: this.island,
+      spot: this.spot,
     });
   }
 
