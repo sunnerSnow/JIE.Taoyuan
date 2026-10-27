@@ -175,9 +175,12 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
             </Block>
           )}
 
-          <Block id="status" title="目前狀態">
-            <StatusLadder policy={policy} />
-          </Block>
+          {/* 還在「已提出」時不放狀態階梯（選舉期間全部都是已提出，後四格都是空的）；有實際進度後才顯示 */}
+          {policy.status !== "proposed" && (
+            <Block id="status" title="目前狀態">
+              <StatusLadder policy={policy} />
+            </Block>
+          )}
 
           {/* 時程只在有可靠來源時呈現（規格書第 6 節） */}
           {policy.timeline && policy.timeline.length > 0 && (
@@ -256,11 +259,11 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
               <Row label="目前狀態">{statusInfo[policy.status].label}</Row>
             </dl>
             <p className="mt-5 border-t-2 border-dashed border-teal-deep/20 pt-4 text-[13px] leading-relaxed text-ink-soft">
-              發現資料有誤或過期？
-              <Link href="/about#contact" className="link-ink font-bold text-ink">
-                告訴我們
+              資料有誤或原始來源失效時，我們會更正內容並標示更新日期，說明見
+              <Link href="/about#corrections" className="link-ink mx-1 font-bold text-ink">
+                資料更正
               </Link>
-              ，更正後會標示更新日期。
+              。
             </p>
           </div>
           <div className="mt-6 flex flex-col gap-3">
