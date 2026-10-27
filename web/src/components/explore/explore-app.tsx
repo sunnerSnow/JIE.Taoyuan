@@ -6,6 +6,7 @@ import { Logo } from "@/components/site/logo";
 import { ArrowRight } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { IslandLabel } from "@/components/map/island-label";
+import { shortTitle } from "@/data/policies";
 import type { CategorySlug } from "@/data/types";
 import { liftLabels } from "@/lib/pin-layout";
 import { intercept } from "./intercept";
@@ -389,7 +390,7 @@ export function ExploreApp({ islands, ratio, map }: { islands: ExploreIsland[]; 
                             {spot.n}
                           </span>
                           {/* 手機只顯示編號，完整名稱在底部抽屜 */}
-                          <span className="hidden truncate sm:block">{spot.title}</span>
+                          <span className="hidden truncate sm:block">{shortTitle(spot.title)}</span>
                         </span>
                         <span
                           ref={(el) => {

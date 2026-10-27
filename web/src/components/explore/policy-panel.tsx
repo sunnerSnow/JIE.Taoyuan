@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowCurve } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
-import { formatDate } from "@/data/policies";
+import { formatDate, sourceName } from "@/data/policies";
 import type { ExploreIsland, ExplorePolicy } from "./types";
 
 export const POLICY_HEADING_ID = "policy-panel-title";
@@ -101,12 +101,12 @@ export function PolicyPanel({
         <dd className="min-w-0 text-ink-soft">
           {policy.sourceUrl ? (
             <a href={policy.sourceUrl} target="_blank" rel="noopener noreferrer" className="link-ink break-words font-bold text-ink">
-              {policy.sourceTitle} <span aria-hidden="true">↗</span>
+              {sourceName(policy.sourceTitle)} <span aria-hidden="true">↗</span>
               <span className="sr-only">（另開新視窗）</span>
             </a>
           ) : (
             <>
-              {policy.sourceTitle}
+              {sourceName(policy.sourceTitle)}
               <span className="block text-[12.5px]">原始連結待補</span>
             </>
           )}

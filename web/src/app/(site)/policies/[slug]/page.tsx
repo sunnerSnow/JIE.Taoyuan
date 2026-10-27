@@ -11,15 +11,12 @@ import { SampleNotice } from "@/components/site/sample-notice";
 import { ArrowCurve, ArrowRight, PinIcon } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { categoryColor, categoryMap } from "@/data/categories";
-import { formatDate, getPolicy, policies, sourceTypeLabel, statusInfo, statusOrder } from "@/data/policies";
+import { formatDate, getPolicy, policies, sourceName, sourceTypeLabel, statusInfo, statusOrder } from "@/data/policies";
 import type { EditorNote, ExtraSource, Policy } from "@/data/types";
 import { pageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
 
 const noteLabel: Record<EditorNote["kind"], string> = { supplement: "補充", check: "核對", clarify: "澄清" };
-
-/** 側欄只顯示來源名稱：去掉結尾的〈標題〉或（說明），完整標題在「出處與查證」 */
-const sourceName = (title: string) => title.replace(/\s*[〈（(][^〈（(]*[〉）)]\s*$/, "");
 
 export function generateStaticParams() {
   return policies.map((p) => ({ slug: p.slug }));

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
+import { shortTitle } from "@/data/policies";
 import type { SpotPin } from "@/lib/map-data";
 import { liftLabels } from "@/lib/pin-layout";
 
@@ -67,7 +68,7 @@ export function IslandPins({ spots, color, label }: { spots: SpotPin[]; color: s
               role="presentation"
               className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-max max-w-[220px] -translate-x-1/2 rounded-xl border-2 border-edge bg-paper px-3 py-1.5 text-[13px] font-black opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 lg:block"
             >
-              {s.title}
+              {shortTitle(s.title)}
             </span>
           </Link>
         </li>

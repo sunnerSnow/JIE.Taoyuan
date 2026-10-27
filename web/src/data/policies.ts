@@ -2058,6 +2058,12 @@ export function latestPolicies(n: number) {
     .slice(0, n);
 }
 
+/** 地圖圖釘只放主要主張：取標題冒號前的部分，例如「公車政見六大主張」 */
+export const shortTitle = (title: string) => title.split("：")[0];
+
+/** 精簡的來源名稱：去掉結尾的〈標題〉或（說明），完整標題留在詳情頁的「出處與查證」 */
+export const sourceName = (title: string) => title.replace(/\s*[〈（(][^〈（(]*[〉）)]\s*$/, "");
+
 export function formatDate(iso?: string) {
   if (!iso) return "未提供";
   const [y, m, d] = iso.split("-");
