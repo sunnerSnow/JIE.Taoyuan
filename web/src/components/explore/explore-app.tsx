@@ -603,6 +603,7 @@ export function ExploreApp({
               citizens={allCitizens}
               ww={ww}
               wh={wh}
+              scale={s}
               running={motion && view === "map"}
               tags={tagsOn}
               tagIds={current ? new Set(current.citizens.map((c) => c.id)) : null}

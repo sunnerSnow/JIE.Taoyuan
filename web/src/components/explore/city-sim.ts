@@ -31,7 +31,7 @@ type Walker = {
 };
 
 /** 每秒走多遠（世界寬度的百分比） */
-const SPEED: [number, number] = [0.9, 1.4];
+const SPEED: [number, number] = [0.6, 0.95];
 const REST_HOME: [number, number] = [8, 20];
 const REST_AWAY: [number, number] = [4, 10];
 /** 在家時，下一趟走去相關政策（可能在別座島）的機率 */
@@ -92,7 +92,7 @@ export class CitySim {
         y: door.y + jy,
         dir: i % 2 ? 1 : -1,
         // 建構時不能用 Math.random（頁面會先在伺服器端預先產生），用編號錯開速度與出發時間
-        speed: SPEED[0] + ((i * 37) % 50) / 100,
+        speed: SPEED[0] + (((i * 37) % 36) / 35) * (SPEED[1] - SPEED[0]),
         path: [],
         seg: 0,
         segT: 0,

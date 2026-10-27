@@ -269,19 +269,32 @@ html[data-menu-open="true"] {
   animation: bob 4s ease-in-out infinite;
 }
 
-/* 探索地圖上走動的市民：走路時擺腿、身體上下晃，往左走時左右翻轉 */
-@keyframes walker-leg {
+/*
+ * 探索地圖上走動的市民（側面）：前腳、後腳從髖部交替前後擺；前腳往前時後手也往前（手腳對側擺），每跨一步身體上下晃一次。
+ * --half 是跨一步的時間，由畫面依移動速度與地圖縮放算出來，腳步才會跟上身體、不會滑步。
+ * 預設面向右邊，往左走時整個人左右翻轉。
+ */
+@keyframes walker-swing {
   from {
-    transform: rotate(24deg);
+    transform: rotate(-30deg);
   }
   to {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes walker-arm {
+  from {
     transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(24deg);
   }
 }
 
 @keyframes walker-bob {
   50% {
-    transform: translateY(-0.7px);
+    transform: translateY(-0.6px);
   }
 }
 
@@ -294,22 +307,35 @@ html[data-menu-open="true"] {
   transform: scaleX(-1);
 }
 
-.walker .leg-l,
-.walker .leg-r {
-  transform-box: fill-box;
-  transform-origin: 50% 0;
+.walker .limb {
+  transform-box: view-box;
 }
 
-.walker[data-walking="1"] .leg-l {
-  animation: walker-leg 0.42s ease-in-out infinite alternate;
+.walker .leg {
+  transform-origin: 5px 11.4px;
 }
 
-.walker[data-walking="1"] .leg-r {
-  animation: walker-leg 0.42s ease-in-out -0.42s infinite alternate-reverse;
+.walker .arm {
+  transform-origin: 5px 7.6px;
 }
 
-.walker[data-walking="1"] svg {
-  animation: walker-bob 0.42s ease-in-out infinite;
+.walker[data-walking="1"] .leg-front,
+.walker[data-walking="1"] .arm-back {
+  animation: walker-swing var(--half, 0.45s) ease-in-out infinite alternate;
+}
+
+.walker[data-walking="1"] .leg-back,
+.walker[data-walking="1"] .arm-front {
+  animation: walker-swing var(--half, 0.45s) ease-in-out calc(var(--half, 0.45s) * -1) infinite alternate;
+}
+
+.walker[data-walking="1"] .arm-front,
+.walker[data-walking="1"] .arm-back {
+  animation-name: walker-arm;
+}
+
+.walker[data-walking="1"] .walker-body {
+  animation: walker-bob var(--half, 0.45s) ease-in-out infinite;
 }
 
 /* 日夜：依台灣時間自動切換（也可以手動選），只染插畫，名牌與面板不受影響 */
