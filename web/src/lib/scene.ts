@@ -285,7 +285,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 24,
     screen: [-40, 30],
     anchor: [8, 5, 10],
-    spots: [[8, 4.5, 7.6], [7.5, 17, 3.5], [20.5, 4, 6.4], [16, 21.4, 3]],
+    spots: [[8, 4.5, 7.6], [7.5, 17, 3.5], [20.5, 4, 6.4], [16, 21.4, 3], [13, 11, 0.3]],
     draw: family,
   },
   health: {
@@ -293,7 +293,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 22,
     screen: [36, 28],
     anchor: [6.5, 5.5, 16],
-    spots: [[6.5, 5.5, 14], [20, 5.5, 5], [13, 15.6, 2.6], [21.5, 17, 4.2]],
+    spots: [[6.5, 5.5, 14], [20, 5.5, 5], [13, 15.6, 2.6], [21.5, 17, 4.2], [4.8, 16.6, 0.5]],
     draw: health,
   },
   environment: {
@@ -309,7 +309,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 26,
     screen: [-76, 2],
     anchor: [26, 5, 21],
-    spots: [[22, 18, 3.5], [17.8, 5.5, 8.4], [7, 5, 9.5], [9, 20, 1]],
+    spots: [[22, 18, 3.5], [17.8, 5.5, 8.4], [7, 5, 9.5], [9, 20, 1], [26, 5, 17.5]],
     draw: future,
   },
 };

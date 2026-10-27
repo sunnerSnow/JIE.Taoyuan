@@ -8,8 +8,8 @@ export const site = {
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
-  /** 還有示範資料（sample: true）時為 true；全部換成可查證內容後改成 false */
-  sampleContent: true,
+  /** 有示範資料（sample: true）時改成 true，頁面會顯示示範內容提示 */
+  sampleContent: false,
   /** 支持的候選人與號次（號次依據：候選人 2026-10-27 公布的 Threads 貼文） */
   candidate: {
     name: "黃世杰",

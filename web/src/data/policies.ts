@@ -1,10 +1,8 @@
 import type { Category, CategorySlug, Policy, PolicyStatus, SourceType } from "./types";
 
-// ⚠ 標示 sample: true 的是「示範資料」，只用來呈現版型與互動；沒有 sample 的才是依公開來源整理的正式內容。
-// 正式上線前必須逐條換成可追溯來源的內容（規格書第 11 節），並把 sample 拿掉、site.sampleContent 改成 false。
-// 不在示範資料中放任何具體數字或日期承諾，避免被誤認為真實政見。
-
-const SAMPLE_SOURCE = "示範來源（待補：原始政見、官方公告或新聞稿）";
+// 全部依公開來源整理（規格書第 11 節）：優先用候選人官方貼文（sourceType "candidate"），
+// 找不到官方貼文時用主流媒體報導（"media"），拿到官方連結後再替換。主張與做法用語照原文，不補原文沒有的數字或承諾。
+// 之後若要放版型示意用的假資料，加上 sample: true 並把 site.sampleContent 改回 true，頁面會自動標示「示範資料」。
 
 /** 候選人政見的共同問答：狀態只在有正式計畫、預算或公告時才更新 */
 const CANDIDATE_FAQ = {
@@ -83,68 +81,335 @@ export const policies: Policy[] = [
     faqs: [CANDIDATE_FAQ],
     spot: 0,
   },
+  // ✅ 可查證內容（依候選人 Threads 貼文與六張附圖整理，用語照原文；媒體報導列為佐證）
   {
     id: "t2",
-    slug: "bus-network-transfer",
-    title: "公車路網與轉乘更好接",
+    slug: "bus-network-reform",
+    title: "公車政見六大主張：跟幽靈公車說再見",
     category: "transport",
-    summary: "檢視公車路線、班次與轉乘點，讓從家裡到車站的「最後一哩路」更好接。",
-    problemStatement: "部分地區公車班距長、轉乘點不清楚，讓大眾運輸不容易成為日常選擇。",
+    summary:
+      "整合公車定位與查詢系統、把放射型路網調整為三級路網、依需求調整班次、讓轉乘更順暢、保障駕駛長休息，並建立市營公車體系，讓坐公車成為準時、便利及安心的選擇。",
+    problemStatement:
+      "在桃園生活的市民，誰沒等過一班遲遲不來的公車？學生上課、上班族通勤、長輩辦事或看診，卻總是遇到脫班、誤點，甚至可能根本等不到車。候選人在貼文中提到，他曾到龍潭實地觀察公車路線、班次及轉運站營運狀況，而這不只是龍潭的問題。",
     description:
-      "盤點主要生活圈的公車服務，優先改善與軌道車站的接駁，並把即時到站與轉乘資訊整合在同一處，減少等車與走錯站的情況。",
-    approach: ["盤點路線與班距", "強化車站接駁與轉乘指標", "整合即時到站資訊"],
-    audience: "公車通勤族、學生、長者",
-    status: "researching",
-    sourceTitle: SAMPLE_SOURCE,
+      "政見希望未來的桃園人可以跟幽靈公車說再見，讓搭乘、轉乘更順暢，讓坐公車不再只是碰運氣，而是準時、便利及安心的選擇；從解決每天最日常的問題開始，讓桃園的公共運輸真正跟上市民需求。具體分成六大主張。",
+    pillars: [
+      {
+        title: "幽靈公車說再見",
+        items: ["整合車輛定位、營運與查詢系統", "重建即時公開的公車資訊", "搭乘品質作為評鑑依據", "導入 AI 分析，精準調整班次與運能"],
+      },
+      {
+        title: "重新布局公車總站與轉運節點",
+        items: ["將目前放射型路網調整為「幹線＋生活圈＋接駁」三級路網", "發展貫穿型、環狀型路線"],
+      },
+      {
+        title: "公車服務跟著需求走",
+        items: ["熱門通勤廊道提高班次與運能", "偏鄉依需求導入預約式公車，發展彈性接駁"],
+      },
+      {
+        title: "轉乘更順暢、通勤更省時",
+        items: ["建立轉乘銜接標準，重新配置轉乘接駁路線，完善公共運輸網", "捷運、台鐵、高鐵、公車無縫轉乘"],
+      },
+      {
+        title: "合理班表、足夠休息",
+        items: ["駕駛長勞動條件納入營運評鑑", "檢討工時、排班與休息制度", "盤點並補足總站休憩軟硬設施"],
+      },
+      {
+        title: "建立市營公車體系",
+        items: ["市府統籌路網、班次與運能", "市營公車投入與既有民營業者共同提升服務效率"],
+      },
+    ],
+    audience: "搭公車上課、通勤、辦事或看診的市民，以及公車駕駛長",
+    status: "proposed",
+    sourceTitle: "黃世杰 Threads 貼文〈幽靈公車說再見〉",
+    sourceUrl: "https://www.threads.com/@schuanglawyer/post/DeHNXWnEyoO",
     sourceType: "candidate",
-    publishedAt: "2026-08-12",
-    updatedAt: "2026-10-09",
-    related: ["school-route-safety"],
+    publishedAt: "2026-10-05",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5519019",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "批張善政市政停滯 黃世杰首波6政見主打公車改革、友善育兒",
+        url: "https://udn.com/news/story/124652/9653215",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰拋六大政見 桃市府批空洞",
+        url: "https://udn.com/news/story/124652/9654414",
+        date: "2026-07-28",
+      },
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "黃世杰：重整桃園大眾運輸路網、推透明托育地圖",
+        url: "https://www.cna.com.tw/news/aipl/202608130196.aspx",
+        date: "2026-08-13",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "桃捷綠線通車倒數 黃世杰提三級公車路網補足接駁",
+        url: "https://udn.com/news/story/124652/9807461",
+        date: "2026-10-11",
+      },
+      {
+        type: "media",
+        outlet: "ETtoday",
+        title: "黃世杰北區競選成立拋「交通新治理」 張惇涵：桃園進步不能再等",
+        url: "https://www.ettoday.net/news/20261018/3256964.htm",
+        date: "2026-10-18",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "2026-07-27 首波政見發表時，公車改革的說法是由市府承擔公共運輸總規畫責任、建立績效導向補助制度，對長期脫班、服務品質不佳的業者「必要時不排除由市府直接營運」（聯合報、自由時報）；2026-10-05 貼文附圖則寫「建立市營公車體系」。貼文與附圖都沒有列出市營公車的規模、營運方式或預算。",
+      },
+      {
+        kind: "supplement",
+        text: "2026-10-11 在蘆竹，黃世杰說明三級路網是「幹線、生活圈路線及城鄉末端機動接駁」，並主張在適當地點設置轉運空間、串聯捷運、公車及 YouBike（聯合報）；2026-10-18 北區競總成立時，他把重整公車資訊系統、建立三級路網、加速捷運建設合稱為「交通新治理」（ETtoday）。",
+      },
+      {
+        kind: "supplement",
+        text: "首波政見發表時，黃世杰引用交通部調查，指桃園公共運輸使用率僅 12.9%，是北北基桃共同生活圈最低（自由時報）。桃園市府新聞處長羅楚東回應，桃園公共運輸使用率為六都第三、全國第四；交通局長張新福表示，市府透過薪資補貼與「受訓即就業」計畫補進逾一百名公車駕駛（聯合報）。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "在龍潭上班、每天搭公車的通勤族",
+        district: "龍潭區",
+        text: "App 上的到站時間常常不準，等了半天車也沒來。政見提到要整合車輛定位、營運與查詢系統，重建即時公開的公車資訊；如果做到，我可以照著資訊出門，不必在站牌碰運氣。",
+      },
+      {
+        persona: "住在山上、要下山看診的長輩",
+        district: "復興區",
+        text: "公車班次不多，錯過一班就要等很久。政見提到偏鄉依需求導入預約式公車、發展彈性接駁；如果做到，出門看診也許能先約好車。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["three-hubs-six-lines", "people-first-streets"],
     spot: 1,
-    sample: true,
   },
+  // ✅ 可查證內容（候選人原始貼文未能取得，依主流媒體報導整理，用語照報導中候選人的說法）
   {
     id: "t3",
-    slug: "school-route-safety",
-    title: "通學與通勤路口安全改善",
+    slug: "fair-traffic-enforcement",
+    title: "科技執法合理化：科技執法不濫用，順暢安全心交通",
     category: "transport",
-    summary: "從事故熱點與通學路線出發，逐一改善行人與自行車最常經過的路口。",
-    problemStatement: "上下學與上下班時段，學校周邊與主要路口的人車交織最容易出事。",
+    summary: "公開科技執法的設置標準、理由與成效，上路前做好宣導並給予充分公告期與勸導期，讓科技執法回歸預防事故，而不是開單懲罰。",
+    problemStatement:
+      "全桃園的科技執法、測速照相、闖紅燈照相等設置點愈來愈多。候選人指出，桃園交通罰鍰收入從 2023 年 27 億 4210 萬元、2024 年 28 億 755 萬元，增加到 2025 年 29 億 3781 萬元；他認為如果道路本身缺失還沒改善，設備卻無預警增加，市民感受到的不是更安全的用路環境，而是愈來愈多罰單，還有滿滿剝奪感。",
     description:
-      "以公開的事故資料與學校周邊路線為依據，排定改善順序。常見做法包含標線與號誌調整、人行空間退縮與照明改善，並在完成後追蹤成效。",
-    approach: ["依公開事故資料排定優先順序", "標線、號誌與人行空間改善", "完成後追蹤成效並公開"],
-    audience: "學生、家長、行人與自行車使用者",
-    status: "planned",
-    timeline: [
-      { label: "盤點學校周邊路口（示範）", date: "2026-11" },
-      { label: "第一批改善完成（示範）", date: "2027-06" },
+      "政見主張科技執法只是手段、不是目的。候選人說，市民都支持交通安全，但「交通治理的核心，應該是預防事故，而不是開單懲罰」，要回歸道路設計、人本交通及事故預防的治理本質，讓桃園成為兼具秩序、安全、人情味的溫暖城市。具體分成兩組做法。",
+    pillars: [
+      {
+        title: "設置標準公開透明",
+        items: [
+          "定期上網公布設置理由與成效數據，消除人民被政府當提款機的疑慮",
+          "由交通、警政等跨局處共同檢視道路設計、車流、事故及違規數據，建立公開透明的設置標準",
+        ],
+      },
+      {
+        title: "擴大宣導，完備勸導期",
+        items: [
+          "新設科技執法給予充分公告期與勸導期",
+          "強化多元管道鄰里宣導，建立優質行車文化",
+          "上路前做好標線、告示與充分宣導",
+          "涉及行車動線或號誌調整，給予用路人合理適應時間，並建立勸導及通知機制",
+        ],
+      },
     ],
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-01",
-    updatedAt: "2026-10-20",
-    faqs: [{ q: "我家附近的路口可以提報嗎？", a: "第二階段會開放市民提問表單；在那之前可透過「關於與聯絡」頁的信箱告訴我們。" }],
-    related: ["tech-traffic-management", "women-children-safety"],
+    audience: "在桃園開車、騎車的市民",
+    status: "proposed",
+    sourceTitle: "自由時報〈桃園交通罰鍰2年暴增近2億元 黃世杰推「科技執法合理化」〉",
+    sourceUrl: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5516299",
+    sourceType: "media",
+    publishedAt: "2026-07-24",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰質疑道路缺失未改善 科技執法卻變多…桃園市府拿數據反擊",
+        url: "https://udn.com/news/story/7324/9649360",
+        date: "2026-07-24",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "羅楚東酸人情味爆表 黃世杰陣營反擊曲解本意",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5517156",
+        date: "2026-07-25",
+      },
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "黃世杰公布首波政見 六大面向盼更貼近人民需求",
+        url: "https://www.cna.com.tw/news/aloc/202607270113.aspx",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5519019",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "張善政提桃園科技執法違規通知 黃世杰批只做半套",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5585233",
+        date: "2026-09-24",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "桃園選戰攻防！黃世杰批張善政科技執法宣導做半套 市府：政治操弄",
+        url: "https://udn.com/news/story/124652/9776673",
+        date: "2026-09-24",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "「設置標準公開透明」「擴大宣導，完備勸導期」兩組做法出自 2026-07-24 的報導；跨局處檢視數據、上路前做好標線告示、給予合理適應時間等細節，是候選人 2026-09-24 回應市府新的違規通知機制時補充的說法（聯合報、自由時報）。報導中沒有提到公告期、勸導期的具體長度。",
+      },
+      {
+        kind: "clarify",
+        text: "黃世杰競選辦公室表示，黃世杰從未反對科技執法，也支持任何能有效降低事故、保障用路人安全的政策（自由時報）。",
+      },
+      {
+        kind: "supplement",
+        text: "桃園市府新聞處長羅楚東回應，設有科技執法的路口事故件數減少 16.63%、行人事故下降約 13.17%；桃園市警察局表示，2025 年科技執法取締件數較 2024 年減少近 3 萬 5887 件、降幅約 10%（聯合報）。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "每天騎機車上班的上班族",
+        district: "中壢區",
+        text: "路口的車道和標線改了，我照老習慣騎，收到罰單才知道規則變了。政見提到動線或號誌調整要給用路人合理適應時間，並建立勸導及通知機制；如果做到，我會在被開單前就知道。",
+      },
+      {
+        persona: "常開車接送家人的駕駛",
+        district: "八德區",
+        text: "我一直好奇家附近那支測速照相為什麼設在那裡。如果市府定期上網公布設置理由與成效數據，我就能自己查，也比較能理解為什麼要放慢。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["people-first-streets"],
     spot: 2,
-    sample: true,
   },
+  // ✅ 可查證內容（依候選人 Threads 貼文與所附承諾書照片整理；承諾細節依媒體對承諾書內容的報導）
   {
     id: "t4",
-    slug: "tech-traffic-management",
-    title: "科技輔助交通治理",
+    slug: "people-first-streets",
+    title: "人本交通：讓孩子安心上學、市民安全通行",
     category: "transport",
-    summary: "用感測與號誌系統協助疏導車流，並公開設置原則，兼顧安全與隱私。",
-    problemStatement: "尖峰車流與違規熱點靠人力難以全面處理。",
+    summary: "簽署下一代人本交通促進會的交通改善承諾書，聚焦人行空間、學區通行安全及偏鄉交通平權，以人本交通作為施政方向。",
+    problemStatement:
+      "身為三歲孩子的父親，候選人說每次牽著小朋友走在人行道上，都能深刻體會每位家長心中的擔憂。他認為桃園的交通改革不能停留在頭痛醫頭、腳痛醫腳的個案思維，要成為真正進步的城市，必須建立系統性的整體規劃。",
     description:
-      "評估在車流瓶頸與違規熱點導入智慧號誌與科技執法設備，並事先公開設置地點的評估原則與資料保存方式。",
-    approach: ["公開設置評估原則", "優先處理事故與壅塞熱點", "說明資料保存與隱私保護方式"],
-    status: "unknown",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "media",
-    updatedAt: "2026-09-26",
-    related: ["school-route-safety"],
+      "2026 年 7 月 8 日，黃世杰出席下一代人本交通促進會記者會，與台北、新北、宜蘭的參選人一同簽署交通改善承諾書，承諾於任期內積極推動五項交通改善政策，並接受該會透過公開查核平台追蹤與監督。貼文表示，接下來將聚焦市民最痛心的問題，全面推動改革，包括人行空間、學區通行安全及偏鄉交通平權等，並以人本交通作為施政方向，讓桃園成為一座孩子安心上學、家長放心生活、市民朋友安全通行的宜居城市。",
+    pillars: [
+      {
+        title: "完成標線型人行道轉型計畫",
+        items: [
+          "2030 年前完成建成區大於 12 米道路之無人行道與標線型人行道全面盤點，訂定逐年轉型計畫",
+          "優先改善高人流、學校、醫療院所與大眾運輸站點周邊",
+          "轉型後須與車道實體區隔、寬度至少 1.5 公尺",
+        ],
+      },
+      {
+        title: "建立實質通學區",
+        items: ["於各級學校四周 150 公尺劃設通學區，並訂自治條例賦予執行依據", "配套庇護島、校門口動線管理、道路瘦身與抬升行穿線"],
+      },
+      {
+        title: "提出道路空間改善確切時程",
+        items: ["重新分配道路空間、翻轉以車為本的設計", "推動現代圓環，系統性改善高風險路口", "從測速轉向環境改善，建立 30 公里速限的行人友善區"],
+      },
+      {
+        title: "實踐交通平權",
+        tagline: "提升偏鄉大眾運輸服務之實質可用性",
+        items: ["普查偏鄉學生通勤困境並訂改善方案", "推動公車站電子紙到站顯示系統普及"],
+      },
+      {
+        title: "推動真正以人為本的軌道建設與大眾運輸整合",
+        items: ["任何軌道建設須將站點 500 公尺的最後一哩路接駁納入前置評估", "以公車優先策略提升大眾運輸的整體競爭力"],
+      },
+    ],
+    audience: "學生、家長、行人，以及偏鄉需要大眾運輸的市民",
+    status: "proposed",
+    sourceTitle: "黃世杰 Threads 貼文〈身為三歲孩子的父親，每次牽著小朋友走在人行道上…〉",
+    sourceUrl: "https://www.threads.com/@schuanglawyer/post/DahIO-7iXgp",
+    sourceType: "candidate",
+    publishedAt: "2026-07-08",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "共推交通改革 綠營北北桃宜市長參選人響應連署",
+        url: "https://www.cna.com.tw/news/aloc/202607080101.aspx",
+        date: "2026-07-08",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "「現任沒做很好」 沈伯洋、蘇巧慧、黃世杰、林國漳簽交通改善承諾書",
+        url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5497870",
+        date: "2026-07-08",
+      },
+      {
+        type: "media",
+        outlet: "三立新聞網",
+        title: "響應人本交通！綠北北桃宜戰將簽「交通改善承諾」 允諾打造安全通學路",
+        url: "https://www.setn.com/news/1869057",
+        date: "2026-07-08",
+      },
+    ],
+    notes: [
+      {
+        kind: "clarify",
+        text: "五項承諾由下一代人本交通促進會擬定，多位縣市首長參選人都有簽署，並非黃世杰獨自提出。本頁的五項標題依三立新聞網報導，各項細節依自由時報對承諾內容的報導整理；候選人貼文本身只寫到人行空間、學區通行安全及偏鄉交通平權等方向。",
+      },
+      {
+        kind: "supplement",
+        text: "記者會上黃世杰表示高度認同促進會的 5 項訴求；他也提到三鶯線未來將延伸到桃園八德，公共運輸連結與場站的行人交通安全，需要共同生活圈跨縣市一起推動（中央社、三立新聞網）。",
+      },
+      {
+        kind: "check",
+        text: "貼文說接下來將進一步聚焦人行空間、學區通行安全及偏鄉交通平權；截至 2026-10-27，本站尚未查到候選人針對這些議題另外發表的桃園具體方案，查到後會更新。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "每天牽孩子走路上學的爸爸",
+        district: "桃園區",
+        text: "學校門口的路口車很多，人行道走一走就斷掉。承諾書提到要在各級學校四周 150 公尺劃設通學區，配套庇護島、校門口動線管理與抬升行穿線；如果做到，送孩子上學會安心一些。",
+      },
+      {
+        persona: "住在海邊村落、搭公車上學的國中生",
+        district: "新屋區",
+        text: "公車班次少，常常不知道車什麼時候來。承諾書提到要普查偏鄉學生通勤困境並訂改善方案，也要推動公車站電子紙到站顯示系統普及；如果做到，我在站牌就能看到車還要多久才到。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["bus-network-reform", "fair-traffic-enforcement"],
     spot: 3,
-    sample: true,
   },
 
   // 02 育兒家庭島
@@ -221,59 +486,349 @@ export const policies: Policy[] = [
     related: ["better-healthcare"],
     spot: 0,
   },
+  // ✅ 可查證內容（依自由時報報導整理，用語照原文）
   {
     id: "f2",
-    slug: "inclusive-parks",
-    title: "親子共融遊戲場",
+    slug: "ten-minute-playgrounds",
+    title: "十分鐘遊戲圈：讓桃園從特色公園走向遊戲城市",
     category: "family",
-    summary: "讓不同年齡、不同能力的孩子，都能在家附近的公園一起玩。",
-    problemStatement: "部分遊戲場設施老舊或缺乏遮蔭，也不一定適合行動不便的孩子使用。",
-    description: "在設計階段邀請家長與孩子參與，優先改善遮蔭、地坪安全與無障礙動線，並公開各場址的規劃進度。",
-    approach: ["設計前的參與式工作坊", "遮蔭、地坪與無障礙動線改善", "公開各場址進度"],
-    audience: "兒童與家長",
-    status: "planned",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-08-30",
-    updatedAt: "2026-10-02",
-    related: ["park-green-space"],
+    summary: "以「步行十分鐘可及」為目標盤點 13 區遊戲空間，並推動遊戲場降溫、青少年遊憩空間與校園遊戲空間升級。",
+    problemStatement:
+      "桃園人口持續成長、新生活圈不斷形成。政見認為，好的遊戲空間不應該要家長到了假日特別開車帶孩子去「朝聖」，而是從家裡走出去，就能在自己的生活圈找到適合的地方；市府不能只是把既有計畫完成，更應該提出下一階段完整的遊戲空間政策。",
+    description:
+      "黃世杰在中壢光明公園簽署還我特色公園行動聯盟（特公盟）的兒童遊戲空間政策承諾書，主張在桃園既有特色公園與共融式遊戲場的基礎上，從整座城市思考兒童及青少年的遊戲權，讓桃園從「特色公園」走向真正的「遊戲城市」。具體分成四項做法。",
+    pillars: [
+      {
+        title: "十分鐘遊戲圈",
+        tagline: "以「步行十分鐘可及」為目標",
+        items: ["全面盤點 13 個行政區的遊戲空間", "找出資源不足的生活圈，優先增加或改善遊戲場域"],
+      },
+      {
+        title: "遊戲場降溫",
+        tagline: "不只考慮「好不好玩」，也要考慮「能不能玩」",
+        items: ["面對極端高溫，增加喬木、自然遮蔭、遮陽設施及透水鋪面", "增加適合夏季使用的戲水空間"],
+      },
+      {
+        title: "青少年遊憩空間",
+        items: ["補足青少年長期缺乏的公共活動空間", "依各區需求規劃滑板、攀岩、極限運動、體能挑戰及交流空間"],
+      },
+      {
+        title: "校園遊戲空間升級",
+        tagline: "讓下課十分鐘真正屬於孩子",
+        items: ["增加攀爬、平衡、探索及自然體驗等多元設計", "鼓勵學校結合校園地形、生態與自身特色規劃"],
+      },
+    ],
+    audience: "兒童、青少年與家長",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰提「十分鐘遊戲圈」 攜手特公盟打造桃園成為遊戲城市〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5550560",
+    sourceType: "media",
+    publishedAt: "2026-08-24",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    notes: [
+      {
+        kind: "clarify",
+        text: "依報導，「十分鐘遊戲圈」、遊戲場降溫、青少年遊憩空間是響應特公盟提出的政策方向；「校園遊戲空間升級」是黃世杰另外提出的。",
+      },
+      { kind: "check", text: "報導沒有提出各項做法的預算、時程或優先改善的地點，所以本頁不列。" },
+    ],
+    scenarios: [
+      {
+        persona: "孩子四歲、住在新社區的媽媽",
+        district: "八德區",
+        text: "附近沒什麼好玩的遊戲場，週末常得開車帶孩子去特色公園。政見提到要以「步行十分鐘可及」為目標盤點遊戲空間，優先在資源不足的生活圈增加或改善遊戲場；如果做到，平常傍晚走路就能帶孩子去玩。",
+      },
+      {
+        persona: "喜歡玩滑板的國中生",
+        district: "中壢區",
+        text: "夏天的公園很曬，也很少有適合我們這個年紀的地方。如果遊戲場降溫和青少年遊憩空間做到，公園會多一些遮蔭，也可能依各區需求規劃滑板、攀岩等空間。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["education-five"],
     spot: 1,
-    sample: true,
   },
+  // ✅ 可查證內容（依中時新聞網所列政見條列整理，用語照原文）
   {
     id: "f3",
-    slug: "family-care-support",
-    title: "家庭照顧者支持",
+    slug: "education-five",
+    title: "教育五大主張：讓老師擁有安心教學的後盾",
     category: "family",
-    summary: "照顧孩子也照顧長輩的「三明治家庭」，需要喘息與諮詢的管道。",
-    problemStatement: "同時照顧孩子與長輩的家庭，常獨自承擔照顧壓力。",
-    description: "盤點現有的喘息服務、臨時托育與諮詢窗口，整理成清楚的申請指引，並研議擴大服務時段。",
-    approach: ["盤點既有照顧支持服務", "整理申請指引與窗口", "研議延長服務時段"],
-    audience: "家庭照顧者",
-    status: "researching",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-05",
-    updatedAt: "2026-09-30",
-    related: ["community-care-stations"],
+    summary: "從智慧學習、教師支持、安全通學、校園布局到校園午餐提出五大主張，打造孩子未來的競爭力，也讓老師安心教學。",
+    problemStatement:
+      "政見認為「先有快樂的老師，才有快樂的學生」，唯有照顧好第一線的老師，才能給孩子最堅實的陪伴，因此要把教育現場需要的支持，一項項補齊。",
+    description:
+      "黃世杰在 2026 年教師節於臉書正式提出教育政見，要用五大主張打造孩子未來的競爭力，讓老師擁有安心教學的後盾。",
+    pillars: [
+      {
+        title: "打造智慧學習桃園",
+        items: [
+          "增編資訊專業人力，推動 AI 素養教育",
+          "結合航太、無人機等在地產業，發展跨領域實作課程",
+          "建立全市技職產業合作平台，串聯學習、實習與職涯",
+          "推動校園圖書館升級，培養理解與思辨能力",
+        ],
+      },
+      {
+        title: "挺教師",
+        tagline: "安心教學",
+        items: [
+          "行政減量，減少非教育核心業務進入校園",
+          "檢討班級人數，增教師員額、推動導師減課",
+          "擴充特教量能，充實特教助理員及專業支持",
+          "建立校園爭議調處機制，讓溝通先於調查",
+        ],
+      },
+      {
+        title: "完善校園通學路網",
+        items: ["全面盤點、一校一改善，打造安全通學路網", "建立交通協勤支持機制，守護學童上下學安全"],
+      },
+      {
+        title: "完善校園布局",
+        tagline: "讓孩子就近上學",
+        items: ["精準對焦人口熱區，加速新校規畫與校舍興建", "盤點更新老舊校舍，教學設備逐步更新"],
+      },
+      {
+        title: "校園午餐全面升級",
+        items: [
+          "建立經費滾動檢討機制，強化採購永續食材",
+          "檢討營養師編制，強化校園供餐專業人力",
+          "提高導師午餐指導費至每月 1500 元",
+        ],
+      },
+    ],
+    audience: "學生、家長與第一線教師",
+    status: "proposed",
+    sourceTitle: "中時新聞網〈黃世杰拋5大教育政見 讓老師擁有安心教學的後盾〉",
+    sourceUrl: "https://www.chinatimes.com/realtimenews/20260928002085-260407",
+    sourceType: "media",
+    publishedAt: "2026-09-28",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "匯流新聞網",
+        title: "黃世杰5教育政見　推動導師減課、午餐指導費增至1500",
+        url: "https://www.scooptw.com/cnews/532828/",
+        date: "2026-09-28",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "桃園推教師減課 導師每週少上一節課",
+        url: "https://news.ltn.com.tw/news/life/breakingnews/5582935",
+        date: "2026-09-22",
+      },
+    ],
+    notes: [
+      { kind: "check", text: "政見原文沒有寫明各項做法的預算與時程，也沒有說明導師減課的節數或教師員額增加的數量。" },
+      {
+        kind: "supplement",
+        text: "自由時報報導，桃園市長張善政於 2026-09-22 市政會議宣布，116 學年度起高中以下學校導師每週減授 1 節課，並提高國中小教師員額編制。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "教書第八年的國小導師",
+        district: "平鎮區",
+        text: "除了上課，還有很多行政工作和午餐時間的照顧。政見提到行政減量、推動導師減課，並把導師午餐指導費提高到每月 1500 元；如果做到，我可以把更多心力留給學生。",
+      },
+      {
+        persona: "孩子明年要上小學的爸爸",
+        district: "龜山區",
+        text: "社區這幾年人愈來愈多，附近學校有點擠。政見提到要精準對焦人口熱區，加速新校規畫與校舍興建；如果做到，孩子比較有機會就近上學。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["anti-bullying", "ten-minute-playgrounds"],
     spot: 2,
-    sample: true,
   },
+  // ✅ 可查證內容（依候選人 Threads 貼文與作者續文整理，用語照原文）
   {
     id: "f4",
-    slug: "women-children-safety",
-    title: "婦幼安全回家路",
+    slug: "anti-bullying",
+    title: "校園反霸凌四大作為：霸凌、暴力零容忍",
     category: "family",
-    summary: "改善夜間照明與人行環境，讓帶孩子、晚下班的人走回家更安心。",
-    description: "依據市民回報與公開資料，盤點照明不足的路段與地下道，優先改善，並公開改善清單。",
-    approach: ["盤點照明不足路段", "優先改善地下道與通學路線", "公開改善清單"],
+    summary: "市府扛起責任，以釐清事實與追蹤、保護被害人、防制數位暴力影像傳播、從事後處理走向事前預防四大作為，接住可能被傷害的孩子。",
+    problemStatement:
+      "2026 年 10 月，網路流傳一段涉及多名國中、國小生的肢體暴力與霸凌影片，引起很多家長的擔憂跟焦慮。政見認為，把犯罪過程錄影、上傳，不只是對受害者的嚴重二度傷害，更凸顯了品格教育跟法治觀念的缺乏；面對校園霸凌，不能只是震驚，也不能把責任拋給學校單獨面對。",
+    description:
+      "黃世杰主張市府必須扛起責任，透過跨局處系統性作為，來接住可能被傷害的孩子；防制霸凌是一場接力賽，市府必須做最大的後盾。具體分成四大作為。",
+    pillars: [
+      {
+        title: "釐清事實，跨局處合作",
+        tagline: "確保後續追蹤機制",
+        items: [
+          "警察、教育局及相關學校應加速釐清涉案人員、事發經過與是否涉及校園霸凌，依法處理",
+          "強化警政、教育、社政等資源，建立明確通報、轉介與追蹤機制，讓每一個需要幫助的孩子，能及時獲得保護",
+        ],
+      },
+      {
+        title: "積極保護被害人",
+        items: ["主動關懷被害學生，提供必要的心理支持與後續協助，避免孩子在受傷之後，還要獨自承受恐懼與壓力"],
+      },
+      {
+        title: "防制數位暴力影像傳播",
+        items: [
+          "呼籲所有市民朋友不觀看、不轉傳相關影片，避免孩子受到二度傷害，以及後續的模仿效應",
+          "若掌握相關資訊，請保存原始證據，提供警方或主管機關調查",
+        ],
+      },
+      {
+        title: "從事後處理走向事前預防",
+        items: ["檢視校園霸凌防治、學生衝突介入及兒少保護宣導", "強化學校、家長、學生的辨識、通報及求助能力"],
+      },
+    ],
+    audience: "學生、家長與教師",
     status: "proposed",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "citizen",
-    updatedAt: "2026-09-18",
-    related: ["school-route-safety"],
+    sourceTitle: "黃世杰 Threads 貼文〈守護孩子，霸凌、暴力零容忍！〉",
+    sourceUrl: "https://www.threads.com/@schuanglawyer/post/DeoQEKMCb8Y",
+    sourceType: "candidate",
+    publishedAt: "2026-10-18",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 Threads",
+        title: "作者續文〈面對校園霸凌，我們不能只是震驚〉",
+        url: "https://www.threads.com/@schuanglawyer/post/DeoQFgaiVnW",
+        date: "2026-10-18",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "桃園學生霸凌影片瘋傳 黃世杰提4大作為防堵校園霸凌與2度傷害",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5610451",
+        date: "2026-10-18",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "力挺李柏瑟推動「校園反霸凌聯盟」 黃世杰：從法律支援等三大方向推動",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5517150",
+        date: "2026-07-25",
+      },
+      {
+        type: "media",
+        outlet: "聯合新聞網",
+        title: "處理校園霸凌案 黃世杰：協助對接律師資源",
+        url: "https://udn.com/news/story/6885/9650574",
+        date: "2026-07-25",
+      },
+    ],
+    notes: [
+      { kind: "check", text: "四大作為的具體內容寫在同一則 Threads 貼文下方的作者續文；主貼文只寫到「透過跨局處系統性作為」。" },
+      {
+        kind: "supplement",
+        text: "2026-07-25 黃世杰出席桃園區市議員參選人李柏瑟的政見說明會時，表示支持李柏瑟提出的「校園反霸凌聯盟」構想，希望從法律支援、跨界資源整合及個案陪伴三大方向推動，並表示校園霸凌或其他校園事件應透過第三方公正調查及既有救濟機制處理，行政首長要做的是維護制度正常運作，而不是干預個案（自由時報、聯合新聞網）。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合新聞網報導，桃園市教育局當時回應：市府針對校園霸凌、性平等校安事件均秉持「落實通報、積極處理及輔導追蹤」原則，並規畫成立專責辦公室，協助學校調查評估事件。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "孩子讀國小五年級的爸爸",
+        district: "桃園區",
+        text: "看到霸凌影片在家長群組被轉來轉去，很擔心孩子在學校的狀況。政見提到要強化學校、家長、學生的辨識、通報及求助能力；如果做到，我會更清楚發現異狀時該怎麼通報、向誰求助。",
+      },
+      {
+        persona: "帶班的國中導師",
+        district: "楊梅區",
+        text: "學生之間起衝突時，常覺得只有學校在扛。政見主張強化警政、教育、社政等資源，建立明確的通報、轉介與追蹤機制；如果做到，需要幫助的學生可以更快接上資源。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["education-five"],
     spot: 3,
-    sample: true,
+  },
+  // ✅ 可查證內容（依自由時報等媒體報導整理，用語照原文）
+  {
+    id: "f5",
+    slug: "new-immigrants",
+    title: "新住民四大福利政策：打造共融、共榮的國門大城",
+    category: "family",
+    summary: "從協助就業與創業、強化語言與適應、完善社會福利、深化文化理解四大面向，照顧新住民與新住民家庭。",
+    problemStatement:
+      "桃園是一座年輕、多元的城市，有超過 7 萬名新住民，以及數量高居全國之冠的 13 萬餘名移工，也是許多新二代的故鄉。政見認為這些人口豐富了城市的靈魂，也驅動桃園產業發展，市政府需要特別重視與新住民相關的政策。",
+    description:
+      "針對新住民最關心的福利政策，黃世杰提出四大面向，並表示除了文化及語言，新二代等新台灣人的就學就業、福利措施也需要重視，會以四大面向作為未來執政的重點之一。",
+    pillars: [
+      { title: "協助就業與創業", items: ["提供實質輔導，讓新住民能發揮所長"] },
+      { title: "強化語言與適應", items: ["推動中文教育與生活適應輔導，降低文化隔閡"] },
+      { title: "完善社會福利", items: ["建立更綿密的社福制度，給予新住民家庭全方位的照顧"] },
+      { title: "深化文化理解", items: ["透過美食、節慶、語言等交流，打造真正包容的多元社會"] },
+    ],
+    audience: "新住民、新住民家庭與新二代",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰提出新住民4大福利政策 推動多元友善桃園〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5454962",
+    sourceType: "media",
+    publishedAt: "2026-05-30",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "ETtoday",
+        title: "迎端午！桃園新住民家鄉粽PK賽　黃世杰倡新住民福利政策",
+        url: "https://www.ettoday.net/news/20260530/3174952.htm",
+        date: "2026-05-30",
+      },
+      {
+        type: "media",
+        outlet: "三立新聞網",
+        title: "拋新住民福利政策！黃世杰曝「四大面向」：打造真正包容的多元社會",
+        url: "https://www.setn.com/News.aspx?NewsID=1847570",
+        date: "2026-05-30",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "港星杜汶澤同台 黃世杰暢談新住民政見4大面向",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5542519",
+        date: "2026-08-17",
+      },
+      {
+        type: "media",
+        outlet: "匯流新聞網",
+        title: "同台港星杜汶澤　黃世杰提桃園新住民政見4面向",
+        url: "https://cnews.com.tw/262170817a02/",
+        date: "2026-08-17",
+      },
+      {
+        type: "media",
+        outlet: "ETtoday",
+        title: "黃世杰走進新住民客廳　端政策聽基層心聲",
+        url: "https://www.ettoday.net/news/20260831/3228475.htm",
+        date: "2026-08-31",
+      },
+    ],
+    notes: [
+      { kind: "check", text: "目前報導只有四大面向的方向性說明，沒有具體補助項目、金額或時程。" },
+      {
+        kind: "supplement",
+        text: "ETtoday 報導，黃世杰 2026-08-30 出席新住民團體主辦的溫馨客廳會時另表示，如當選將強化新住民服務網絡，整合市府相關局處資源，從生活適應、語言學習、子女教育、就業與創業等面向提供更完整的支持，並鼓勵新住民參與公共事務及城市發展。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "嫁來桃園十年的越南籍媽媽",
+        district: "中壢區",
+        text: "一直想把家鄉料理做成小生意，卻不知道從哪裡開始。政見提到要協助新住民就業與創業、提供實質輔導；如果做到，我或許能找到適合的協助管道。",
+      },
+      {
+        persona: "剛來台灣兩年的新住民",
+        district: "觀音區",
+        text: "看懂孩子學校的通知和各種公告，對我來說還很吃力。政見提到要推動中文教育與生活適應輔導；如果做到，我可以更快適應這裡的生活。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    spot: 4,
   },
 
   // 03 健康共好島
@@ -331,172 +886,817 @@ export const policies: Policy[] = [
     related: ["friendly-childcare"],
     spot: 0,
   },
+  // 敬老愛心卡升級（首波六大政見之一；最早於 2026-06-26 宣布）
   {
     id: "h2",
-    slug: "community-care-stations",
-    title: "社區照顧據點走路就到",
+    slug: "senior-card-plus",
+    title: "敬老愛心卡升級：每月 1200 點、累積到年底",
     category: "health",
-    summary: "讓長輩在熟悉的社區裡共餐、運動、交朋友。",
-    problemStatement: "長輩需要離家近、能持續參與的照顧與社交空間。",
-    description: "盤點各里照顧據點的分布與服務內容，優先在缺乏據點的地區增設，並整理開放時間與活動資訊。",
-    approach: ["盤點據點分布", "優先補足空白區域", "整理開放時間與活動資訊"],
-    audience: "長者與家屬",
-    status: "in_progress",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "government",
-    publishedAt: "2026-07-15",
-    updatedAt: "2026-10-19",
-    faqs: [{ q: "怎麼知道離我最近的據點？", a: "正式版會提供地圖查詢；目前請以市府公告的據點清單為準。" }],
-    related: ["family-care-support", "senior-card-info"],
+    summary: "敬老愛心卡每月點數提高到 1200 點、當月未用完可累積到年底，並擴大到超商、超市、農漁會、特約醫院與健保藥局等據點使用。",
+    problemStatement:
+      "很多長輩未必每天都有搭乘大眾運輸的需求，但看病、領藥、到農漁會辦事或超商超市採買，卻是生活中的日常。政見指出敬老愛心卡效益低落，高達 8 成使用者每月用不到 300 點；長者們期盼敬老愛心卡能不限於交通補助，並符合日常生活需求。",
+    description:
+      "候選人走訪社區關懷據點、老人會與地方宮廟，發現敬老愛心卡是長者最常提到的議題之一。政見主張敬老卡的設計應更貼近長者生活需求、不應侷限於少數用途，提出三項改革提升實用性，並列入 7 月 27 日發表的首波六大政見。",
+    approach: [
+      "將敬老愛心卡每月點數提高到 1200 點",
+      "點數改為彈性使用：當月未使用完不歸零，可累積使用到年底（年度累積制）",
+      "擴大使用範圍，逐步納入超商、超市、農會與漁會產銷中心、特約醫院與健保藥局等據點",
+    ],
+    audience: "持有敬老愛心卡的長者與家屬",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰宣布敬老愛心卡升級方案 每月1200點並擴大使用範圍〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5485281",
+    sourceType: "media",
+    publishedAt: "2026-06-26",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "黃世杰公布首波政見 六大面向盼更貼近人民需求",
+        url: "https://www.cna.com.tw/news/aloc/202607270113.aspx",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5519019",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "敬老卡加碼掀藍綠議會交鋒 桃市府：黃世杰方案一年恐增70億支出",
+        url: "https://udn.com/news/story/124652/9657517",
+        date: "2026-07-29",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "桃園敬老愛心卡拍板加碼 每月可折抵農會200點、醫療100點",
+        url: "https://udn.com/news/story/7324/9669367",
+        date: "2026-08-04",
+      },
+    ],
+    notes: [
+      {
+        kind: "supplement",
+        text: "現行制度（聯合報 2026-07-29 報導）：桃園敬老愛心卡提供設籍桃園、年滿 65 歲以上長者（原住民 55 歲以上）及身心障礙者申辦，每月 800 點（復興區 1000 點），可搭乘公車、機捷、部分台鐵、愛心計程車，並折抵國民運動中心及 YouBike 等費用。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合報報導，桃園市社會局長陳寶民 7 月 29 日在市議會表示，若依 1200 點方案估算，每年約需 70 多億元；市府規畫的擴大使用方案初步估算約增加 20 多億元。",
+      },
+      {
+        kind: "clarify",
+        text: "聯合報報導，桃園市府於 2026-08-04 宣布敬老愛心卡自 2027 年 1 月 1 日起升級：新增每月 200 點折抵農會消費、每月 100 點醫療補助，愛心計程車補助提高至每趟 90 點，並納入銀髮肌力課程及預立醫療照護諮商；點數仍採當月使用，不提供累積制度。這是市府已宣布的方案，與本頁的候選人政見不同。",
+      },
+      {
+        kind: "check",
+        text: "使用範圍：自由時報（6/26）原文寫「逐步納入」超商、超市、農會與漁會產銷中心、特約醫院與健保藥局等據點；中央社（7/27）寫「擴大適用醫療院所、健保藥局、農漁會、超市及便利商店等通路」。報導都沒有列出具體適用的店家或院所名單。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "很少搭公車的阿嬤",
+        district: "大溪區",
+        text: "我不常出門搭車，敬老卡的點數每個月都用不完。如果政見做到，沒用完的點數可以累積到年底，也能拿到超市、農會買東西時使用。",
+      },
+      {
+        persona: "每個月陪爸爸回診的兒子",
+        district: "楊梅區",
+        text: "爸爸每個月都要回診、領藥。政見提到要把敬老愛心卡的使用範圍擴大到特約醫院與健保藥局；如果做到，看病、領藥時也能用上點數。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["nhi-premium-subsidy"],
     spot: 1,
-    sample: true,
   },
+  // 健保費補助（首波六大政見之一）
   {
     id: "h3",
-    slug: "accessible-walkways",
-    title: "無障礙步行環境",
+    slug: "nhi-premium-subsidy",
+    title: "健保費補助：0–12 歲兒童與 65 歲以上長者",
     category: "health",
-    summary: "從醫院、車站到社區的路，輪椅、推車和長輩都能順順走。",
-    description: "以就醫與通勤路線為優先，改善人行道高低差、斜坡與騎樓通行，並請使用者參與驗收。",
-    approach: ["優先改善就醫與通勤路線", "處理高低差與斜坡", "邀請使用者參與驗收"],
-    audience: "行動不便者、長者、推嬰兒車的家長",
+    summary: "補助 0–12 歲兒童及 65 歲以上長者的健保費，減輕「上有老、下有小」家庭的經濟負擔。",
+    problemStatement: "上有老、下有小的「三明治世代」青壯年家庭，同時承擔家庭照顧與經濟負擔。",
+    description:
+      "這是 7 月 27 日首波六大政見中的福利政策，與敬老愛心卡升級一起提出。政見希望成為「三明治世代」的堅實後盾，由政府實質減輕上有老、下有小的家庭經濟負擔。",
+    approach: ["全面補助 0–12 歲幼童健保費", "全面補助 65 歲以上長者健保費"],
+    audience: "家中有 0–12 歲兒童或 65 歲以上長者的家庭",
     status: "proposed",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-10",
-    updatedAt: "2026-09-29",
-    related: ["school-route-safety"],
+    sourceTitle: "中央社〈黃世杰公布首波政見 六大面向盼更貼近人民需求〉",
+    sourceUrl: "https://www.cna.com.tw/news/aloc/202607270113.aspx",
+    sourceType: "media",
+    publishedAt: "2026-07-27",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5519019",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "批張善政市政停滯 黃世杰首波6政見主打公車改革、友善育兒",
+        url: "https://udn.com/news/story/124652/9653215",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰提6政見 桃園市府批「六大皆空」經不起檢驗",
+        url: "https://udn.com/news/story/124652/9653810",
+        date: "2026-07-27",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "年齡範圍：中央社、自由時報與聯合報〈黃世杰提6政見 桃園市府批「六大皆空」經不起檢驗〉都寫「0至12歲」，聯合報〈批張善政市政停滯 黃世杰首波6政見主打公車改革、友善育兒〉寫「1至12歲」。本頁採多數報導的 0–12 歲。",
+      },
+      {
+        kind: "check",
+        text: "中央社與聯合報寫「全面補助」，自由時報寫「健保費補助」；各報導都沒有說明補助方式、申請資格或所需經費。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合報報導，桃園市府新聞處長羅楚東回應，黃世杰至今未說明每年所需經費，並質疑「若認為政策可行，為何不先要求中央立即全面補助健保費？」",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "兩個孩子都在讀國小的雙薪爸媽",
+        district: "龜山區",
+        text: "孩子的開銷一年比一年多。如果政見做到，孩子 12 歲以前的健保費由市府補助，家裡的固定支出就能少一筆。",
+      },
+      {
+        persona: "和 70 歲母親同住、孩子還小的上班族",
+        district: "中壢區",
+        text: "我同時要顧媽媽和孩子。政見提到要補助 65 歲以上長者和 0–12 歲兒童的健保費；如果做到，「上有老、下有小」的壓力可以輕一點。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["senior-card-plus"],
     spot: 2,
-    sample: true,
   },
+  // 原住民族四大政見（依候選人 Threads 貼文與四張附圖逐字整理）
   {
     id: "h4",
-    slug: "senior-card-info",
-    title: "敬老福利資訊更好懂",
+    slug: "indigenous-four",
+    title: "原民四大政見：支持文化傳承、產業升級",
     category: "health",
-    summary: "把敬老愛心卡等長者福利的使用方式，整理成長輩看得懂的說明。",
-    problemStatement: "福利規則調整時，長輩與家屬不容易即時得知。",
-    description: "以大字、圖解與問答整理現行福利的使用方式，規則調整時同步標示變更內容與生效日期。",
-    approach: ["大字與圖解說明", "規則變更時標示生效日期", "提供電話與臨櫃諮詢資訊"],
-    audience: "長者與家屬",
-    status: "completed",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "government",
-    publishedAt: "2026-06-30",
-    updatedAt: "2026-09-21",
-    related: ["community-care-stations"],
+    summary: "把經費還給部落、提升族人職涯競爭力、振興北橫觀光並讓醫療服務走進部落、活化 KIRI 文創園區，讓族人在桃園能安心生活、放心發展。",
+    problemStatement:
+      "桃園原住民族人口已超過 9 萬人，是台灣西部原住民族人口最多的城市，多數族人生活在都會區，楊梅、平鎮、觀音一帶也有許多族人工作、成家。政見認為原民政策要從族人的實際需求出發，既回應都會族人的生活需求，也支持族人維繫與原鄉、部落及文化的連結。",
+    description: "政見主張回應族人需求、支持部落發展，讓族人在桃園能安心生活、放心發展。具體分成四大主張。",
+    pillars: [
+      {
+        title: "把經費還給部落",
+        tagline: "原民文化扎根永續",
+        items: [
+          "恢復歲時祭儀經費及交通補貼，支持文化傳承",
+          "提高頭目津貼，落實對傳統領袖的尊重",
+          "協助族人參與公共事務，強化部落自主發展",
+          "支持原民團體發展：核銷有彈性、培力有專人",
+          "提高社宅原住民族優先保障比率",
+        ],
+      },
+      {
+        title: "提升族人職涯競爭力",
+        tagline: "壯大原鄉產業",
+        items: [
+          "升級成立原民就業人力站，整合職訓、就業、創業資源",
+          "成立原鄉產業育成中心，助原鄉產品開發與升級",
+          "補助原民職訓，鎖定新興產業，提升職涯競爭力",
+          "打造「桃原選品」品牌，提升市場辨識度、拓展通路",
+        ],
+      },
+      {
+        title: "振興北橫觀光，醫療服務走進部落",
+        tagline: "振興北橫，永續原鄉",
+        items: [
+          "設置北橫風景區專責營運單位，整合資源、爭取中央經費，帶動觀光發展",
+          "推動原鄉長照巡迴醫療隊，把醫療照護送進部落",
+        ],
+      },
+      {
+        title: "活化 KIRI 文創園區",
+        tagline: "打造原民文化新都心",
+        items: [
+          "串聯陽光劇場、捷運，打造觀光動線，人潮帶進 KIRI 園區",
+          "導入特色市集、文化展演，豐富原民文化體驗",
+          "結合原住民族語言傳播大樓，發展原民影視文化聚落",
+          "設置數位科技中心，推動原民文化數位典藏",
+        ],
+      },
+    ],
+    audience: "桃園的原住民族族人、部落與原民團體",
+    status: "proposed",
+    sourceTitle: "黃世杰 Threads 貼文〈挺桃原！支持原住民文化傳承、產業升級一起拚！〉",
+    sourceUrl: "https://www.threads.com/@schuanglawyer/post/Dd2zTwiCZfh",
+    sourceType: "candidate",
+    publishedAt: "2026-09-29",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "匯流新聞網",
+        title: "讚謝卓儒第一線服務經驗豐 黃世杰拋原民政策藍圖讓資源回到族人手上",
+        url: "https://cnews.com.tw/250260823a03/",
+        date: "2026-08-23",
+      },
+    ],
+    notes: [
+      {
+        kind: "supplement",
+        text: "「問題背景」中的人口數與說明，出自匯流新聞網 2026-08-23 報導中候選人 8 月 22 日的發言；同一場合他另提到：返鄉參與歲時祭儀的交通補貼應恢復來回程補助、檢討繁瑣的申請及核銷程序，降低部落與社團舉辦祭儀及成立協會、舞團的行政負擔；原鄉要整合看診、社區照顧與長照資源；水土保持相關案件應回到「先輔導、再談裁罰」。這些說法未列在貼文附圖中。",
+      },
+      {
+        kind: "check",
+        text: "北橫：貼文附圖寫「設置北橫風景區專責營運單位」，匯流新聞網報導寫「成立『北橫風景區營運辦公室』」，名稱不同，實際組織以日後正式方案為準。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "照顧年邁父母的部落族人",
+        district: "復興區",
+        text: "爸媽年紀大了，下山看病要花很多時間。政見提到要推動原鄉長照巡迴醫療隊，把醫療照護送進部落；如果做到，有些照護或許能在部落裡完成。",
+      },
+      {
+        persona: "想轉換跑道的原住民族青年",
+        district: "八德區",
+        text: "我想學新技能換工作，但不知道從哪裡開始。政見提到要升級成立原民就業人力站，整合職訓、就業、創業資源，並補助鎖定新興產業的原民職訓；如果做到，我可以在同一個窗口找到職訓和工作機會。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 3,
-    sample: true,
   },
 
   // 04 宜居環境島
+  // ✅ 可查證內容（依候選人 Threads 貼文與附圖整理，用語照原文）
   {
     id: "e1",
-    slug: "recycling-convenience",
-    title: "資源回收更方便",
+    slug: "public-safety-four",
+    title: "治安四大主張：根絕毒害，讓家庭更安全",
     category: "environment",
-    summary: "增加回收點與彈性時段，讓分類回收不再配合不上作息。",
-    problemStatement: "上班族常因時間不合，難以配合固定的回收時段。",
-    description: "評估在社區、車站周邊設置定點回收設施，並研議延長收運時段的可行性。",
-    approach: ["評估定點回收設施", "研議彈性收運時段", "公開試辦地點與成效"],
-    status: "planned",
-    sourceTitle: SAMPLE_SOURCE,
+    summary: "以校園守護、毒駕重罰、源頭斷鏈、強化偵查四大主張對抗毒品與毒駕，不讓桃園成為毒品與幫派的破口。",
+    problemStatement:
+      "家長不只擔心孩子在校園裡受毒品影響，更害怕走在路上、接送小孩回家的途中，無辜的家人成為毒駕悲劇下的受害者。",
+    description:
+      "這四大主張是黃世杰今年五月底針對日益嚴重的毒駕問題提出。貼文表示，修法只是第一步，落實執法與防範未然更是接下來的硬仗；他會持續緊盯這四項主張，全力守護桃園安全，桃園絕不能成為毒品與幫派的破口。",
+    pillars: [
+      { title: "校園守護", items: ["整合警政、校安與社政，避免孩子被幫派吸收"] },
+      { title: "毒駕重罰", items: ["提高毒駕、酒駕刑責與累犯代價"] },
+      { title: "源頭斷鏈", items: ["修正菸防法，強化非法電子煙管制強度"] },
+      { title: "強化偵查", items: ["修正少事法，賦予檢警更多權責，強化偵查量能"] },
+    ],
+    audience: "擔心孩子受毒品、幫派影響的家長，以及每天上路的市民",
+    status: "proposed",
+    sourceTitle: "黃世杰 Threads 貼文〈毒駕，不只是治安問題 根絕毒害，讓家庭更安全！〉",
+    sourceUrl: "https://www.threads.com/@schuanglawyer/post/DbUywMQie_g",
     sourceType: "candidate",
-    publishedAt: "2026-08-25",
-    updatedAt: "2026-10-08",
-    related: ["garbage-collection-info"],
+    publishedAt: "2026-07-28",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰提治安4大主張 不讓桃園成為毒品與治安破口",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5605965",
+        date: "2026-10-14",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "貼文內文稱為「改善毒駕四大主張」，圖卡標題為「黃世杰四大主張」，自由時報 10 月 14 日報導標題稱「治安4大主張」，指的都是校園守護、毒駕重罰、源頭斷鏈、強化偵查這同一組主張。",
+      },
+      {
+        kind: "clarify",
+        text: "「提高毒駕、酒駕刑責」「修正菸防法」「修正少事法」都涉及修法。貼文表示他提出的許多建議已被行政院、司法院採納，陸續提出修法草案，並呼籲不分朝野委員支持相關法案及預算。",
+      },
+      {
+        kind: "supplement",
+        text: "貼文提到：發文當天立法院三讀通過「道交條例」修正，毒駕或拒測者一律吊銷駕照，致人重傷者終身不得考照；他擔任法務部次長任內推動依托咪酯升級為二級毒品，六月底依托咪酯正式升級為一級毒品。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "孩子剛上國中的媽媽",
+        district: "八德區",
+        text: "孩子上國中後，我最怕他被壞朋友帶走。政見提到要整合警政、校安與社政，避免孩子被幫派吸收；如果做到，學校、警政和社政能一起留意孩子的狀況，我會比較放心。",
+      },
+      {
+        persona: "每天騎機車載孩子上學的爸爸",
+        district: "中壢區",
+        text: "每天早上載孩子上學，最怕路上遇到毒駕、酒駕。政見主張提高毒駕、酒駕刑責與累犯代價；如果做到，毒駕、酒駕的人要付出更重的代價，我出門會安心一點。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 0,
-    sample: true,
   },
+  // ✅ 可查證內容（依中央社、自由時報、聯合報、壹蘋新聞網報導整理，用語照原文）
   {
     id: "e2",
-    slug: "ponds-resilience",
-    title: "埤塘與城市韌性",
+    slug: "garbage-fee-consensus",
+    title: "垃圾費隨袋徵收：先凝聚共識，不強制推動",
     category: "environment",
-    summary: "善用桃園的埤塘，作為滯洪、生態與休憩的城市綠色基盤。",
-    problemStatement: "極端降雨更頻繁，城市需要更多能「接住雨水」的空間。",
-    description: "盤點埤塘的現況與功能，評估兼顧滯洪、生態與休憩的活化方式，並公開評估結果。",
-    approach: ["盤點埤塘現況", "評估滯洪與生態功能", "公開評估結果"],
-    status: "researching",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-02",
-    updatedAt: "2026-10-16",
-    faqs: [{ q: "什麼是城市韌性？", a: "指城市面對災害或衝擊時，能撐住、恢復並調整的能力。可以到「政策小教室」看更多說明。" }],
-    related: ["park-green-space"],
+    summary:
+      "垃圾減量是共同目標，但在未充分溝通、未取得市民共識前，不應強制推動隨袋徵收，應優先做好源頭減量、資源回收教育與配套措施。",
+    problemStatement:
+      "市府推動垃圾費隨袋徵收政策。黃世杰認為重大政策不能缺乏配套及社會共識，並批評現任市府在缺乏尊重民意與妥善溝通的情況下，就強行推動相關措施。",
+    description:
+      "這是黃世杰 7 月 27 日發表的首波六大政見中的環保議題。他強調垃圾減量是所有城市共同努力的目標，主張先完成配套措施及凝聚社會共識，再推動重大政策，以務實溝通取代強制推行，重建市民對政府的信任。",
+    approach: [
+      "未充分溝通、未取得市民共識前，不強制推動隨袋徵收",
+      "先完成配套措施及凝聚社會共識，再推動重大政策",
+      "優先做好垃圾源頭減量、資源回收教育及相關配套措施",
+      "以務實溝通取代強制推行，重建市民對政府的信任",
+      "未與市民達成充分共識之前暫緩推動，不貿然執行",
+    ],
+    audience: "桃園各家戶與市民",
+    status: "proposed",
+    sourceTitle: "中央社〈黃世杰公布首波政見 六大面向盼更貼近人民需求〉",
+    sourceUrl: "https://www.cna.com.tw/news/aloc/202607270113.aspx",
+    sourceType: "media",
+    publishedAt: "2026-07-27",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5519019",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "改善桃園傳統市場環境 綠營黃世杰允研議市場服務員",
+        url: "https://udn.com/news/story/124652/9761759",
+        date: "2026-09-17",
+      },
+      {
+        type: "media",
+        outlet: "壹蘋新聞網",
+        title: "黃世杰市場拜票 提出寬列市場改善經費、設置市場服務員政見",
+        url: "https://news.nextapple.com/politics/20260917/6EA27B1953F22F95F80E194E4B11C3B2",
+        date: "2026-09-17",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰提6政見 桃園市府批「六大皆空」經不起檢驗",
+        url: "https://udn.com/news/story/124652/9653810",
+        date: "2026-07-27",
+      },
+      {
+        type: "media",
+        outlet: "公視",
+        title: "桃園試辦垃圾費隨袋徵收 每日垃圾減量幅度逾25%",
+        url: "https://news.pts.org.tw/article/805925",
+        date: "2026-04-29",
+      },
+    ],
+    notes: [
+      {
+        kind: "clarify",
+        text: "政見的重點是「未取得市民共識前不強制推動」「暫緩推動、不貿然執行」；目前的報導沒有提到要取消隨袋徵收，也沒有說明如何凝聚共識或時程。",
+      },
+      {
+        kind: "check",
+        text: "7 月首波政見的說法是「不應強制推動」（中央社、自由時報）；9 月 17 日市場掃街時的說法是「未達成共識前暫緩推動，不會貿然執行」（聯合報、壹蘋新聞網）。",
+      },
+      {
+        kind: "supplement",
+        text: "公視 2026-04-29 報導：桃園長期以來垃圾費隨水費徵收；市府自今年元旦起在政府機關、學校及市場試辦隨袋徵收，報導指試辦單位每日垃圾量由 131 公噸降到 96 公噸、減量幅度超過 25%，環保局表示未來會加強溝通宣導，並逐步擴大推動範圍。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合報 2026-07-27 報導：市府新聞處長羅楚東回應，垃圾隨袋處理目前仍處試辦階段，市府透過試辦蒐集各界意見、凝聚社會共識，尚未訂定正式上路時程。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "精打細算的雙薪家庭媽媽",
+        district: "平鎮區",
+        text: "聽說市府在學校和市場試辦隨袋徵收，我擔心以後家裡的垃圾費會增加。政見主張未充分溝通、未取得市民共識前，不強制推動隨袋徵收；如果做到，真要改制度之前，我們會先有機會了解配套、表達意見。",
+      },
+      {
+        persona: "在社區推廣資源回收的志工",
+        district: "蘆竹區",
+        text: "我在社區推資源回收很多年。政見提到要優先做好垃圾源頭減量、資源回收教育；如果做到，社區的減量和回收教育會更受重視。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["traditional-markets"],
     spot: 1,
-    sample: true,
   },
+  // ✅ 可查證內容（依聯合報、壹蘋新聞網、自由時報報導整理，用語照原文）
   {
     id: "e3",
-    slug: "garbage-collection-info",
-    title: "垃圾清運資訊即時查",
+    slug: "traditional-markets",
+    title: "傳統市場改善：研議市場服務員、寬列改善經費",
     category: "environment",
-    summary: "垃圾車到哪裡、幾點到，用手機就能查。",
-    description: "整合清運路線與即時位置資訊，並提供路線異動通知。",
-    approach: ["整合清運路線與即時位置", "路線異動通知"],
-    status: "unknown",
-    sourceTitle: SAMPLE_SOURCE,
+    summary:
+      "研擬設置市場服務員協助市場自治組織管理、寬列市場改善經費，並主張新明市場改建後保留原本規模，讓攤商做生意、民眾採買都更好。",
+    problemStatement:
+      "傳統市場的營運與環境管理需要改善。中壢新明市場因建物安全問題要改建，黃世杰指出目前不到一半攤商接受現行方案，認為現行方案還有很大改善空間。",
+    description:
+      "黃世杰在中壢華勛市場、八德公有市場等地掃街時提出傳統市場的改善方向，表示未來市府的做法將有別於現任張善政市府，讓市場做生意、採買品質更好。",
+    pillars: [
+      {
+        title: "設置市場服務員",
+        items: ["研擬設置「市場服務員」，專責協助市場自治組織處理各項管理事務"],
+      },
+      {
+        title: "寬列市場改善經費",
+        items: ["寬列市場改善相關經費，全面升級硬體設施與環境", "讓攤商做生意的環境更便利，民眾前來採買的品質提升"],
+      },
+      {
+        title: "新明市場改建",
+        tagline: "保留市場規模與生活機能",
+        items: [
+          "改建完成後，上面有社宅，下面有市場",
+          "市場要有原本的規模與充分功能，才能維持周圍生活機能",
+          "攤商進駐中繼市場、日後回到原地做生意，需要仔細協商、充分聆聽意見，溝通協調找出共識",
+        ],
+      },
+    ],
+    audience: "傳統市場攤商與到市場採買的市民",
+    status: "proposed",
+    sourceTitle: "聯合報〈改善桃園傳統市場環境 綠營黃世杰允研議市場服務員〉",
+    sourceUrl: "https://udn.com/news/story/124652/9761759",
     sourceType: "media",
-    updatedAt: "2026-09-12",
-    related: ["recycling-convenience"],
+    publishedAt: "2026-09-17",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "壹蘋新聞網",
+        title: "黃世杰市場拜票 提出寬列市場改善經費、設置市場服務員政見",
+        url: "https://news.nextapple.com/politics/20260917/6EA27B1953F22F95F80E194E4B11C3B2",
+        date: "2026-09-17",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "中壢掃街關注新明市場改建 民進黨黃世杰：現行方案還有很大改善空間",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5545117",
+        date: "2026-08-19",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "「市場服務員」報導用「研擬」「研議」（聯合報標題為「允研議」），表示仍在評估；報導沒有說明服務員人數、改善經費金額或適用哪些市場。",
+      },
+      {
+        kind: "check",
+        text: "「目前不到一半攤商接受現行方案」是黃世杰在自由時報報導中的說法，本站未另行查證。",
+      },
+      {
+        kind: "clarify",
+        text: "新明市場的主張出自 8 月 19 日中壢掃街時的談話，針對的是該市場的改建方案，不是全市所有市場。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "在公有市場賣菜的攤商",
+        district: "八德區",
+        text: "市場的大小事都靠自治會幾個人處理。政見提到要研擬設置市場服務員，協助市場自治組織處理管理事務；如果做到，我們處理市場事務時會多一份人力。",
+      },
+      {
+        persona: "常到新明市場買菜的阿嬤",
+        district: "中壢區",
+        text: "新明市場要改建，我擔心以後買菜不方便。政見主張改建後市場要有原本的規模、充分功能，維持周圍生活機能；如果做到，改建完我還是能在家附近買菜。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    related: ["garbage-fee-consensus"],
     spot: 2,
-    sample: true,
   },
+  // ⚠ 主要來源為動物議題獨立媒體「窩窩」報導；未找到官方貼文或主流媒體完整報導（主流媒體只有概括提及）
   {
     id: "e4",
-    slug: "park-green-space",
-    title: "公園綠地與遮蔭",
+    slug: "pet-friendly",
+    title: "毛孩友善：打造友善寵物心城市",
     category: "environment",
-    summary: "多種樹、多一點遮蔭，讓走路和待在公園都舒服一點。",
-    description: "以步行可達為原則檢視綠地分布，優先在缺乏綠地的地區增加小型公園與行道樹遮蔭。",
-    approach: ["檢視步行可達的綠地分布", "增加小型公園與行道樹", "公開植栽與維護計畫"],
+    summary: "從寵物友善空間、寵物健康、寵物長照到強化犬貓認養媒合四大面向，給飼主更健全的資訊及照護資源。",
+    problemStatement:
+      "黃世杰團隊指出，桃園部分人口新興區持續有年輕家庭進駐，仍有議員及民眾提出增設寵物公園的需求；現有寵物友善空間名單僅提供店家地址；同時具備專業長照及重症看護的寵物機構仍偏少。",
+    description:
+      "黃世杰於 10 月 2 日提出四大寵物政見，表示將給予飼主更健全的資訊及照護資源，盼與寵物家長打造「友善寵物心城市」。",
+    pillars: [
+      {
+        title: "寵物友善空間",
+        items: [
+          "增設人寵共榮特色公園",
+          "公開透明地圖並補足友善寵物資訊，公布店家是否歡迎寵物落地或上桌、有無體型限制、是否提供寵物餐點等",
+          "推動寵物友善租屋認證及媒合",
+          "寵物公園落實定期維護、持續更新設備，包括單道閘門升級為雙層門、新增遮蔭及防蚊設施",
+        ],
+      },
+      {
+        title: "寵物健康",
+        items: [
+          "3 年 1 次免費心絲蟲檢查",
+          "開設公辦民營動物醫療據點、偏鄉巡迴醫療車",
+          "醫療據點及巡迴車提供基礎門診、預防針、絕育及急救轉介，主要服務收容所動物、弱勢家庭犬貓及流浪動物緊急救傷",
+        ],
+      },
+      {
+        title: "寵物長照",
+        items: [
+          "推動寵物長照及短期寵物臨托服務",
+          "設立長照設備及輔具租借、轉贈的媒合平臺",
+          "仿效人用輔具資源中心，於實體空間提供諮詢服務",
+          "開辦培訓課程、提供補助，鼓勵業者新增寵物安寧、長照、短期臨托等服務，相關資訊納入公開地圖",
+        ],
+      },
+      {
+        title: "強化犬貓認養媒合",
+        items: [
+          "認養前提供飼主教育，認養後追蹤關懷，協助市民媒合適合犬貓",
+          "把飼主教育課程納入所有動物領養的必經環節，現行課程延續辦理並深入社區",
+          "培養收容所內成年犬隻為狗醫生，與長照場域合作",
+        ],
+      },
+    ],
+    audience: "寵物飼主、想認養犬貓的市民，以及寵物照護業者",
     status: "proposed",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-08",
-    updatedAt: "2026-10-05",
-    related: ["inclusive-parks", "ponds-resilience"],
+    sourceTitle: "窩窩〈【桃園市】黃世杰提寵物長照、公辦民營動物醫院 動團盼先顧收容所老犬〉",
+    sourceUrl: "https://wuo-wuo.com/report/instantnews/2503-20261005taoyuan",
+    sourceType: "media",
+    publishedAt: "2026-10-05",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "中央社（聯合新聞網轉載）",
+        title: "民進黨行動中常會桃園舉行 黃世杰專題報告政策願景",
+        url: "https://udn.com/news/story/124652/9773152",
+        date: "2026-09-23",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "本頁主要依據動物議題獨立媒體「窩窩」的報導整理，本站尚未找到候選人官方貼文或主流媒體對這四大寵物政見的完整報導；中央社 9 月 23 日報導只提到他會照顧毛小孩、增加桃園的寵物友善空間、推動寵物健康與預防管理。",
+      },
+      {
+        kind: "clarify",
+        text: "依窩窩報導，寵物公園維護與設備更新、透明地圖的資訊欄位、醫療據點的服務內容與對象、培訓課程與補助業者、仿效人用輔具資源中心設實體諮詢、飼主教育納入領養必經環節等細節，是黃世杰團隊受訪時的說明。",
+      },
+      {
+        kind: "clarify",
+        text: "依報導，公辦民營動物醫療據點與偏鄉巡迴醫療車的主要服務對象是收容所動物、弱勢家庭犬貓及流浪動物緊急救傷；一般飼主是否適用，報導沒有說明。",
+      },
+      {
+        kind: "supplement",
+        text: "窩窩報導提到市府現況：桃園寵物公園去年達 30 座、為全臺最多，農業局表示年底將增至 32 座；農業局表示桃園已有 200 處寵物友善空間；動保處 9 月 30 日推出「老寶貝認養長照計畫」，鼓勵民眾認養高齡犬貓。",
+      },
+      {
+        kind: "supplement",
+        text: "窩窩報導中，老毛秀秀同伴動物照顧協會總幹事劉盈如建議市府優先盤點、照顧收容所內的高齡犬，並擴大義工參與機制。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "家有高齡犬的上班族",
+        district: "桃園區",
+        text: "家裡的狗狗年紀大了，走路越來越吃力。政見提到要設立長照設備及輔具租借、轉贈的媒合平臺，也要推動短期寵物臨托服務；如果做到，我可以透過平臺找輔具，出差時也多一個照顧選擇。",
+      },
+      {
+        persona: "想到收容所認養狗狗的新婚夫妻",
+        district: "龜山區",
+        text: "我們想認養，但沒養過狗有點擔心。政見提到認養前提供飼主教育、認養後追蹤關懷，協助市民媒合適合犬貓；如果做到，我們比較容易找到合得來的狗，遇到問題也有人可以問。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 3,
-    sample: true,
   },
 
   // 05 未來發展島
+  // ✅ 可查證內容（依媒體報導整理，用語照原文）
   {
     id: "u1",
-    slug: "local-business-districts",
-    title: "在地商圈活化",
+    slug: "industry-four",
+    title: "產業好發展：四大產業方向",
     category: "future",
-    summary: "陪在地商圈一起經營，讓逛街、吃飯都有更多理由留在桃園。",
-    description: "盤點各商圈的需求，從環境改善、活動行銷到數位工具，提供分階段的輔導。",
-    approach: ["商圈需求盤點", "環境改善與活動行銷", "數位工具輔導"],
-    status: "planned",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-08-18",
-    updatedAt: "2026-10-11",
-    related: ["youth-startup-support"],
+    summary: "迎回台積電、打造無人載具桃園隊、推動航空城建設、改善產業園區環境並導入 AI 智慧製程，為桃園打造更前瞻、更穩健的未來。",
+    problemStatement:
+      "桃園是台灣製造業心臟，多年來工業產值蟬聯全台第一，但有許多隱形冠軍正面臨轉型的分岔路口。政見指出，台灣有 9 成的航太零組件製造、無人機精密馬達、軍工級防彈鋼模、雷達通訊電路板等製造基地都在桃園；桃園的中小企業實力堅強，只要有適當支持，就能把握地緣政治帶來的商機，脫胎換骨大變身。",
+    description:
+      "政見以「產業好發展」為名，分成四大方向，從龍科三期周邊交通、無人載具產業聚落、航空城建設，到產業園區環境改善與 AI 智慧製造，目標是迎回台積電、推動航空城建設、發展高科技產業並導入 AI 製程。",
+    pillars: [
+      {
+        title: "迎回台積電",
+        tagline: "桃竹苗大矽谷桃園領航",
+        items: [
+          "完善龍科三期周邊交通與生活機能",
+          "推動新梅龍、板龍快、五楊高架延伸頭份",
+          "改善交通路網，推動地方主要道路拓寬",
+          "持續規劃新設產業園區，吸引相關供應鏈投資進駐",
+        ],
+      },
+      {
+        title: "打造無人載具桃園隊",
+        tagline: "爭取國際驗證中心",
+        items: [
+          "整合無人機、航太國防供應鏈，形成產業聚落",
+          "串聯中科院與產學資源，強化系統整合能力",
+          "推動在地測試驗證中心設立，結合國門物流快速出口",
+        ],
+      },
+      {
+        title: "推動航空城建設",
+        tagline: "引進高價值產業",
+        items: ["落實先建後遷", "中央地方攜手加速整體發展"],
+      },
+      {
+        title: "產業園區環境改善",
+        tagline: "導入 AI 智慧製程",
+        items: [
+          "改善產業園區道路、排水、水電、管線",
+          "推動產官學研合作，協助中小企業導入 AI 智慧製造",
+          "輔助在地企業，爭取壯大中小微企業 8 年 1000 億方案",
+        ],
+      },
+    ],
+    audience: "桃園在地企業（特別是中小企業）與產業園區",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰提四大產業政見 力拚桃園成科技重鎮〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5586851",
+    sourceType: "media",
+    publishedAt: "2026-09-26",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "中時新聞網",
+        title: "迎回台積電！黃世杰最新拋桃園「產業好發展」 4大方向曝光",
+        url: "https://www.chinatimes.com/realtimenews/20260926001837-260407",
+        date: "2026-09-26",
+      },
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "民進黨行動中常會桃園舉行 黃世杰專題報告政策願景",
+        url: "https://www.cna.com.tw/news/aipl/202609230177.aspx",
+        date: "2026-09-23",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "民進黨中常會移師桃園 黃世杰端政見藍圖：讓國門之都重新動起來",
+        url: "https://udn.com/news/story/124652/9773359",
+        date: "2026-09-23",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "台積回龍科 再掀桃市長選戰攻防",
+        url: "https://udn.com/news/story/124652/9704782",
+        date: "2026-08-21",
+      },
+    ],
+    notes: [
+      {
+        kind: "clarify",
+        text: "「壯大中小微企業 8 年 1000 億方案」原文用「爭取」；中央社 9 月 23 日報導中，黃世杰的說法是「配合未來中央政府推動的中小微企業發展的政策」。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合報 2026 年 8 月 21 日報導：針對台積電進駐龍科三期案，桃園市政府新聞處長羅楚東表示，龍科三期在中央與市府團隊合作下推進，市府也與科管局協調，提前啟動用地取得、從優補償等工作。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "在工業區經營零件廠的第二代",
+        district: "觀音區",
+        text: "我們想導入 AI 改善製程，卻不知道從哪裡開始。政見提到要推動產官學研合作，協助中小企業導入 AI 智慧製造，也要改善產業園區道路、排水、水電、管線；如果做到，像我們這樣的小廠也有機會找到協助。",
+      },
+      {
+        persona: "在龍潭科學園區上班的工程師",
+        district: "龍潭區",
+        text: "上下班時段園區周邊的路很塞。政見提到要完善龍科三期周邊交通與生活機能、推動地方主要道路拓寬；如果做到，通勤的路可能會順一點。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 0,
-    sample: true,
   },
+  // ✅ 可查證內容（依媒體報導整理，用語照原文）
   {
     id: "u2",
-    slug: "youth-startup-support",
-    title: "青年就業與創業支持",
+    slug: "youth-five",
+    title: "青年五大政策：從入職、就業到創業的支持系統",
     category: "future",
-    summary: "從找工作、轉職到創業，讓年輕人在桃園有地方問、有資源用。",
-    problemStatement: "青年面對就業與創業資訊分散，不知道從哪裡開始。",
-    description: "整合就業媒合、職訓課程與創業諮詢資源，設置單一窗口，並定期公開服務成果。",
-    approach: ["整合就業與創業資源", "設置單一諮詢窗口", "定期公開服務成果"],
-    audience: "青年、轉職者、創業者",
+    summary: "推出青年入職大禮包、實習接軌在地產業、桃園版青年圓夢計畫、加碼 3 次心理諮商，以及 AI 算力共享平台，讓青年從踏入社會、就業到創業都有支持。",
+    problemStatement:
+      "政見認為，青年政策不能只有活動和補助；產業發展的成果應該真正轉化為市民的薪資成長與生活品質提升，讓更多青年能夠留在桃園工作、生活及實現夢想。",
+    description: "政見主張建立完整支持系統，讓年輕人從踏入社會、就業到創業，都能獲得實質協助。具體分成五大青年政策。",
+    pillars: [
+      {
+        title: "青年入職大禮包",
+        items: ["整合青年福利與權益諮詢", "整合青年初入職場可使用的資源"],
+      },
+      {
+        title: "實習接軌在地產業",
+        items: ["提供實習交通補助及轉正就業獎勵", "青年就職滿 3 個月、6 個月提供階段性獎勵"],
+      },
+      {
+        title: "桃園版青年圓夢計畫",
+        items: ["協助青年實現創意與夢想"],
+      },
+      {
+        title: "心理諮商「3+3」",
+        items: ["在中央補助 3 次之外，再加碼 3 次心理諮商服務", "導入遠距通訊心理諮商機制"],
+      },
+      {
+        title: "AI 算力共享平台",
+        items: ["降低青年運用新興科技的門檻"],
+      },
+    ],
+    audience: "剛踏入社會、實習、求職或想創業的青年",
     status: "proposed",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-15",
-    updatedAt: "2026-10-17",
-    related: ["local-business-districts"],
+    sourceTitle: "自由時報〈青商後援會成立 黃世杰提5大青年政策〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5610434",
+    sourceType: "media",
+    publishedAt: "2026-10-18",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "ETtoday",
+        title: "黃世杰青商後援會成立 喊話桃園產業布局失先機升級快迎頭趕上",
+        url: "https://www.ettoday.net/news/20261018/3256956.htm",
+        date: "2026-10-18",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰青商後援會成立 再喊桃園布局台積電已落後3年要迎頭趕上",
+        url: "https://udn.com/news/story/124652/9822272",
+        date: "2026-10-18",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "民進黨中常會移師桃園 黃世杰端政見藍圖：讓國門之都重新動起來",
+        url: "https://udn.com/news/story/124652/9773359",
+        date: "2026-09-23",
+      },
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "民進黨行動中常會桃園舉行 黃世杰專題報告政策願景",
+        url: "https://www.cna.com.tw/news/aipl/202609230177.aspx",
+        date: "2026-09-23",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "「整合青年初入職場可使用的資源」「青年就職滿 3 個月、6 個月提供階段性獎勵」出自聯合報 9 月 23 日報導，「導入遠距通訊心理諮商機制」出自中央社 9 月 23 日報導；10 月 18 日的報導只寫「轉正就業獎勵」「加碼 3 次心理諮商服務」，沒有提到這些細節。",
+      },
+      {
+        kind: "clarify",
+        text: "各報導對「桃園版青年圓夢計畫」與「AI 算力共享平台」只說明目的，沒有提到適用對象、金額或運作方式。",
+      },
+      {
+        kind: "supplement",
+        text: "ETtoday 報導，活動現場有青年反映市府青年事務局部分活動補助額度缺乏彈性；黃世杰回應，未來應檢討現行補助機制，讓不同規模及性質的青年活動依計畫內容獲得適切支持，並建立透明、明確的審查標準。這項回應不在五大政策之列。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "剛畢業、第一次找工作的社會新鮮人",
+        district: "中壢區",
+        text: "第一次進職場，很多福利和權益都搞不清楚。政見提到「青年入職大禮包」要整合青年福利與權益諮詢；如果做到，我可以少花很多時間到處查。",
+      },
+      {
+        persona: "在桃園企業實習的大學生",
+        district: "龜山區",
+        text: "每天通勤去實習，交通費是一筆開銷。政見提到要提供實習交通補助及轉正就業獎勵；如果做到，實習期間的負擔會小一點。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 1,
-    sample: true,
   },
   // ✅ 可查證內容（依候選人公開貼文與附圖整理，用語照原文）
   {
@@ -557,22 +1757,197 @@ export const policies: Policy[] = [
     faqs: [CANDIDATE_FAQ],
     spot: 2,
   },
+  // ✅ 可查證內容（依媒體報導整理，用語照原文）
   {
     id: "u4",
     slug: "sports-city",
-    title: "運動城市與全民運動",
+    title: "運動城市三大政策：打造桃園國際運動城市",
     category: "future",
-    summary: "從職業球賽到社區運動，讓運動成為桃園的日常風景。",
-    description: "盤點運動場館的使用情況，改善社區運動空間，並結合賽事帶動周邊活動。",
-    approach: ["盤點場館使用情況", "改善社區運動空間", "結合賽事帶動周邊活動"],
-    status: "researching",
-    sourceTitle: SAMPLE_SOURCE,
-    sourceType: "candidate",
-    publishedAt: "2026-09-20",
-    updatedAt: "2026-10-14",
-    related: ["local-business-districts"],
+    summary: "強化選手培訓與照顧、打造國際運動城市品牌、推動全民運動，從競技選手到一般市民、從校園到社區，建立更完整的桃園運動政策。",
+    problemStatement:
+      "政見認為，真正重視體育，不能只看大型場館或舉辦幾場活動，而該更注重第一線選手與教練有沒有得到足夠支持、市民有沒有好的運動環境。桃園現行部分選手獎勵與參賽補助制度已多年未能跟上物價與實際需求；運動防護資源也較集中於高中、大學與菁英選手。",
+    description:
+      "政見提出三大核心運動政策，期許從競技選手到一般市民、從校園到社區，建立更完整的桃園運動政策，並讓桃園透過運動建立自己的城市品牌。「競技體育要往上走，全民運動也要向下扎根。」",
+    pillars: [
+      {
+        title: "強化選手培訓與照顧",
+        tagline: "擴大健全照護防護網",
+        items: [
+          "全面盤點選手、教練與團體相關獎勵與補助制度，減輕選手、教練與家長負擔",
+          "推動「防護員向下進駐國中」",
+          "串聯桃園在地醫療院所，擴大「桃園運動選手醫療綠色通道」，讓更多基層選手受傷後能快速獲得診治與復健服務",
+        ],
+      },
+      {
+        title: "打造桃園成為國際運動城市品牌",
+        items: [
+          "選定具潛力的項目，結合觀光與轉播，用運動讓世界看見桃園",
+          "結合國立體育大學的專業，利用桃園的國門優勢建立固定的國際賽事",
+          "將體育結合觀光、產業與人才培育",
+        ],
+      },
+      {
+        title: "推動全民運動",
+        tagline: "構築大桃園運動生活圈",
+        items: [
+          "全面盤點桃園 13 區運動資源，增加多元運動空間",
+          "提高運動場館維護與投資經費，優化校園運動場館與軟硬體設施",
+          "鼓勵體育團體與學校合作舉辦運動社團、夏令營、週末賽事",
+          "推動「桃園全民運動季」",
+          "規劃專屬的桃園市適應運動中心，服務高齡與身障族群",
+        ],
+      },
+    ],
+    audience: "基層與競技選手、教練與家長，以及各年齡層想運動的市民",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰提3大運動政策 打造桃園國際運動城市〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5568834",
+    sourceType: "media",
+    publishedAt: "2026-09-09",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "中央社",
+        title: "民進黨行動中常會桃園舉行 黃世杰專題報告政策願景",
+        url: "https://www.cna.com.tw/news/aipl/202609230177.aspx",
+        date: "2026-09-23",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "體大校長交接 黃世杰拋體育3政見",
+        url: "https://news.ltn.com.tw/news/politics/paper/1765333",
+        date: "2026-08-04",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "三大政策名稱、「強化選手培訓與照顧」的三項做法，以及「推動全民運動」的前三項做法，出自自由時報 9 月 9 日報導；「選定具潛力的項目，結合觀光與轉播」與「桃園全民運動季」出自自由時報 8 月 4 日報導；「建立固定的國際賽事」「將體育結合觀光、產業與人才培育」與「桃園市適應運動中心」出自中央社 9 月 23 日報導（自由時報 8 月 4 日報導也提到要建立專屬的適應運動中心）。",
+      },
+      {
+        kind: "check",
+        text: "選手獎勵的說法各報導不同：自由時報 9 月 9 日寫「全面盤點」獎勵與補助制度，中央社 9 月 23 日寫「加碼各項賽事的選手獎勵制度」；都沒有提出具體金額。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "孩子在國中練田徑的家長",
+        district: "八德區",
+        text: "孩子練跑常有小傷，學校卻沒有防護員。政見提到要推動「防護員向下進駐國中」，並擴大「桃園運動選手醫療綠色通道」；如果做到，孩子受傷後可以更快獲得診治與復健。",
+      },
+      {
+        persona: "想開始運動的退休長輩",
+        district: "楊梅區",
+        text: "年紀大了想多動一動，又怕受傷。政見提到要規劃服務高齡與身障族群的適應運動中心、增加多元運動空間；如果做到，像我這樣的長輩也能找到適合的地方運動。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
     spot: 3,
-    sample: true,
+  },
+  // ✅ 可查證內容（依媒體報導整理，用語照原文）
+  {
+    id: "u5",
+    slug: "hakka-language",
+    title: "客家四大政見：客家新方向，客庄無共樣",
+    category: "future",
+    summary: "讓客語重新走進日常、以文化驅動產業活絡客庄經濟、厚植客家藝文能量、開創客語新生活，讓客家文化走進生活、接軌科技、永續傳承。",
+    problemStatement:
+      "桃園的客家人口高達 90 萬，卻面對母語逐漸流失，會講客語的下一代愈來愈少，許多珍貴的客家技藝與客庄文化也逐漸沒落。政見認為，客家文化不能淪為文物館裡的展示品，不該只存在特定節慶。",
+    description:
+      "黃世杰是桃園客家子弟，政見期許客家文化不只被看見、被保存，更要走進生活、接軌科技、永續傳承，讓客語重新成為日常，讓客庄經濟與文化復振大步向前。具體分成四大政見。",
+    pillars: [
+      {
+        title: "讓客語重新走進日常",
+        items: [
+          "串聯運動、藝文展演，推動客語轉播、主持、導覽",
+          "支持客語原生內容創作",
+          "推動客庄學習，讓客語從課堂走進生活",
+          "客語認證各級獎勵金全面加碼 1000 元",
+        ],
+      },
+      {
+        title: "文化驅動產業",
+        tagline: "活絡客庄經濟",
+        items: [
+          "活化客家館舍，打造青年、團隊進駐與創作的基地",
+          "拓展客家品牌通路，推動跨域合作與企業採購",
+          "串聯山客、海客特色，發展客庄觀光",
+        ],
+      },
+      {
+        title: "厚植客家藝文能量",
+        items: [
+          "建立客家藝文團隊支持機制，依團隊需求提供培育、創作或行銷資源",
+          "強化客家藝文展演媒合機制，增加演出機會",
+        ],
+      },
+      {
+        title: "開創客語新生活",
+        items: ["強化產官學合作，建構客家 AI 語言模型", "發展客語 AI 生活應用，推動客語走進數位生活"],
+      },
+    ],
+    audience: "客家鄉親、想學或想多用客語的市民，以及客家藝文團隊與客庄青年",
+    status: "proposed",
+    sourceTitle: "自由時報〈黃世杰4大客家政見 推動客語走進日常生活〉",
+    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5601119",
+    sourceType: "media",
+    publishedAt: "2026-10-09",
+    retrievedAt: "2026-10-27",
+    updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "選戰倒數50天 民進黨黃世杰提振興客語新政見",
+        url: "https://udn.com/news/story/124652/9804622",
+        date: "2026-10-09",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "客庄「無共樣」 黃世杰4政見打造客家願景",
+        url: "https://news.ltn.com.tw/news/life/paper/1773993",
+        date: "2026-10-10",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "客語演說引迴響！出席客家後援會 黃世杰：讓客語回到日常生活",
+        url: "https://udn.com/news/story/124652/9821178",
+        date: "2026-10-17",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "聯合報 10 月 9 日報導寫黃世杰「昨天深夜」發文公布新政見，自由時報寫「今天公布」。本站找不到該則原始貼文，暫以媒體報導為來源。",
+      },
+      {
+        kind: "clarify",
+        text: "「全面加碼 1000 元」是加在各級客語認證獎勵金上，報導沒有列出現行各級的獎勵金額。",
+      },
+      {
+        kind: "supplement",
+        text: "聯合報 10 月 17 日報導，黃世杰在客家後援會成立大會表示，桃園這幾年蓋了很多客家館舍，未來要活化這些空間，讓青年和團隊進駐，辦展覽、辦活動。",
+      },
+    ],
+    scenarios: [
+      {
+        persona: "聽得懂、但講不太好客語的年輕爸爸",
+        district: "新屋區",
+        text: "想教孩子講客家話，才發現自己也講不好。政見提到要推動客庄學習，讓客語從課堂走進生活，並串聯運動、藝文展演推動客語轉播、主持、導覽；如果做到，生活裡聽到、用到客語的機會會多一點。",
+      },
+      {
+        persona: "想做客家主題創作的青年團隊",
+        district: "龍潭區",
+        text: "我們一直在找可以長期創作的空間。政見提到要活化客家館舍，打造青年、團隊進駐與創作的基地；如果做到，我們也許有機會進駐。",
+      },
+    ],
+    faqs: [CANDIDATE_FAQ],
+    spot: 4,
   },
 ];
 
@@ -603,8 +1978,11 @@ export function policiesIn(category: CategorySlug | Category) {
   return policies.filter((p) => p.category === slug).sort((a, b) => a.spot - b.spot);
 }
 
+/** 最近更新：先比更新日期，同一天再比原始發布日期 */
 export function latestPolicies(n: number) {
-  return [...policies].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, n);
+  return [...policies]
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""))
+    .slice(0, n);
 }
 
 export function formatDate(iso?: string) {
