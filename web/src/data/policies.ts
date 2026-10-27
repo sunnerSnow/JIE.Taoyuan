@@ -129,6 +129,20 @@ export const policies: Policy[] = [
     updatedAt: "2026-10-27",
     extraSources: [
       {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "桃園幽靈公車天天跑！科技市長也無解？",
+        url: "https://www.youtube.com/shorts/gCS39rp7a5g",
+        date: "2026-06-29",
+      },
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "公車等不到、司機大缺工？桃園人的通勤路還要等多久 ⏱️交給世杰來翻轉",
+        url: "https://www.youtube.com/shorts/GG0GsnKGrvo",
+        date: "2026-10-17",
+      },
+      {
         type: "media",
         outlet: "自由時報",
         title: "黃世杰拋「6大政見」解決桃園人日常痛點 首要聚焦最為人詬病的公車問題",
@@ -526,6 +540,15 @@ export const policies: Policy[] = [
     publishedAt: "2026-08-24",
     retrievedAt: "2026-10-27",
     updatedAt: "2026-10-27",
+    extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "親自開箱公園！遊戲空間大升級🛝",
+        url: "https://www.youtube.com/shorts/-DxKpv8f3uI",
+        date: "2026-10-15",
+      },
+    ],
     notes: [
       {
         kind: "clarify",
@@ -904,13 +927,27 @@ export const policies: Policy[] = [
     ],
     audience: "持有敬老愛心卡的長者與家屬",
     status: "proposed",
-    sourceTitle: "自由時報〈黃世杰宣布敬老愛心卡升級方案 每月1200點並擴大使用範圍〉",
-    sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5485281",
-    sourceType: "media",
-    publishedAt: "2026-06-26",
+    sourceTitle: "黃世杰 YouTube 短影音〈敬老卡有感加菜，桃園幸福全升級！〉",
+    sourceUrl: "https://www.youtube.com/shorts/zc86dxHW0eU",
+    sourceType: "candidate",
+    publishedAt: "2026-10-15",
     retrievedAt: "2026-10-27",
     updatedAt: "2026-10-27",
     extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "打開世杰和信憲議員的冰箱瞧一瞧👀長輩們的敬老卡更好用了！",
+        url: "https://www.youtube.com/shorts/l-Annrfj4iU",
+        date: "2026-10-19",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "黃世杰宣布敬老愛心卡升級方案 每月1200點並擴大使用範圍",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5485281",
+        date: "2026-06-26",
+      },
       {
         type: "media",
         outlet: "中央社",
@@ -941,6 +978,7 @@ export const policies: Policy[] = [
       },
     ],
     notes: [
+      { kind: "supplement", text: "這項主張最早見於自由時報 2026-06-26 報導；候選人 2026-10-15 在 YouTube 短影音說明欄完整列出三項內容，本頁以官方說明為主要來源。" },
       {
         kind: "supplement",
         text: "現行制度（聯合報 2026-07-29 報導）：桃園敬老愛心卡提供設籍桃園、年滿 65 歲以上長者（原住民 55 歲以上）及身心障礙者申辦，每月 800 點（復興區 1000 點），可搭乘公車、機捷、部分台鐵、愛心計程車，並折抵國民運動中心及 YouBike 等費用。",
@@ -1546,6 +1584,20 @@ export const policies: Policy[] = [
     updatedAt: "2026-10-27",
     extraSources: [
       {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "龍科迎回台積電！世杰全面完善交通路網與生活機能，桃園大起飛 🛫",
+        url: "https://www.youtube.com/shorts/YRV8CXu_m8I",
+        date: "2026-10-16",
+      },
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "搶攻無人機國家隊！世杰強勢整合產業鏈，要把停滯轉化為桃園爆發力 🚀",
+        url: "https://www.youtube.com/shorts/J-RSogRXXG0",
+        date: "2026-10-16",
+      },
+      {
         type: "media",
         outlet: "中時新聞網",
         title: "迎回台積電！黃世杰最新拋桃園「產業好發展」 4大方向曝光",
@@ -1640,6 +1692,13 @@ export const policies: Policy[] = [
     retrievedAt: "2026-10-27",
     updatedAt: "2026-10-27",
     extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "求職免踩雷，還能拿獎勵？世杰拋青年就業方案並爭取 AI 算力中心💻",
+        url: "https://www.youtube.com/shorts/CR2oqSBM3iU",
+        date: "2026-10-17",
+      },
       {
         type: "media",
         outlet: "ETtoday",
@@ -1807,6 +1866,20 @@ export const policies: Policy[] = [
     retrievedAt: "2026-10-27",
     updatedAt: "2026-10-27",
     extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "國民體育日換上球衣！世杰籃球PK黃家齊議員，打造桃園全民運動季🏀",
+        url: "https://www.youtube.com/shorts/meEFRMd7vnc",
+        date: "2026-10-17",
+      },
+      {
+        type: "candidate",
+        outlet: "黃世杰 YouTube",
+        title: "逛夜市被游泳選手攔截，世杰直球回應：比賽獎金、訓練環境一定改！ 🏊‍♂️🔥",
+        url: "https://www.youtube.com/shorts/Bery3j_co0w",
+        date: "2026-10-17",
+      },
       {
         type: "media",
         outlet: "中央社",
