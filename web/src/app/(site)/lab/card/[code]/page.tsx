@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { IsoSvg } from "@/components/art/iso-svg";
+import { Penguin } from "@/components/art/penguin";
 import { Brick } from "@/components/lab/brick";
 import { Stepper } from "@/components/lab/stepper";
 import { PolicyCard } from "@/components/policy/policy-card";
@@ -96,9 +97,11 @@ async function CardContent({ params }: { params: PageProps<"/lab/card/[code]">["
                 ))}
               </ol>
             </div>
-            <div className="relative hidden place-items-center overflow-hidden md:grid" style={{ background: color.soft }} aria-hidden="true">
-              <div className="absolute right-8 top-8 h-20 w-20 rounded-full bg-sun/90" />
-              <IsoSvg shapes={art.shapes} viewBox={art.viewBox} className="relative w-[280px]" />
+            {/* 島嶼插畫與企鵝阿爸：手機也顯示（排在積木下方），截圖分享時一樣看得到 */}
+            <div className="relative grid h-56 place-items-center overflow-hidden md:h-auto" style={{ background: color.soft }} aria-hidden="true">
+              <div className="absolute right-6 top-6 h-14 w-14 rounded-full bg-sun/90 md:right-8 md:top-8 md:h-20 md:w-20" />
+              <IsoSvg shapes={art.shapes} viewBox={art.viewBox} className="relative w-[210px] md:w-[280px]" />
+              <Penguin pose="wave" className="absolute bottom-3 left-4 h-24 w-20 md:bottom-5 md:left-5 md:h-28 md:w-24" />
             </div>
           </div>
           <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t-2 border-dashed border-teal-deep/20 px-6 py-4 text-[12.5px] font-bold text-ink-soft sm:px-9">
