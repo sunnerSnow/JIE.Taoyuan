@@ -160,13 +160,14 @@ export async function threadsPost(page, code) {
 /** 從貼文卡片的文字裡挑出內文：去掉帳號、置頂、時間、地點與按讚數 */
 export function threadsText(texts) {
   const handle = config.threads.split("@")[1];
+  // 「翻譯」按鈕的文字在不同環境可能夾著看不見的字元，比對前先拿掉
+  const bare = (t) => t.replace(/[\s\u200b-\u200f\u2060\ufeff]/g, "");
   return texts
     .filter(
       (t) =>
         t !== handle &&
         t !== "已釘選" &&
-        t !== "翻譯" &&
-        t !== "查看翻譯" &&
+        !/^(查看)?翻譯$/.test(bare(t)) &&
         t.length > 2 &&
         !/^[\d,.]+\s*[萬千KkMm]?$/.test(t) &&
         !/^\d+\s*(秒|分鐘|小時|天|週)$/.test(t) &&
