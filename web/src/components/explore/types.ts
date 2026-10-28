@@ -24,7 +24,7 @@ export type ExplorePolicy = {
   extraSources: number;
   /** 搜尋用關鍵字 */
   tags: string[];
-  /** 搜尋用全文：各項主張與做法 */
+  /** 搜尋用全文（searchText：名稱、摘要、說明、島名、主張與做法、標籤，已轉小寫） */
   keywords: string;
   /** 具體做法數 */
   actions: number;

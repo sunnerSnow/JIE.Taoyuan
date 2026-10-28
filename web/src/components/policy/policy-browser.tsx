@@ -5,7 +5,7 @@ import { useId, useMemo, useState } from "react";
 import { PenguinSays } from "@/components/art/speech";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { categories, categoryColor } from "@/data/categories";
-import { statusInfo, statusOrder } from "@/data/policies";
+import { searchText, statusInfo, statusOrder } from "@/data/policies";
 import type { CategorySlug, Policy, PolicyStatus } from "@/data/types";
 import { PolicyCard } from "./policy-card";
 
@@ -38,15 +38,12 @@ export function PolicyBrowser({ policies }: { policies: Policy[] }) {
 
   const usedStatuses = statusOrder.filter((s) => s === status || policies.some((p) => p.status === s));
 
-  const q = query.trim();
+  const q = query.trim().toLowerCase();
   const results = useMemo(() => {
     const list = policies.filter((p) => {
       if (category && p.category !== category) return false;
       if (status && p.status !== status) return false;
-      if (!q) return true;
-      const name = categories.find((c) => c.slug === p.category)?.name ?? "";
-      const steps = [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])];
-      return [p.title, p.summary, p.description, name, ...steps, ...(p.tags ?? [])].some((t) => t.includes(q));
+      return !q || searchText(p).includes(q);
     });
     return sort === "updated" ? [...list].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)) : list;
   }, [policies, category, status, q, sort]);

@@ -12,6 +12,7 @@ import type { Relation } from "@/data/relations";
 import type { CategorySlug } from "@/data/types";
 import type { WalkMap } from "@/lib/map-data";
 import { liftLabels } from "@/lib/pin-layout";
+import { site } from "@/lib/site";
 import { CityLog, LOG_HEADING_ID } from "./city-log";
 import { CitySim } from "./city-sim";
 import { CITIZEN_HEADING_ID, CitizenPanel } from "./citizens";
@@ -34,6 +35,8 @@ const PANEL_W = 400;
 const STEM = 12;
 const DOT = 10;
 const ISLAND_HEADING_ID = "island-panel-title";
+/** 「非官方・支持者依公開資料整理」：手機與平板在「・」處斷成兩行，名牌才不會壓到地圖工具列 */
+const [stanceHead, stanceTail] = site.stance.split("・");
 
 type Box = { w: number; h: number };
 
@@ -693,29 +696,30 @@ export function ExploreApp({
 
         {view === "list" && <ListView islands={islands} onPick={select} onOpenPolicy={openPolicy} />}
 
-        {/* 左上：品牌名牌 */}
-        <div className="absolute left-3 top-3 z-20 flex items-center gap-2 sm:left-5 sm:top-4">
-          <Link
-            href="/"
-            className="flex items-center gap-3 rounded-2xl border-2 border-edge bg-paper px-3 py-1.5 shadow-soft"
-            aria-label="回到 JIE.Taoyuan 首頁"
-          >
-            <Logo compact />
-            <span className="hidden border-l-2 border-teal-deep/20 pl-3 text-[13px] font-black tracking-[0.12em] sm:block">桃園政策島</span>
-          </Link>
-          {/* 手機的追蹤按鈕在底部抽屜 */}
-          <span className="hidden xl:block">
-            <ThreadsFollow compact className="shadow-soft" />
-          </span>
+        {/* 左上：品牌名牌。探索頁沒有頁尾，手機與平板的非官方標示放在名牌裡；桌機放在右側索引底部 */}
+        <div className="absolute left-3 top-3 z-20 sm:left-5 sm:top-4">
+          <div className="flex items-center gap-3 rounded-2xl border-2 border-edge bg-paper px-3 py-1.5 shadow-soft">
+            <Link href="/" className="flex rounded-lg" aria-label="回到 JIE.Taoyuan 首頁">
+              <Logo compact />
+            </Link>
+            <p className="border-l-2 border-teal-deep/20 pl-3 leading-tight">
+              <span className="hidden text-[13px] font-black tracking-[0.12em] lg:block">桃園政策島</span>
+              <span className="block text-[11px] font-bold tracking-[0.04em] text-ink-soft lg:hidden">
+                {stanceHead}
+                <br />
+                {stanceTail}
+              </span>
+            </p>
+          </div>
         </div>
 
         {/* 工具列：全景／地圖・清單／動畫／導覽 */}
         <div
-          className="absolute right-3 top-[72px] z-20 flex items-center gap-1 sm:right-5 sm:top-4 sm:gap-1.5 lg:gap-1 lg:rounded-full lg:border-2 lg:border-edge lg:bg-paper lg:p-1.5 lg:shadow-soft"
+          className="absolute right-3 top-[72px] z-20 flex items-center gap-1 sm:right-5 sm:gap-1.5 md:top-4 lg:gap-1 lg:rounded-full lg:border-2 lg:border-edge lg:bg-paper lg:p-1.5 lg:shadow-soft"
           role="toolbar"
           aria-label="地圖工具"
         >
-          <ToolButton onClick={() => select(null)} label="全景" disabled={!current && view === "map"}>
+          <ToolButton onClick={() => select(null)} label="全景" disabled={!current && view === "map"} hideLabelOnMobile>
             <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
           </ToolButton>
           <div className="flex rounded-full border-2 border-edge bg-paper p-0.5 lg:border-0 lg:p-0" role="group" aria-label="檢視方式">
@@ -835,12 +839,19 @@ export function ExploreApp({
       </div>
 
       {/* 桌機：右側政策索引 */}
-      <aside aria-label={logOpen ? "城市日誌" : "政策索引"} className="hidden w-[380px] shrink-0 border-l-2 border-edge bg-paper lg:block">
-        {desktop && cityLog ? (
-          cityLog
-        ) : (
-          <PolicyIndex islands={islands} selected={selected} activePolicy={policySlug} onSelect={select} onOpenPolicy={openPolicy} />
-        )}
+      <aside aria-label={logOpen ? "城市日誌" : "政策索引"} className="hidden w-[380px] shrink-0 flex-col border-l-2 border-edge bg-paper lg:flex">
+        <div className="min-h-0 flex-1">
+          {desktop && cityLog ? (
+            cityLog
+          ) : (
+            <PolicyIndex islands={islands} selected={selected} activePolicy={policySlug} onSelect={select} onOpenPolicy={openPolicy} />
+          )}
+        </div>
+        {/* 非官方標示與追蹤按鈕固定在底部：切換到城市日誌時也看得到，也不跟地圖工具列搶左上角的空間 */}
+        <div className="flex items-center justify-between gap-3 border-t-2 border-edge px-6 py-3">
+          <p className="text-[12px] font-bold leading-snug text-ink-soft">{site.stance}</p>
+          <ThreadsFollow compact />
+        </div>
       </aside>
 
       <IntroDialog open={introOpen} onClose={closeIntro} />
@@ -913,7 +924,7 @@ function ListView({
 }) {
   const filter = useExploreFilter(islands);
   return (
-    <div className="absolute inset-0 z-[5] overflow-y-auto bg-cream/95 px-4 pb-16 pt-32 backdrop-blur-sm sm:px-8 sm:pt-24 lg:pt-28">
+    <div className="absolute inset-0 z-[5] overflow-y-auto bg-cream/95 px-4 pb-16 pt-32 backdrop-blur-sm sm:px-8 md:pt-24 lg:pt-28">
       <div className="mx-auto max-w-3xl">
         <h2 className="section-title !text-[28px]">政策清單</h2>
         <p className="mt-2 text-[14.5px] text-ink-soft">與地圖相同的內容，用文字一次看完。點政策會回到地圖並打開說明。</p>

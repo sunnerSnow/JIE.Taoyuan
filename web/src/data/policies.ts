@@ -1,3 +1,4 @@
+import { categoryMap } from "./categories";
 import type { Category, CategorySlug, Policy, PolicyStatus, SourceType } from "./types";
 
 // 全部依公開來源整理（規格書第 11 節）：優先用候選人官方貼文（sourceType "candidate"），
@@ -2099,6 +2100,15 @@ export function latestPolicies(n: number) {
   return [...policies]
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""))
     .slice(0, n);
+}
+
+/**
+ * 關鍵字搜尋的比對範圍（政策總覽、探索頁共用，同一個關鍵字兩邊結果才會一致）：
+ * 名稱、摘要、說明、島名、各項主張與做法、標籤。轉小寫，比對時關鍵字也要轉小寫。
+ */
+export function searchText(p: Policy) {
+  const steps = [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])];
+  return [p.title, p.summary, p.description, categoryMap[p.category].name, ...steps, ...(p.tags ?? [])].join("\n").toLowerCase();
 }
 
 /** 一項政見列出的具體做法數（各主張底下的細項＋做法清單） */

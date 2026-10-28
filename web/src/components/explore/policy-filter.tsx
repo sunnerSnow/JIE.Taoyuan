@@ -9,9 +9,9 @@ import type { ExploreIsland, ExplorePolicy } from "./types";
 
 export type FilterHit = { island: ExploreIsland; policy: ExplorePolicy };
 
-/** 關鍵字比對：政策名稱、摘要、標籤、各項主張與做法、島名 */
-function matches(island: ExploreIsland, p: ExplorePolicy, q: string) {
-  return [p.title, p.summary, p.keywords, island.pin.name, ...p.tags].some((t) => t.includes(q));
+/** 關鍵字比對：範圍與政策總覽相同（見 searchText） */
+function matches(p: ExplorePolicy, q: string) {
+  return p.keywords.includes(q);
 }
 
 /** 探索頁的搜尋與篩選（右側索引、清單模式共用）：關鍵字 × 分類 × 狀態交叉篩選 */
@@ -19,7 +19,7 @@ export function useExploreFilter(islands: ExploreIsland[]) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategorySlug | null>(null);
   const [status, setStatus] = useState<PolicyStatus | null>(null);
-  const q = query.trim();
+  const q = query.trim().toLowerCase();
   const active = !!(q || category || status);
 
   const results = useMemo<FilterHit[]>(
@@ -27,7 +27,7 @@ export function useExploreFilter(islands: ExploreIsland[]) {
       islands
         .filter((i) => !category || i.pin.slug === category)
         .flatMap((island) =>
-          island.policies.filter((p) => (!status || p.status === status) && (!q || matches(island, p, q))).map((policy) => ({ island, policy })),
+          island.policies.filter((p) => (!status || p.status === status) && (!q || matches(p, q))).map((policy) => ({ island, policy })),
         ),
     [islands, category, status, q],
   );
@@ -36,11 +36,11 @@ export function useExploreFilter(islands: ExploreIsland[]) {
   const categoryCount = (slug: CategorySlug | null) =>
     islands
       .filter((i) => !slug || i.pin.slug === slug)
-      .reduce((n, island) => n + island.policies.filter((p) => (!status || p.status === status) && (!q || matches(island, p, q))).length, 0);
+      .reduce((n, island) => n + island.policies.filter((p) => (!status || p.status === status) && (!q || matches(p, q))).length, 0);
   const statusCount = (s: PolicyStatus | null) =>
     islands
       .filter((i) => !category || i.pin.slug === category)
-      .reduce((n, island) => n + island.policies.filter((p) => (!s || p.status === s) && (!q || matches(island, p, q))).length, 0);
+      .reduce((n, island) => n + island.policies.filter((p) => (!s || p.status === s) && (!q || matches(p, q))).length, 0);
 
   const clear = () => {
     setQuery("");

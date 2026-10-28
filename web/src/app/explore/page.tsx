@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IsoSvg } from "@/components/art/iso-svg";
 import { ExploreApp, type ExploreIsland } from "@/components/explore/explore-app";
 import { categories, categoryColor } from "@/data/categories";
-import { actionCount, policiesIn, sourceTypeLabel } from "@/data/policies";
+import { actionCount, policiesIn, searchText, sourceTypeLabel } from "@/data/policies";
 import { relations } from "@/data/relations";
 import { worldPins } from "@/lib/map-data";
 import { pageMetadata } from "@/lib/metadata";
@@ -43,7 +43,7 @@ export default function ExplorePage() {
         audience: p.audience,
         extraSources: p.extraSources?.length ?? 0,
         tags: p.tags ?? [],
-        keywords: [...(p.approach ?? []), ...(p.pillars ?? []).flatMap((x) => [x.title, x.tagline ?? "", ...x.items])].join(" "),
+        keywords: searchText(p),
         actions: actionCount(p),
         pillars: p.pillars ?? [],
         approach: p.approach ?? [],

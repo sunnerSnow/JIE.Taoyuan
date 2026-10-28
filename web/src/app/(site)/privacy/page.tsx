@@ -5,11 +5,17 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   title: "隱私權政策",
-  description: "JIE.Taoyuan 如何處理你的瀏覽資料：不需註冊、不使用追蹤廣告，只在你的瀏覽器記住是否看過導覽。",
+  description: "JIE.Taoyuan 如何處理你的瀏覽資料：不需註冊、不使用追蹤廣告，只在你的瀏覽器記住導覽與動畫設定。",
   path: "/privacy",
 });
 
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-28";
+
+/** 瀏覽器本機儲存的項目：新增 localStorage 時要同步補在這裡 */
+const storageKeys = [
+  { name: "jt-intro-v1", use: "是否看過企鵝阿爸的導覽，看過就不再自動跳出。" },
+  { name: "jt-motion", use: "你在地圖上選擇開或關動畫。" },
+];
 
 export default function PrivacyPage() {
   return (
@@ -21,23 +27,25 @@ export default function PrivacyPage() {
       </PageHead>
 
       <div className="mx-auto max-w-[820px] space-y-12 px-4 py-14 text-[15.5px] leading-[1.9] text-ink-soft sm:px-6 sm:py-20">
-        <p role="note" className="rounded-2xl border-2 border-dashed border-coral bg-paper px-4 py-3 text-[14px]">
-          <strong className="text-coral">草稿：</strong>
-          本頁內容需在正式上線前，由網站主辦單位依《個人資料保護法》與實際使用的主機、分析服務確認後定稿。
-        </p>
-
         <Item title="不需註冊，不蒐集個人資料">
           <p>瀏覽本站不需要建立帳號，也沒有任何表單會要求你填寫姓名、電話或身分證字號。本站不使用追蹤型廣告。</p>
         </Item>
 
         <Item title="瀏覽器本機儲存">
-          <p>
-            第一次進入「探索政策島」時，企鵝阿爸會跳出導覽說明。看完後，瀏覽器會在你的裝置上記住一個標記（名稱為 <code className="rounded bg-mist px-1.5 py-0.5 text-[13px] text-ink">jt-intro-v1</code>），下次就不再自動跳出。這個標記只存在你的瀏覽器，不會傳送給我們；清除瀏覽器網站資料即可刪除。
-          </p>
+          <p>「探索政策島」會在你的瀏覽器記住兩個設定，下次進來不用重新選：</p>
+          <ul className="mt-3 space-y-2">
+            {storageKeys.map((k) => (
+              <li key={k.name} className="flex items-start gap-3">
+                <code className="mt-0.5 shrink-0 rounded bg-mist px-1.5 py-0.5 text-[13px] text-ink">{k.name}</code>
+                <span>{k.use}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3">這些設定只存在你的瀏覽器，不會傳送給我們；清除瀏覽器的網站資料就會刪除。</p>
         </Item>
 
         <Item title="伺服器紀錄">
-          <p>和大多數網站一樣，網站主機服務商可能會為了安全與維運，自動記錄連線時間、IP 位址與瀏覽器類型等技術資料。這些紀錄不會用於辨識個人身分，保存期間依主機服務商的規範。</p>
+          <p>本站架設在 Vercel。和大多數網站一樣，主機服務商可能會為了安全與維運，自動記錄連線時間、IP 位址與瀏覽器類型等技術資料。本站不會用這些紀錄辨識個人身分，保存期間依主機服務商的規範。</p>
         </Item>
 
         <Item title="網站分析">

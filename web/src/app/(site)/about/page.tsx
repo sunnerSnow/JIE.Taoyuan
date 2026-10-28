@@ -25,7 +25,7 @@ const sourceTypeDesc: Record<SourceType, string> = {
   candidate: "候選人在競選期間公開提出的主張與承諾，代表方向，不等於政府已經決定要做。",
   government: "經市府核定、公告或編列預算的政策與計畫。",
   media: "新聞媒體的報導內容，會註明媒體名稱與報導日期。",
-  citizen: "市民提出的建議或提案（第二階段開放），不代表已被採納。",
+  citizen: "市民提出的建議或提案，不代表已被採納。",
 };
 
 const process = [
@@ -129,14 +129,14 @@ export default function AboutPage() {
 
         <Section id="assets" title="素材與授權">
           <p>
-            網站上的企鵝阿爸與島嶼插畫目前是原創的暫代圖，用來呈現版型與互動。正式上線前，角色、照片、標誌與文字素材都會先確認使用授權，再替換成正式版本。
+            網站上的企鵝阿爸、政策島與市民插畫都是本站自行繪製，沒有使用候選人或競選團隊的照片、標誌或文宣圖檔。引用的政見內容都附上原始連結，請以原始發布處為準。
           </p>
         </Section>
 
         <Section id="corrections" title="資料更正">
           <p>資料有誤或原始來源失效時，我們會更正內容，並在政策頁面標示新的更新日期。</p>
           <PenguinSays pose="wave" className="mt-6" penguinClassName="h-24 w-20" bubbleClassName="text-[14px]">
-            市民提問表單會在第二階段開放，敬請期待！
+            每一項政策都附上原始來源。內容和原文對不上時，請以原始來源為準。
           </PenguinSays>
         </Section>
       </div>
