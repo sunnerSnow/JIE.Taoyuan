@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { mainNav } from "@/lib/nav";
+import { labNav, mainNav } from "@/lib/nav";
 import { Penguin } from "@/components/art/penguin";
 import { ArrowCurve } from "@/components/ui/decor";
 import { ElectionCountdown } from "./election-countdown";
@@ -89,8 +89,8 @@ export function SiteHeader() {
           <span className="hidden xl:block">
             <ElectionCountdown />
           </span>
-          <Link href="/explore" className="btn btn-sun btn-sm hidden sm:inline-flex">
-            開始探索
+          <Link href={labNav.href} className="btn btn-sun btn-sm hidden sm:inline-flex">
+            {labNav.label}
             <ArrowCurve className="h-4 w-4" />
           </Link>
           <button
@@ -127,6 +127,18 @@ export function SiteHeader() {
             </button>
           </div>
           <nav aria-label="主選單" className="px-5 pb-10 pt-8">
+            <Link
+              href={labNav.href}
+              onNavigate={() => setOpen(false)}
+              aria-current={isActive(pathname, labNav.href) ? "page" : undefined}
+              className="mb-6 flex items-center justify-between gap-3 rounded-2xl border-2 border-edge bg-sun px-5 py-4 shadow-soft"
+            >
+              <span>
+                <span className="block text-[20px] font-black tracking-[0.08em]">{labNav.label}</span>
+                <span className="mt-0.5 block text-[13px] font-bold text-ink-soft">{labNav.title}</span>
+              </span>
+              <ArrowCurve className="h-5 w-5 shrink-0" />
+            </Link>
             <ul className="space-y-3">
               {mainNav.map((item) => {
                 const active = isActive(pathname, item.href);
@@ -150,7 +162,7 @@ export function SiteHeader() {
             <div className="mt-10 flex items-end gap-3">
               <Penguin pose="wave" className="h-28 w-24 shrink-0" />
               <p className="relative mb-10 rounded-2xl border-2 border-edge bg-paper px-4 py-3 text-[15px] font-bold leading-relaxed">
-                想從哪座島開始逛？選不出來就先去「探索政策島」吧！
+                不知道從哪裡開始？先玩「3 分鐘探索」，選一個生活主題就好！
               </p>
             </div>
           </nav>

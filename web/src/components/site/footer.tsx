@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/data/categories";
-import { footerNav, mainNav } from "@/lib/nav";
+import { footerNav, labNav, mainNav } from "@/lib/nav";
 import { site } from "@/lib/site";
 import { ArrowCurve, Cloud, PinIcon } from "@/components/ui/decor";
 import { BallotBadge } from "./ballot-badge";
@@ -51,7 +51,7 @@ export function SiteFooter() {
           <nav aria-label="網站導覽">
             <p className="eyebrow mb-3">Menu</p>
             <ul className="space-y-2.5">
-              {mainNav.map((item) => (
+              {[...mainNav, labNav].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="inline-flex items-center gap-1.5 font-bold hover:underline">
                     <PinIcon className="h-4 w-3.5" />

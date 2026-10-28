@@ -5,8 +5,8 @@ import { useState, useSyncExternalStore } from "react";
 const noop = () => () => {};
 const canNativeShare = () => typeof navigator !== "undefined" && typeof navigator.share === "function";
 
-/** 分享這項政見：系統分享（手機）、複製連結、LINE、Facebook、Threads，以及下載分享圖 */
-export function ShareButtons({ title, fileName }: { title: string; fileName: string }) {
+/** 分享按鈕（政見頁、桃園卡共用）：系統分享（手機）、複製連結、LINE、Facebook、Threads，以及下載分享圖 */
+export function ShareButtons({ title, fileName, label = "分享這項政見" }: { title: string; fileName: string; label?: string }) {
   const native = useSyncExternalStore(noop, canNativeShare, () => false);
   const [copied, setCopied] = useState(false);
 
@@ -46,7 +46,7 @@ export function ShareButtons({ title, fileName }: { title: string; fileName: str
     "inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-edge bg-paper px-3.5 text-[13.5px] font-bold transition-colors hover:bg-mint";
 
   return (
-    <div role="group" aria-label="分享這項政見" className="flex flex-wrap items-center gap-2">
+    <div role="group" aria-label={label} className="flex flex-wrap items-center gap-2">
       {native && (
         <button type="button" className={`${btn} !bg-sun hover:!bg-[#f8dc76]`} onClick={() => navigator.share({ title, url: here() }).catch(() => {})}>
           <Icon d="M12 3v12M7 8l5-5 5 5M5 14v5h14v-5" />

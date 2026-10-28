@@ -14,6 +14,7 @@ import { lessons } from "@/data/learn";
 import { changeTypeInfo, changelog } from "@/data/changelog";
 import { actionCount, formatDate, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
+import { labNav } from "@/lib/nav";
 import { site } from "@/lib/site";
 
 export default function HomePage() {
@@ -273,12 +274,12 @@ function Hero() {
               </h1>
               <p className="mt-3 text-[15.5px] leading-[1.9] text-ink-soft">從每天的生活出發，看看一座城市可以如何改變。</p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/explore" className="btn btn-sun">
-                  開始探索政策島
+                <Link href={labNav.href} className="btn btn-sun">
+                  開始 3 分鐘探索
                   <ArrowCurve className="h-5 w-5" />
                 </Link>
-                <Link href="/policies" className="btn">
-                  查看全部政策
+                <Link href="/explore" className="btn">
+                  進入政策島
                 </Link>
                 <ThreadsFollow compact className="self-center" />
               </div>
