@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* 視窗夠高（首頁企鵝阿爸可以站在首屏卡片上方、不會躲進頁首後面） */
+@custom-variant tall (@media (min-height: 900px));
+
 /* 版面語彙參考 unouplus.com：淡水藍底、青綠主色、圓體字、白色圓角卡片與柔和陰影、無描邊的扁平插畫 */
 @theme {
   --color-ink: #234647;

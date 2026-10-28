@@ -134,7 +134,13 @@ export default function AboutPage() {
         </Section>
 
         <Section id="corrections" title="資料更正">
-          <p>資料有誤或原始來源失效時，我們會更正內容，並在政策頁面標示新的更新日期。</p>
+          <p>
+            資料有誤或原始來源失效時，我們會更正內容，並在政策頁面標示新的更新日期。每一次新增、修正與來源更新都記在
+            <Link href="/updates" className="link-ink mx-1 font-bold text-ink">
+              更新紀錄
+            </Link>
+            。
+          </p>
           <PenguinSays pose="wave" className="mt-6" penguinClassName="h-24 w-20" bubbleClassName="text-[14px]">
             每一項政策都附上原始來源。內容和原文對不上時，請以原始來源為準。
           </PenguinSays>

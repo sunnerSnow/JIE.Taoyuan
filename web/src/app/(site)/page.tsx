@@ -11,12 +11,14 @@ import { ThreadsFollow } from "@/components/site/threads-follow";
 import { ArrowCurve, ArrowRight, Cloud, Squiggle } from "@/components/ui/decor";
 import { categories, categoryColor } from "@/data/categories";
 import { lessons } from "@/data/learn";
-import { actionCount, latestPolicies, policies, policiesIn } from "@/data/policies";
+import { changeTypeInfo, changelog } from "@/data/changelog";
+import { actionCount, formatDate, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
 import { site } from "@/lib/site";
 
 export default function HomePage() {
   const latest = latestPolicies(3);
+  const latestChange = changelog[0];
   return (
     <>
       <Hero />
@@ -55,11 +57,32 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <SectionHead id="latest-title" eyebrow="Latest Updates" title="最近更新的政策" lead="每張卡片都標示分類、狀態、資料來源與更新日期。" light />
-            <Link href="/policies" className="btn btn-sm shrink-0 self-start md:self-auto">
-              查看全部政策
-              <ArrowCurve className="h-4 w-4" />
-            </Link>
+            <div className="flex shrink-0 flex-wrap gap-3">
+              <Link href="/policies" className="btn btn-sm">
+                查看全部政策
+                <ArrowCurve className="h-4 w-4" />
+              </Link>
+              <Link href="/updates" className="btn btn-sm">
+                看更新紀錄
+              </Link>
+            </div>
           </div>
+          {latestChange && (
+            <Link
+              href={`/updates#${latestChange.id}`}
+              className="mt-6 flex w-fit max-w-full flex-wrap items-center gap-x-3 gap-y-1.5 rounded-2xl bg-paper/95 px-4 py-2.5 text-[14px] font-bold shadow-soft hover:bg-paper"
+            >
+              <span className="shrink-0 rounded-full bg-sun px-2.5 py-0.5 text-[12px] font-black tracking-[0.08em]">{changeTypeInfo[latestChange.type].label}</span>
+              <time dateTime={latestChange.date} className="shrink-0 text-ink-soft">
+                {formatDate(latestChange.date)}
+              </time>
+              {/* 手機：標題自己一行，不被類型與日期擠窄 */}
+              <span className="flex min-w-0 basis-full items-center gap-2 leading-snug sm:basis-auto">
+                {latestChange.title}
+                <ArrowRight className="h-4 w-4 shrink-0" />
+              </span>
+            </Link>
+          )}
           <SampleNotice className="mt-8" />
           <ul className="mt-8 grid gap-6 md:grid-cols-3">
             {latest.map((p) => (
@@ -219,38 +242,46 @@ function HeroSea() {
 function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #F1FAF9 0%, #E2F4F2 55%, #D3EEEC 100%)" }}>
-      {/* 手機：文字在上、地圖在下；桌機：文字卡片在左側海面，地圖等比塞滿右側 */}
-      <div className="relative mx-auto max-w-[1680px] lg:h-[max(680px,100svh)]">
+      {/* 手機：文字在上、地圖在下；桌機：文字卡片在左側海面、貼齊首屏底部，上方留出頁首的高度（螢幕太矮時首屏跟著變高，卡片不會被頁首蓋住），地圖等比塞滿右側 */}
+      <div className="relative mx-auto max-w-[1680px] lg:flex lg:min-h-[max(680px,100svh)]">
         <HeroSea />
-        <div className="relative px-4 pb-6 pt-28 sm:px-6 lg:absolute lg:bottom-14 lg:left-6 lg:z-10 lg:w-[400px] lg:p-0 xl:left-12">
-          <PenguinSays side="right" className="absolute -top-[150px] right-2 hidden lg:flex" penguinClassName="h-28 w-24 anim-bob" bubbleClassName="w-56 text-[14px]">
-            嗨！我是企鵝阿爸，帶你來逛桃園政策島。
-          </PenguinSays>
-          <div className="lg:rounded-[28px] lg:border-2 lg:border-edge lg:bg-paper lg:p-8 lg:shadow-lift">
-            <p className="font-display text-[24px] leading-none text-teal-deep sm:text-[30px]">
-              JIE.<span className="text-teal">Taoyuan</span>
-            </p>
-            <BallotBadge className="mt-4" />
-            <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-teal-deep/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
-            {/* 桌機的倒數在頁首右上，這裡只給手機與平板 */}
-            <div className="lg:hidden">
-              <ElectionCountdown className="mt-3" />
-            </div>
-            <h1 id="hero-title" className="mt-5 text-[30px] font-black leading-[1.55] tracking-[0.08em] text-teal-deep sm:text-[38px]">
-              <span className="wavy">桃園的未來，</span>
-              <br />
-              <span className="wavy">一起來探索。</span>
-            </h1>
-            <p className="mt-3 text-[15.5px] leading-[1.9] text-ink-soft">從每天的生活出發，看看一座城市可以如何改變。</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/explore" className="btn btn-sun">
-                開始探索政策島
-                <ArrowCurve className="h-5 w-5" />
-              </Link>
-              <Link href="/policies" className="btn">
-                查看全部政策
-              </Link>
-              <ThreadsFollow compact className="self-center" />
+        <div className="relative px-4 pb-6 pt-28 sm:px-6 lg:z-10 lg:ml-6 lg:flex lg:w-[400px] lg:shrink-0 lg:flex-col lg:justify-end lg:px-0 lg:pb-14 xl:ml-12">
+          <div className="relative">
+            {/* 企鵝阿爸：螢幕夠高時站在卡片上方；不夠高時站到卡片右下，避免躲進頁首後面 */}
+            <PenguinSays
+              side="right"
+              className="absolute hidden lg:bottom-0 lg:left-full lg:ml-5 lg:flex tall:lg:bottom-auto tall:lg:left-auto tall:lg:right-2 tall:lg:-top-[150px] tall:lg:ml-0"
+              penguinClassName="h-28 w-24 anim-bob"
+              bubbleClassName="w-56 text-[14px]"
+            >
+              嗨！我是企鵝阿爸，帶你來逛桃園政策島。
+            </PenguinSays>
+            <div className="lg:rounded-[28px] lg:border-2 lg:border-edge lg:bg-paper lg:p-8 lg:shadow-lift">
+              <p className="font-display text-[24px] leading-none text-teal-deep sm:text-[30px]">
+                JIE.<span className="text-teal">Taoyuan</span>
+              </p>
+              <BallotBadge className="mt-4" />
+              <p className="mt-3 block w-fit rounded-full border-2 border-dashed border-teal-deep/40 px-3 py-0.5 text-[12.5px] font-bold text-ink-soft">{site.stance}</p>
+              {/* 桌機的倒數在頁首右上，這裡只給手機與平板 */}
+              <div className="lg:hidden">
+                <ElectionCountdown className="mt-3" />
+              </div>
+              <h1 id="hero-title" className="mt-5 text-[30px] font-black leading-[1.55] tracking-[0.08em] text-teal-deep sm:text-[38px]">
+                <span className="wavy">桃園的未來，</span>
+                <br />
+                <span className="wavy">一起來探索。</span>
+              </h1>
+              <p className="mt-3 text-[15.5px] leading-[1.9] text-ink-soft">從每天的生活出發，看看一座城市可以如何改變。</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/explore" className="btn btn-sun">
+                  開始探索政策島
+                  <ArrowCurve className="h-5 w-5" />
+                </Link>
+                <Link href="/policies" className="btn">
+                  查看全部政策
+                </Link>
+                <ThreadsFollow compact className="self-center" />
+              </div>
             </div>
           </div>
         </div>

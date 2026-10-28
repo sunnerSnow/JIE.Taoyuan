@@ -263,6 +263,10 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
               <Link href="/about#corrections" className="link-ink mx-1 font-bold text-ink">
                 資料更正
               </Link>
+              ；歷次變更見
+              <Link href="/updates" className="link-ink mx-1 font-bold text-ink">
+                更新紀錄
+              </Link>
               。
             </p>
           </div>
