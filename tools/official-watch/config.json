@@ -1,0 +1,15 @@
+{
+  "repo": "sunnerSnow/JIE.Taoyuan",
+  "label": "official-inbox",
+  "issueTitle": "官方新貼文待整理",
+  "since": "2026-10-28",
+  "intervalHours": 12,
+  "dataDir": "../../web/src/data",
+  "youtube": {
+    "channel": "https://www.youtube.com/@schuanglawyer",
+    "channelId": "UCMAfDRGV64ucazEamVVd-lw",
+    "tabs": ["shorts", "videos"],
+    "perTab": 15
+  },
+  "threads": "https://www.threads.com/@schuanglawyer"
+}

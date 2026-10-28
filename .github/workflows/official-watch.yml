@@ -1,0 +1,44 @@
+name: 官方貼文偵測
+
+# 每天台灣時間 08:00、20:00 檢查候選人 YouTube 與 Threads 的新貼文，回報到「官方新貼文待整理」Issue。
+# 只回報、不改網站；整理與更新由人在 Claude Code 輸入 /sync-official 處理。也可以在 Actions 頁面手動執行。
+# 設定在 tools/official-watch/config.json；有 YOUTUBE_API_KEY（repo secret）時 YouTube 會附上發布時間與說明欄。
+
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: official-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: tools/official-watch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/official-watch/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: 建立 Issue 標籤（已存在就略過）
+        run: gh label create official-inbox --color F9DE3A --description "官方新貼文待整理" --force
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: 偵測新貼文
+        run: node check.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}

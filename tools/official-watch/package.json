@@ -1,0 +1,15 @@
+{
+  "name": "official-watch",
+  "private": true,
+  "type": "module",
+  "description": "偵測候選人官方 YouTube 與 Threads 的新貼文，回報到 GitHub Issue",
+  "scripts": {
+    "check": "node check.mjs",
+    "dry": "node check.mjs --dry",
+    "inbox": "node inbox.mjs",
+    "read": "node read.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}
