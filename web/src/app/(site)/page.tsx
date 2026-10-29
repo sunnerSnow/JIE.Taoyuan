@@ -17,7 +17,7 @@ import { changeTypeInfo, changelog } from "@/data/changelog";
 import { parseCardCode, sampleCardCodes } from "@/data/lab";
 import { actionCount, formatDate, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
-import { labNav } from "@/lib/nav";
+import { easyNav, labNav } from "@/lib/nav";
 import { siteSummary } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -324,6 +324,12 @@ function Hero() {
                 <span className="wavy">一起來探索。</span>
               </h1>
               <p className="mt-3 text-[15.5px] leading-[1.9] text-ink-soft">從每天的生活出發，看看一座城市可以如何改變。</p>
+              <Link href={easyNav.href} className="mt-2 inline-flex min-h-[44px] items-center text-[17px] font-black text-teal-deep underline decoration-2 underline-offset-4">
+                字太小？看大字版
+                <span aria-hidden="true" className="ml-1">
+                  →
+                </span>
+              </Link>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link href={labNav.href} className="btn btn-sun">
                   開始 3 分鐘探索

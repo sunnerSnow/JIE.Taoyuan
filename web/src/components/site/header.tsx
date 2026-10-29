@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { labNav, mainNav } from "@/lib/nav";
+import { easyNav, labNav, mainNav } from "@/lib/nav";
 import { Penguin } from "@/components/art/penguin";
 import { ArrowCurve } from "@/components/ui/decor";
 import { ElectionCountdown } from "./election-countdown";
@@ -89,6 +89,13 @@ export function SiteHeader() {
           <span className="hidden xl:block">
             <ElectionCountdown />
           </span>
+          <Link
+            href={easyNav.href}
+            aria-current={isActive(pathname, easyNav.href) ? "page" : undefined}
+            className="btn btn-sm whitespace-nowrap !px-3 lg:hidden xl:inline-flex"
+          >
+            {easyNav.label}
+          </Link>
           <Link href={labNav.href} className="btn btn-sun btn-sm hidden sm:inline-flex">
             {labNav.label}
             <ArrowCurve className="h-4 w-4" />
@@ -138,6 +145,20 @@ export function SiteHeader() {
                 <span className="mt-0.5 block text-[13px] font-bold text-ink-soft">{labNav.title}</span>
               </span>
               <ArrowCurve className="h-5 w-5 shrink-0" />
+            </Link>
+            <Link
+              href={easyNav.href}
+              onNavigate={() => setOpen(false)}
+              aria-current={isActive(pathname, easyNav.href) ? "page" : undefined}
+              className="mb-6 flex items-center justify-between gap-3 rounded-2xl border-2 border-edge bg-paper px-5 py-4 shadow-soft"
+            >
+              <span>
+                <span className="block text-[22px] font-black tracking-[0.08em]">{easyNav.label}</span>
+                <span className="mt-0.5 block text-[15px] font-bold text-ink-soft">{easyNav.title}</span>
+              </span>
+              <span aria-hidden="true" className="text-[22px] font-black">
+                大
+              </span>
             </Link>
             <ul className="space-y-3">
               {mainNav.map((item) => {

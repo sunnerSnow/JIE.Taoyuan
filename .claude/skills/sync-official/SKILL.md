@@ -29,7 +29,7 @@ GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，�
 - **來源**：候選人官方貼文是 `sourceType: "candidate"`。主要來源（`sourceUrl`）必須撐得起整項政見的內容：短影音說明欄只有一兩句、沒列出具體主張時，只能放 `extraSources` 當官方佐證，主要來源維持媒體報導。
 - **用語照原文**：主張與做法照貼文的字句整理，不補原文沒有的數字、時程或承諾。原文沒說清楚的，寫在 `notes`（`check`：核對、`clarify`：澄清），不要寫進政見本文。
 - **日期**：`publishedAt` 是貼文的台灣日期，`retrievedAt` 與 `updatedAt` 是今天。日期不要混用：更新紀錄的日期是本站更新的日期。
-- **新政見**：要選島（`category`）和島上的建築點（`spot`），建築點定義在 `web/src/lib/scene.ts`。島上沒有空的建築點時，要新增一棟建築（可參考 commit 1e1ed69 的溫網室）。`scenarios` 是虛構情境，寫成一般市民的口吻，不冒用真實人物。
+- **新政見**：要選島（`category`）和島上的建築點（`spot`），建築點定義在 `web/src/lib/scene.ts`。島上沒有空的建築點時，要新增一棟建築（可參考 commit 1e1ed69 的溫網室）。`scenarios` 是虛構情境，寫成一般市民的口吻，不冒用真實人物。另外在 `web/src/data/easy.ts` 補大字版的 2～4 個短重點（取自分項標題或做法原文，只刪不補，「研擬」「逐步」這類限定詞要留著），漏了 build 會失敗。
 - **政策關聯**（`web/src/data/relations.ts`）：只有貼文明確說兩項政見有關才能用 `source`；本站推論的關聯用 `scenario` 或 `editorial`。
 - **過去的貢獻**：每句引文用 `by` 標明出處類型（`official` 官方紀錄、`media` 媒體報導、`candidate` 候選人自述、`campaign` 競選方說法）。候選人在貼文裡講自己的事蹟算「候選人自述」，不是官方紀錄。
 - **格式**：不要對既有檔案跑 prettier，原始碼一行大約 160 字寬。
