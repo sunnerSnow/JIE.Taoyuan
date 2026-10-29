@@ -2,20 +2,25 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PolicyBrowser } from "@/components/policy/policy-browser";
 import { PolicyCard } from "@/components/policy/policy-card";
+import { JsonLd } from "@/components/site/json-ld";
 import { PageHead } from "@/components/site/page-head";
 import { SampleNotice } from "@/components/site/sample-notice";
 import { policies } from "@/data/policies";
+import { policyListGraph } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/metadata";
+import { candidateFull } from "@/lib/seo";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "政策總覽",
-  description: "用關鍵字、分類與狀態找桃園政策。每一項都標示來源類型、目前狀態與更新日期。",
+  title: `${site.candidate.name}政見總覽（${policies.length} 項）`,
+  description: `${candidateFull}公開提出的 ${policies.length} 項政見清單，可用關鍵字、分類與狀態篩選。每一項都標示來源類型、目前狀態與更新日期。`,
   path: "/policies",
 });
 
 export default function PoliciesPage() {
   return (
     <>
+      <JsonLd data={policyListGraph(policies)} />
       <PageHead
         title="政策總覽"
         eyebrow="All Policies"

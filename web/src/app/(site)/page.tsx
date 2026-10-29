@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { TaoyuanCard } from "@/components/lab/taoyuan-card";
@@ -17,7 +18,11 @@ import { parseCardCode, sampleCardCodes } from "@/data/lab";
 import { actionCount, formatDate, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
 import { labNav } from "@/lib/nav";
+import { siteSummary } from "@/lib/seo";
 import { site } from "@/lib/site";
+
+// 標題與描述沿用根版型；只補首頁自己的 canonical（放在根版型會被沒設 canonical 的內頁繼承）
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function HomePage() {
   const latest = latestPolicies(3);
@@ -52,6 +57,15 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+        {/* 網站是什麼、講的是誰：放在頁面前段，搜尋與 AI 摘要最常引用這種自成一段的說明 */}
+        <div className="mx-auto mt-10 max-w-[1200px] px-4 sm:px-6">
+          <p className="max-w-3xl text-[14px] leading-[1.9] text-ink-soft">
+            {siteSummary}
+            <Link href="/about" className="link-ink ml-1 font-bold text-ink">
+              關於本站
+            </Link>
+          </p>
+        </div>
       </section>
 
       <LabPromo />

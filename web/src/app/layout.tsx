@@ -2,27 +2,30 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/chiron-goround-tc/wght.css";
 import "@fontsource-variable/fredoka/wght.css";
 import "./globals.css";
+import { JsonLd } from "@/components/site/json-ld";
+import { siteGraph } from "@/lib/jsonld";
+import { homeTitle, siteDescription } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name}｜${site.tagline}`,
+    default: homeTitle,
     template: `%s｜${site.name}`,
   },
-  description: site.description,
+  description: siteDescription,
   applicationName: site.name,
   openGraph: {
     type: "website",
     locale: "zh_TW",
     siteName: site.name,
-    title: `${site.name}｜${site.tagline}`,
-    description: site.description,
+    title: homeTitle,
+    description: siteDescription,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name}｜${site.tagline}`,
-    description: site.description,
+    title: homeTitle,
+    description: siteDescription,
   },
 };
 
@@ -34,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="zh-Hant-TW">
       <body>
+        <JsonLd data={siteGraph(siteDescription)} />
         <a href="#main" className="skip-link">
           跳到主要內容
         </a>

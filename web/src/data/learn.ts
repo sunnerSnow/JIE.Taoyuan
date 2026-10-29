@@ -1,5 +1,10 @@
 // 企鵝阿爸的政策小教室：「一句話看懂」＋「詳細內容」兩層閱讀深度
 
+import { site } from "@/lib/site";
+import { categories } from "./categories";
+import { policies, policiesIn } from "./policies";
+import { career } from "./record";
+
 export type Lesson = { term: string; oneLine: string; detail: string };
 
 export const lessons: Lesson[] = [
@@ -41,10 +46,32 @@ export const lessons: Lesson[] = [
   },
 ];
 
-export const faqs: { q: string; a: string }[] = [
+export type Faq = { q: string; a: string; list?: string[]; link?: { href: string; label: string } };
+
+const c = site.candidate;
+
+// 前四題對應搜尋時常見的問法（他有哪些政見、做過什麼、是不是官方），答案全部從資料組出來。
+// 政見用完整標題：只取冒號前的短名會失真（例如「垃圾費隨袋徵收」的主張其實是「先凝聚共識，不強制推動」）
+export const faqs: Faq[] = [
   {
     q: "這個網站是做什麼的？",
-    a: "JIE.Taoyuan 把桃園的政策整理成一座可以探索的「政策島」。你可以從交通、育兒、健康照顧、宜居環境與城市發展五個生活場景進入，看懂政策要解決的問題、做法、目前狀態與公開來源。本站是支持者自發整理的非官方網站，並非候選人或競選團隊經營。",
+    a: `JIE.Taoyuan 把${c.office}${c.name}（${c.ballotNo} 號）公開提出的政見，整理成一座可以探索的「政策島」。你可以從交通、育兒、健康照顧、宜居環境與城市發展五個生活場景進入，看懂每一項政見要解決的問題、做法、目前狀態與公開來源。本站是支持者自發整理的非官方網站，並非候選人或競選團隊經營。`,
+  },
+  {
+    q: `${c.name}有哪些政見？`,
+    a: `本站目前收錄 ${policies.length} 項政見，分成 ${categories.length} 類，每一項都附上候選人原始貼文或媒體報導的出處：`,
+    list: categories.map((cat) => `${cat.short}：${policiesIn(cat.slug).map((p) => `「${p.title}」`).join("、")}`),
+    link: { href: "/policies", label: "看全部政見" },
+  },
+  {
+    q: `${c.name}參選市長以前做過哪些職務？`,
+    a: "依立法院委員資料與媒體報導，主要經歷如下；各時期做過的事與出處，整理在「過去的貢獻」：",
+    list: career.map((x) => `${x.when} 年：${x.title}${x.detail ? `（${x.detail}）` : ""}`),
+    link: { href: "/record", label: "看過去的貢獻" },
+  },
+  {
+    q: `這是${c.name}的官方網站嗎？`,
+    a: `不是。${site.stanceLong}候選人本人的社群帳號連結在首頁與頁尾。`,
   },
   {
     q: "政策資料從哪裡來？",

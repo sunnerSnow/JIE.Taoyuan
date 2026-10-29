@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { IsoSvg } from "@/components/art/iso-svg";
 import { PenguinSays } from "@/components/art/speech";
 import { IslandPins } from "@/components/map/island-pins";
 import { PolicyCard } from "@/components/policy/policy-card";
+import { JsonLd } from "@/components/site/json-ld";
 import { Breadcrumbs } from "@/components/site/page-head";
-import { PageSkeleton } from "@/components/site/page-skeleton";
 import { SampleNotice } from "@/components/site/sample-notice";
 import { ArrowCurve, ArrowRight, Scallop, Squiggle } from "@/components/ui/decor";
 import { categories, categoryColor, getCategory } from "@/data/categories";
 import { policiesIn } from "@/data/policies";
+import { islandGraph } from "@/lib/jsonld";
 import { islandSpots } from "@/lib/map-data";
 import { pageMetadata } from "@/lib/metadata";
+import { site } from "@/lib/site";
 
 export function generateStaticParams() {
   return categories.map((c) => ({ slug: c.slug }));
@@ -22,19 +23,18 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/islands/[slug]">): Promise<Metadata> {
   const category = getCategory((await params).slug);
   if (!category) return {};
-  return pageMetadata({ title: category.name, description: `${category.tagline}${category.intro}`, path: `/islands/${category.slug}` });
+  const topic = `${site.candidate.name}的${category.short}政見`;
+  return pageMetadata({
+    title: `${category.name}｜${topic}`,
+    description: `${topic}（${policiesIn(category.slug).length} 項）：${category.tagline}${category.intro}`,
+    path: `/islands/${category.slug}`,
+  });
 }
 
-// 網址參數放進 Suspense：換頁時先顯示骨架，不必等伺服器（直接進站時仍是完整的預先渲染 HTML）
-export default function IslandPage({ params }: PageProps<"/islands/[slug]">) {
-  return (
-    <Suspense fallback={<PageSkeleton />}>
-      <IslandContent params={params} />
-    </Suspense>
-  );
-}
+// 網址參數不放進 Suspense：理由同政見詳情頁（主內容要留在原位，不串流到頁尾後的 hidden 區塊）
+export const instant = false;
 
-async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">["params"] }) {
+export default async function IslandPage({ params }: PageProps<"/islands/[slug]">) {
   const category = getCategory((await params).slug);
   if (!category) notFound();
 
@@ -45,6 +45,7 @@ async function IslandContent({ params }: { params: PageProps<"/islands/[slug]">[
 
   return (
     <>
+      <JsonLd data={islandGraph(category, list)} />
       <section aria-labelledby="island-title" className="relative overflow-hidden border-b-2 border-edge" style={{ background: color.soft }}>
         <div className="relative mx-auto grid max-w-[1200px] items-center gap-10 px-4 pb-14 pt-28 sm:px-6 sm:pt-32 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
           <div>

@@ -10,9 +10,10 @@ import { formatDate, policies, policiesIn, shortTitle, statusInfo, statusOrder }
 import { records } from "@/data/record";
 import type { Policy } from "@/data/types";
 import { pageMetadata } from "@/lib/metadata";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "政見追蹤",
+  title: `${site.candidate.name}政見追蹤`,
   description: `${policies.length} 項政見是什麼時候提出的、分布在哪幾座政策島？選舉期間的政見都還在「已提出」階段，當選上任後，每一項會依公開資料更新進度並附上來源。`,
   path: "/progress",
 });

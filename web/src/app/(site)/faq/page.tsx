@@ -6,10 +6,11 @@ import { PageHead } from "@/components/site/page-head";
 import { ArrowCurve } from "@/components/ui/decor";
 import { faqs, lessons } from "@/data/learn";
 import { pageMetadata } from "@/lib/metadata";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
   title: "常見問題",
-  description: "關於 JIE.Taoyuan 政策資料來源、狀態判斷與網站使用的常見問題，以及企鵝阿爸的政策小教室。",
+  description: `${site.candidate.name}有哪些政見、參選前做過哪些職務，以及 JIE.Taoyuan 的資料來源、狀態判斷與網站使用的常見問題，還有企鵝阿爸的政策小教室。`,
   path: "/faq",
 });
 
@@ -30,7 +31,7 @@ export default function FaqPage() {
                   <span className="font-display text-[22px] leading-none text-teal" aria-hidden="true">
                     Q
                   </span>
-                  <span className="flex-1 text-[17px] font-black leading-snug tracking-[0.04em]">{f.q}</span>
+                  <h3 className="flex-1 text-[17px] font-black leading-snug tracking-[0.04em]">{f.q}</h3>
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-edge transition-transform group-open:rotate-45" aria-hidden="true">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5">
                       <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" />
@@ -41,7 +42,21 @@ export default function FaqPage() {
                   <span className="font-display text-[22px] leading-none text-coral" aria-hidden="true">
                     A
                   </span>
-                  <p className="flex-1 text-[15px] leading-[1.9] text-ink-soft">{f.a}</p>
+                  <div className="flex-1 text-[15px] leading-[1.9] text-ink-soft">
+                    <p>{f.a}</p>
+                    {f.list && (
+                      <ul className="mt-2 list-disc space-y-1 pl-5">
+                        {f.list.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {f.link && (
+                      <Link href={f.link.href} className="link-ink mt-2 inline-block font-bold text-ink">
+                        {f.link.label}
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </details>
             </li>

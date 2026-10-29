@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { PenguinSays } from "@/components/art/speech";
 import { CategoryChip, PolicyCard } from "@/components/policy/policy-card";
 import { RelationEvidence, RelationTypeBadge } from "@/components/policy/relation-badge";
 import { ShareButtons } from "@/components/policy/share-buttons";
+import { JsonLd } from "@/components/site/json-ld";
 import { Breadcrumbs } from "@/components/site/page-head";
-import { PageSkeleton } from "@/components/site/page-skeleton";
 import { SampleNotice } from "@/components/site/sample-notice";
 import { ArrowCurve, ArrowRight, PinIcon } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
@@ -15,7 +14,9 @@ import { categoryColor, categoryMap } from "@/data/categories";
 import { formatDate, getPolicy, policies, sourceName, sourceTypeLabel, statusInfo, statusOrder } from "@/data/policies";
 import { RELATION_DISCLAIMER, type Relation, relationsOf } from "@/data/relations";
 import type { EditorNote, ExtraSource, Policy } from "@/data/types";
+import { policyGraph } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/metadata";
+import { policyLead } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 const noteLabel: Record<EditorNote["kind"], string> = { supplement: "補充", check: "核對", clarify: "澄清" };
@@ -28,24 +29,19 @@ export async function generateMetadata({ params }: PageProps<"/policies/[slug]">
   const policy = getPolicy((await params).slug);
   if (!policy) return {};
   return pageMetadata({
-    title: policy.title,
-    description: policy.summary,
+    title: `${policy.title}｜${site.candidate.name}政見`,
+    description: `${policyLead(policy)}：${policy.summary}`,
     path: `/policies/${policy.slug}`,
     article: { publishedTime: policy.publishedAt, modifiedTime: policy.updatedAt },
     ownImage: true,
   });
 }
 
-// 網址參數放進 Suspense：換頁時先顯示骨架，不必等伺服器（直接進站時仍是完整的預先渲染 HTML）
-export default function PolicyPage({ params }: PageProps<"/policies/[slug]">) {
-  return (
-    <Suspense fallback={<PageSkeleton />}>
-      <PolicyContent params={params} />
-    </Suspense>
-  );
-}
+// 網址參數不放進 Suspense：放進去的話，預先渲染的主內容會被串流到頁尾之後的 hidden 區塊，
+// 不執行 JavaScript 的 AI 爬蟲與閱讀模式會讀不到。代價是換頁時不先顯示骨架（24 頁都預先渲染，等待很短）
+export const instant = false;
 
-async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">["params"] }) {
+export default async function PolicyPage({ params }: PageProps<"/policies/[slug]">) {
   const policy = getPolicy((await params).slug);
   if (!policy) notFound();
 
@@ -57,6 +53,7 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
 
   return (
     <article aria-labelledby="policy-title">
+      <JsonLd data={policyGraph(policy)} />
       <header className="relative overflow-hidden border-b-2 border-edge" style={{ background: color.soft }}>
         <div className="mx-auto max-w-[1200px] px-4 pb-12 pt-28 sm:px-6 sm:pt-32">
           <Breadcrumbs
@@ -75,6 +72,8 @@ async function PolicyContent({ params }: { params: PageProps<"/policies/[slug]">
           <h1 id="policy-title" className="section-title mt-4 max-w-4xl">
             {policy.title}
           </h1>
+          {/* 誰、何時、在哪裡提出：這段被單獨引用時，仍看得出是哪位候選人的政見 */}
+          <p className="mt-4 max-w-3xl text-[15px] leading-[1.8] text-ink-soft">{policyLead(policy)}。</p>
           <p className="mt-5 max-w-3xl rounded-2xl border-2 border-edge bg-paper px-5 py-4 text-[16.5px] font-bold leading-[1.8] shadow-soft">
             <span className="mr-2 rounded bg-sun px-1.5 py-0.5 text-[12px] font-black tracking-[0.1em]">一句話摘要</span>
             {policy.summary}

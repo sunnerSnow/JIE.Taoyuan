@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
+import { JsonLd } from "@/components/site/json-ld";
 import { PageHead } from "@/components/site/page-head";
 import { ArrowCurve } from "@/components/ui/decor";
 import { formatDate } from "@/data/policies";
 import { career, claimByInfo, claimByOrder, recordsIn, recordUpdatedAt, roles, type ClaimBy, type RecordItem, type RoleSlug } from "@/data/record";
 import type { EditorNote, ExtraSource } from "@/data/types";
+import { profileGraph } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/metadata";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "過去的貢獻",
+  title: `${site.candidate.name}過去的貢獻`,
   description: "參選市長以前，黃世杰在桃園市政府、立法院和法務部做過哪些事？每一項都附上出處，並標明是官方紀錄、媒體報導，還是候選人或競選方的說法。",
   path: "/record",
 });
@@ -20,6 +23,7 @@ const roleOrder = Object.keys(roles) as RoleSlug[];
 export default function RecordPage() {
   return (
     <>
+      <JsonLd data={profileGraph(recordUpdatedAt)} />
       <PageHead
         title="過去的貢獻"
         eyebrow="Track Record"

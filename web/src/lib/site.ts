@@ -3,7 +3,6 @@ export const site = {
   brand: "JIE.Taoyuan",
   brandZh: "杰伴桃園",
   tagline: "讓每一個桃園人的生活，都更有感。",
-  description: "從每天的生活出發，一起探索桃園的政策與城市未來。用一座「桃園政策島」看懂交通、育兒、健康照顧、宜居環境與城市發展政策，每一項都附上來源、狀態與更新日期。",
   /** 正式網址：優先用 NEXT_PUBLIC_SITE_URL（自訂網域），其次是 Vercel 自動提供的正式網域 */
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
@@ -16,6 +15,9 @@ export const site = {
     office: "桃園市長候選人",
     ballotNo: 1,
     ballotSource: { title: "黃世杰 Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/De-oyFao2Sj", date: "2026-10-27" },
+    /** 維基百科條目「黃世杰 (政治人物)」與對應的 Wikidata（2026-10-29 確認）；結構化資料用來指明是哪一位黃世杰 */
+    wikipedia: "https://zh.wikipedia.org/wiki/%E9%BB%83%E4%B8%96%E6%9D%B0_(%E6%94%BF%E6%B2%BB%E4%BA%BA%E7%89%A9)",
+    wikidata: "https://www.wikidata.org/wiki/Q85885461",
     /** 候選人本人的社群帳號（依候選人的連結頁 portaly.cc/schuanglawyer，2026-10-29 確認） */
     socials: [
       { key: "threads", name: "Threads", url: "https://www.threads.com/@schuanglawyer" },
