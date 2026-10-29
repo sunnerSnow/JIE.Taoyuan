@@ -1,0 +1,41 @@
+name: IndexNow 通知搜尋引擎
+
+# Vercel 把 main 部署完成後（commit 狀態「Vercel」變成 success），把 sitemap 裡今天或昨天有更新的網址
+# 通知 Bing 等支援 IndexNow 的搜尋引擎。Google 不支援 IndexNow，仍靠 sitemap 與 Search Console。
+# 每天台灣時間 09:23 再補送一次，避免部署觸發被延遲或漏掉；漏了好幾天時，手動執行並勾選「全部網址」。
+# 腳本與說明在 tools/indexnow/submit.mjs。
+
+on:
+  status:
+  schedule:
+    # 錯開整點（整點是 GitHub 排程最塞的時候）
+    - cron: "23 1 * * *"
+  workflow_dispatch:
+    inputs:
+      all:
+        description: 送出 sitemap 的全部網址
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    # 只處理 Vercel 部署狀態本身（context 正好是「Vercel」），而且是 main 的正式部署；預覽部署在其他分支
+    if: >-
+      github.event_name != 'status' ||
+      (github.event.context == 'Vercel' && github.event.state == 'success' && contains(github.event.branches.*.name, 'main'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: 通知 IndexNow
+        run: node tools/indexnow/submit.mjs ${{ inputs.all && '--all' || '' }}
