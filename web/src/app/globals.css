@@ -142,6 +142,79 @@ html[data-menu-open="true"] {
     font-size: 14px;
   }
 
+  /* 社群圖示鈕：細線圓框＋線條圖示。滑過時底色從圓形底部升起，原圖示往上滑出、反色圖示從下方滑入，整顆微微浮起；滑開時反向回復 */
+  .social-btn {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    overflow: hidden;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    color: var(--color-ink);
+    transition:
+      transform 0.45s var(--ease-out-soft),
+      border-color 0.45s var(--ease-out-soft),
+      box-shadow 0.45s var(--ease-out-soft);
+  }
+
+  .social-fill,
+  .social-out,
+  .social-in {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: transform 0.45s var(--ease-out-soft);
+  }
+
+  .social-fill {
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--color-teal-deep);
+    transform: translateY(101%);
+  }
+
+  .social-in {
+    color: var(--color-paper);
+    transform: translateY(100%);
+  }
+
+  /* 鍵盤焦點一律有效；滑鼠滑過只在真的能 hover 的裝置上，手機點一下後不會一直停在填滿的樣子 */
+  .social-btn:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--color-teal-deep);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .social-btn:focus-visible .social-fill,
+  .social-btn:focus-visible .social-in {
+    transform: translateY(0);
+  }
+
+  .social-btn:focus-visible .social-out {
+    transform: translateY(-100%);
+  }
+
+  @media (hover: hover) {
+    .social-btn:hover {
+      transform: translateY(-3px);
+      border-color: var(--color-teal-deep);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .social-btn:hover .social-fill,
+    .social-btn:hover .social-in {
+      transform: translateY(0);
+    }
+
+    .social-btn:hover .social-out {
+      transform: translateY(-100%);
+    }
+  }
+
   .ink-card {
     background: var(--color-paper);
     border-radius: 28px;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Logo } from "@/components/site/logo";
-import { ThreadsFollow } from "@/components/site/threads-follow";
+import { CandidateSocials } from "@/components/site/candidate-socials";
 import { ArrowRight } from "@/components/ui/decor";
 import { SampleTag, StatusBadge } from "@/components/ui/status-badge";
 import { IslandLabel } from "@/components/map/island-label";
@@ -815,7 +815,7 @@ export function ExploreApp({
                     城市日誌
                   </button>
                 </div>
-                <ThreadsFollow compact className="mt-2" />
+                <CandidateSocials compact className="mt-2" />
                 <ul className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-1">
                   {islands.map((i) => (
                     <li key={i.pin.slug} className="shrink-0">
@@ -847,10 +847,10 @@ export function ExploreApp({
             <PolicyIndex islands={islands} selected={selected} activePolicy={policySlug} onSelect={select} onOpenPolicy={openPolicy} />
           )}
         </div>
-        {/* 非官方標示與追蹤按鈕固定在底部：切換到城市日誌時也看得到，也不跟地圖工具列搶左上角的空間 */}
-        <div className="flex items-center justify-between gap-3 border-t-2 border-edge px-6 py-3">
+        {/* 非官方標示與候選人帳號固定在底部：切換到城市日誌時也看得到，也不跟地圖工具列搶左上角的空間 */}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t-2 border-edge px-6 py-3">
           <p className="text-[12px] font-bold leading-snug text-ink-soft">{site.stance}</p>
-          <ThreadsFollow compact />
+          <CandidateSocials compact />
         </div>
       </aside>
 

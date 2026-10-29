@@ -8,7 +8,7 @@ import { PolicyCard } from "@/components/policy/policy-card";
 import { BallotBadge } from "@/components/site/ballot-badge";
 import { ElectionCountdown } from "@/components/site/election-countdown";
 import { SampleNotice } from "@/components/site/sample-notice";
-import { ThreadsFollow } from "@/components/site/threads-follow";
+import { CandidateSocials } from "@/components/site/candidate-socials";
 import { ArrowCurve, ArrowRight, Cloud, Squiggle } from "@/components/ui/decor";
 import { categories, categoryColor } from "@/data/categories";
 import { lessons } from "@/data/learn";
@@ -318,7 +318,7 @@ function Hero() {
                 <Link href="/explore" className="btn">
                   進入政策島
                 </Link>
-                <ThreadsFollow compact className="self-center" />
+                <CandidateSocials compact className="basis-full" />
               </div>
             </div>
           </div>

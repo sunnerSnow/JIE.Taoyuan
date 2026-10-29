@@ -16,8 +16,14 @@ export const site = {
     office: "桃園市長候選人",
     ballotNo: 1,
     ballotSource: { title: "黃世杰 Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/De-oyFao2Sj", date: "2026-10-27" },
-    /** 候選人本人的 Threads 帳號 */
-    threads: "https://www.threads.com/@schuanglawyer",
+    /** 候選人本人的社群帳號（依候選人的連結頁 portaly.cc/schuanglawyer，2026-10-29 確認） */
+    socials: [
+      { key: "threads", name: "Threads", url: "https://www.threads.com/@schuanglawyer" },
+      { key: "instagram", name: "Instagram", url: "https://www.instagram.com/schuanglawyer" },
+      { key: "facebook", name: "Facebook", url: "https://www.facebook.com/SCHuangLawyer" },
+      { key: "youtube", name: "YouTube", url: "https://www.youtube.com/@schuanglawyer" },
+      { key: "line", name: "LINE 官方帳號", url: "https://line.me/R/ti/p/@589cjotf" },
+    ],
   },
   /** 投票日（2026 地方公職人員選舉） */
   electionDate: "2026-11-28",
