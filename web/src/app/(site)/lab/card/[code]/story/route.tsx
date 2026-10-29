@@ -11,10 +11,10 @@ export function generateStaticParams() {
 }
 
 export async function GET(_req: Request, ctx: RouteContext<"/lab/card/[code]/story">) {
-  const picks = parseCardCode((await ctx.params).code);
-  if (!picks) return new Response("找不到這張桃園卡", { status: 404 });
+  const card = parseCardCode((await ctx.params).code);
+  if (!card) return new Response("找不到這張桃園卡", { status: 404 });
   // 沒有預先產生的組合每次都要重畫：交給 CDN 快取一天，過期後先給舊圖、背景再更新
-  return new ImageResponse(<StoryCard picks={picks} width={WIDTH} />, {
+  return new ImageResponse(<StoryCard theme={card.theme} picks={card.picks} width={WIDTH} />, {
     width: WIDTH,
     height: WIDTH * 1.5,
     fonts: await cardFonts(),

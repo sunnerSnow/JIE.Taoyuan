@@ -13,6 +13,6 @@ export function generateStaticParams() {
 }
 
 export default async function Image({ params }: { params: Promise<{ code: string }> }) {
-  const picks = parseCardCode((await params).code) ?? parseCardCode(sampleCardCodes()[0])!;
-  return new ImageResponse(<WideCard picks={picks} />, { ...size, fonts: await cardFonts() });
+  const card = parseCardCode((await params).code) ?? parseCardCode(sampleCardCodes()[0])!;
+  return new ImageResponse(<WideCard theme={card.theme} picks={card.picks} />, { ...size, fonts: await cardFonts() });
 }

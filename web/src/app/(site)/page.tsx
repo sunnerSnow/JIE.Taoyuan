@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
+import { TaoyuanCard } from "@/components/lab/taoyuan-card";
 import { HomeMap } from "@/components/map/home-map";
 import { IslandCard } from "@/components/policy/island-card";
 import { LessonList } from "@/components/policy/lesson-list";
@@ -12,6 +13,7 @@ import { ArrowCurve, ArrowRight, Cloud, Squiggle } from "@/components/ui/decor";
 import { categories, categoryColor } from "@/data/categories";
 import { lessons } from "@/data/learn";
 import { changeTypeInfo, changelog } from "@/data/changelog";
+import { parseCardCode, sampleCardCodes } from "@/data/lab";
 import { actionCount, formatDate, latestPolicies, policies, policiesIn } from "@/data/policies";
 import { featuredRecords, records, roles } from "@/data/record";
 import { labNav } from "@/lib/nav";
@@ -51,6 +53,8 @@ export default function HomePage() {
           ))}
         </ul>
       </section>
+
+      <LabPromo />
 
       {/* 政策焦點 */}
       <section aria-labelledby="latest-title" className="relative overflow-hidden py-20 sm:py-24">
@@ -120,6 +124,39 @@ export default function HomePage() {
       </section>
     </>
   );
+
+  /** 3 分鐘探索的介紹，旁邊放一張範例桃園卡（插畫「企鵝不捨 桃園第①」），先讓人看到玩完會拿到什麼 */
+  function LabPromo() {
+    const sample = parseCardCode(sampleCardCodes()[0])!;
+    const steps = ["選一個生活主題", "主題裡的政見全部攤開，挑 3 塊積木", "拿到桃園卡：分享連結，或下載直式圖發限時動態"];
+    return (
+      <section aria-labelledby="lab-title" className="relative overflow-hidden py-20 sm:py-24" style={{ background: "linear-gradient(180deg, #FBF7EE 0%, #F6EFE0 100%)" }}>
+        <div className="mx-auto grid max-w-[1100px] items-center gap-12 px-4 sm:px-6 md:grid-cols-[1fr_minmax(0,340px)] lg:gap-20">
+          <div>
+            <SectionHead id="lab-title" eyebrow="Penguin Lab" title={labNav.title} lead="不知道從哪裡看起？挑一個你最在意的生活主題，3 分鐘就能拼出一張自己的桃園卡。不用登入，也不用填資料。" />
+            <ol className="mt-8 space-y-3">
+              {steps.map((s, i) => (
+                <li key={s} className="flex items-center gap-3 text-[15.5px] font-bold">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-teal-deep font-display text-[15px] text-paper" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  {s}
+                </li>
+              ))}
+            </ol>
+            <Link href={labNav.href} className="btn btn-sun mt-9">
+              開始 3 分鐘探索
+              <ArrowCurve className="h-5 w-5" />
+            </Link>
+          </div>
+          <div className="mx-auto w-full max-w-[300px] md:max-w-[340px]">
+            <TaoyuanCard theme={sample.theme} picks={sample.picks} preview className="rotate-[2.5deg]" />
+            <p className="mt-5 text-center text-[13px] font-bold text-ink-soft">桃園卡範例</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   /** 政見與過去貢獻並列：選舉期間政見都還是「已提出」，旁邊放已經做到的事 */
   function TrackerBoard() {

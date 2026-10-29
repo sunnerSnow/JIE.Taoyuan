@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PenguinSays } from "@/components/art/speech";
+import { intercept } from "@/components/explore/intercept";
 import { ArrowCurve, ArrowRight } from "@/components/ui/decor";
 import type { CategorySlug } from "@/data/types";
 import { Brick, BrickSlot } from "./brick";
@@ -26,7 +27,7 @@ export type LabPolicy = {
   points: { title: string; items: string[] }[];
 };
 
-export type LabGroup = {
+export type LabTheme = {
   slug: CategorySlug;
   island: string;
   label: string;
@@ -37,119 +38,157 @@ export type LabGroup = {
 };
 
 /**
- * 網址就是活動狀態：?c=已收下的政見 id（依收下的順序，用「.」分隔）。
- * 重新整理、把網址傳給別人，都會看到同樣的積木；瀏覽器不必另外儲存任何東西。
+ * 網址就是活動狀態：?t=主題&c=已收下的政見 id（依收下的順序，用「.」分隔）。
+ * 上一頁、重新整理、把網址傳給別人，都會回到同一步；瀏覽器不必另外儲存任何東西。
  */
-function saveChosen(ids: string[]) {
+function setUrl(next: { t?: string | null; c?: string[] | null }, mode: "push" | "replace") {
   const url = new URL(window.location.href);
-  if (ids.length) url.searchParams.set("c", ids.join("."));
-  else url.searchParams.delete("c");
-  window.history.replaceState(null, "", url);
+  for (const [key, v] of Object.entries(next)) {
+    const s = Array.isArray(v) ? v.join(".") : (v ?? "");
+    if (s) url.searchParams.set(key, s);
+    else url.searchParams.delete(key);
+  }
+  window.history[mode === "push" ? "pushState" : "replaceState"](null, "", url);
 }
 
-/** 「3 分鐘，拼出你心中的桃園」：全部政見一次攤開，挑 3 項收下積木 → 桃園卡（獨立頁面 /lab/card/…） */
-export function LabApp({ groups, picks }: { groups: LabGroup[]; picks: number }) {
+/** 「3 分鐘，拼出你心中的桃園」：選主題 → 從主題的政見挑 3 塊積木 → 成果卡（成果卡是獨立頁面 /lab/card/…） */
+export function LabApp({ themes, picks }: { themes: LabTheme[]; picks: number }) {
   const params = useSearchParams();
-  const known = new Set(groups.flatMap((g) => g.policies.map((p) => p.id)));
-  const chosen = [...new Set((params.get("c") ?? "").split("."))].filter((id) => known.has(id)).slice(0, picks);
-  return <LabBoard groups={groups} picks={picks} chosen={chosen} onChange={saveChosen} />;
+  const theme = themes.find((t) => t.slug === params.get("t")) ?? null;
+  const topRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const shownTheme = useRef(theme?.slug ?? null);
+
+  // 換步驟時捲回活動頂端、焦點移到這一步的標題（第一次載入不搶焦點）
+  useEffect(() => {
+    const now = theme?.slug ?? null;
+    if (shownTheme.current === now) return;
+    shownTheme.current = now;
+    topRef.current?.scrollIntoView({ block: "start" });
+    headingRef.current?.focus({ preventScroll: true });
+  }, [theme?.slug]);
+
+  return (
+    <div ref={topRef} className="scroll-mt-24">
+      {theme ? (
+        <PickStep key={theme.slug} theme={theme} picks={picks} params={params} headingRef={headingRef} />
+      ) : (
+        <ThemeStep themes={themes} picks={picks} headingRef={headingRef} />
+      )}
+    </div>
+  );
 }
 
-/** 政見板＋積木托盤。沒有 onChange 時（還沒載入完成的預先產生頁面）只顯示、不能選 */
-export function LabBoard({ groups, picks, chosen, onChange }: { groups: LabGroup[]; picks: number; chosen: string[]; onChange?: (ids: string[]) => void }) {
-  // 選滿之後又按了別塊：在托盤提示先放回一塊
-  const [full, setFull] = useState(false);
-  const all = groups.flatMap((g) => g.policies.map((policy) => ({ policy, group: g })));
-  const byId = new Map(all.map((x) => [x.policy.id, x]));
-  const done = chosen.length === picks;
-  const code = [...chosen].sort().join("-");
+type HeadingRef = React.RefObject<HTMLHeadingElement | null>;
 
-  const toggle = (id: string) => {
-    if (chosen.includes(id)) {
-      setFull(false);
-      onChange?.(chosen.filter((x) => x !== id));
-    } else if (!done) onChange?.([...chosen, id]);
-    else setFull(true);
-  };
-  const clear = () => {
-    setFull(false);
-    onChange?.([]);
-  };
-
+/** 第 1 步：選生活主題。沒有 JS 時也是一般連結 */
+export function ThemeStep({ themes, picks, headingRef }: { themes: LabTheme[]; picks: number; headingRef?: HeadingRef }) {
   return (
     <>
       <Stepper at={0} />
       <PenguinSays className="mt-8" penguinClassName="h-24 w-20" bubbleClassName="max-w-xl text-[15px]">
-        嗨！我是企鵝阿爸。{all.length} 項政見都在下面，依政策島分好了。挑你最想了解的 {picks} 項收下積木，就能拼出你的桃園卡。不用登入，也不用填任何資料。
+        嗨！我是企鵝阿爸。選一個你最想了解的生活主題，主題裡的政見會全部列給你看；挑 {picks} 項收下積木，就能拼出你的桃園卡。不用登入，也不用填任何資料。
       </PenguinSays>
-
-      <nav aria-label="跳到政策島" className="mt-8 flex flex-wrap gap-2">
-        {groups.map((g) => {
-          const n = g.policies.filter((p) => chosen.includes(p.id)).length;
-          return (
-            <a key={g.slug} href={`#lab-${g.slug}`} className="chip transition-transform hover:-translate-y-0.5" style={{ background: g.color.soft }}>
-              <span className="h-2.5 w-2.5 rounded-full border-[1.5px] border-edge" style={{ background: g.color.base }} aria-hidden="true" />
-              {g.island}
-              <span className="font-bold text-ink-soft">{g.policies.length} 項</span>
-              {n > 0 && <span className="rounded-full bg-paper px-1.5 text-[12px] font-black text-teal-deep">已收下 {n}</span>}
-            </a>
-          );
-        })}
-      </nav>
-
-      {groups.map((g) => (
-        <section key={g.slug} id={`lab-${g.slug}`} aria-labelledby={`lab-${g.slug}-title`} className="mt-12 scroll-mt-28">
-          <div className="flex items-center gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl" style={{ background: g.color.soft }}>
-              <Brick color={g.color.base} className="h-8 w-11" />
-            </span>
-            <div className="min-w-0">
-              <h2 id={`lab-${g.slug}-title`} className="text-[21px] font-black leading-snug tracking-[0.06em] sm:text-[23px]">
-                {g.label}
-              </h2>
-              <p className="text-[14px] font-bold leading-relaxed text-ink-soft">
-                {g.question}
-                <span className="ml-1.5 whitespace-nowrap text-teal-deep">
-                  {g.island}・{g.policies.length} 項
+      <h2 ref={headingRef} tabIndex={-1} className="mt-10 text-[22px] font-black tracking-[0.06em] outline-none sm:text-[24px]">
+        第 1 步：選一個生活主題
+      </h2>
+      <ul className="mt-5 grid gap-3">
+        {themes.map((t) => (
+          <li key={t.slug}>
+            <a
+              href={`/lab?t=${t.slug}`}
+              onClick={(e) => intercept(e, () => setUrl({ t: t.slug, c: null }, "push"))}
+              className="group flex items-center gap-4 rounded-[22px] border-2 border-edge bg-paper p-4 shadow-soft transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
+            >
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl sm:h-20 sm:w-20" style={{ background: t.color.soft }}>
+                <Brick color={t.color.base} className="h-10 w-12 sm:h-12 sm:w-14" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[18px] font-black leading-snug tracking-[0.05em] sm:text-[20px]">{t.label}</span>
+                <span className="mt-1 block text-[14.5px] font-bold leading-relaxed text-ink-soft">{t.question}</span>
+                <span className="mt-1 block text-[12.5px] font-bold text-teal-deep">
+                  對應{t.island}・{t.policies.length} 項政見，挑 {picks} 項
                 </span>
-              </p>
-            </div>
-          </div>
-          <ul className="mt-5 grid gap-4 md:grid-cols-2">
-            {g.policies.map((p) => (
-              <PickCard
-                key={p.id}
-                policy={p}
-                group={g}
-                order={chosen.indexOf(p.id)}
-                locked={done && !chosen.includes(p.id)}
-                onToggle={() => toggle(p.id)}
-              />
-            ))}
-          </ul>
-        </section>
-      ))}
-
-      <p className="mt-12 text-[13.5px] leading-relaxed text-ink-soft">
-        政見依政策島分組，島內依提出日期由新到舊排列。生活主題和島的對應是本站整理，不是候選人的分類。想自己逛？
+              </span>
+              <ArrowRight className="h-5 w-5 shrink-0 text-teal-deep transition-transform group-hover:translate-x-1" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-8 text-[14px] leading-relaxed text-ink-soft">
+        想自己逛？
         <Link href="/explore" className="link-ink mx-1 font-bold text-ink">
           直接進入政策島
         </Link>
+        ，或看
+        <Link href="/policies" className="link-ink mx-1 font-bold text-ink">
+          全部政策
+        </Link>
         。
       </p>
+    </>
+  );
+}
+
+/** 第 2 步：主題裡的政見全部列出，挑 3 項收下積木；選滿後其他項目鎖住，要換就先放回一塊 */
+function PickStep({ theme, picks, params, headingRef }: { theme: LabTheme; picks: number; params: URLSearchParams; headingRef: HeadingRef }) {
+  // 選滿之後又按了別塊：在托盤提示先放回一塊
+  const [full, setFull] = useState(false);
+  const chosen = [...new Set((params.get("c") ?? "").split("."))].filter((id) => theme.policies.some((p) => p.id === id)).slice(0, picks);
+  const done = chosen.length === picks;
+  const code = [...chosen].sort().join("-");
+  const save = (ids: string[]) => setUrl({ c: ids }, "replace");
+
+  const toggle = (id: string) => {
+    if (chosen.includes(id)) {
+      setFull(false);
+      save(chosen.filter((x) => x !== id));
+    } else if (!done) save([...chosen, id]);
+    else setFull(true);
+  };
+  const clear = () => {
+    setFull(false);
+    save([]);
+  };
+
+  return (
+    <>
+      <Stepper at={1} />
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <a href="/lab" onClick={(e) => intercept(e, () => setUrl({ t: null, c: null }, "push"))} className="btn btn-sm">
+          <span aria-hidden="true">←</span> 換主題
+        </a>
+        <Link href="/explore" className="text-[14px] font-bold text-ink-soft hover:text-ink hover:underline">
+          離開活動，去政策島
+        </Link>
+      </div>
+
+      <h2 ref={headingRef} tabIndex={-1} className="mt-8 text-[22px] font-black leading-snug tracking-[0.06em] outline-none sm:text-[26px]">
+        第 2 步：從{theme.label}挑 {picks} 塊積木
+      </h2>
+      <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+        {theme.question}這個主題對應{theme.island}，島上的 {theme.policies.length} 項政見都在這裡，挑你最想了解的 {picks} 項收下。
+      </p>
+      <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">依提出日期由新到舊排列。主題和島的對應是本站整理，不是候選人的分類。</p>
+
+      <ul className="mt-6 grid gap-4 md:grid-cols-2">
+        {theme.policies.map((p) => (
+          <PickCard key={p.id} policy={p} theme={theme} order={chosen.indexOf(p.id)} locked={done && !chosen.includes(p.id)} onToggle={() => toggle(p.id)} />
+        ))}
+      </ul>
 
       {/* 積木托盤：手機上一直看得到已收下哪幾塊與下一步；按積木可以放回 */}
       <div className="sticky bottom-[max(12px,env(safe-area-inset-bottom))] z-10 mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[22px] border-2 border-edge bg-paper py-2.5 pl-3 pr-3 shadow-lift sm:pl-4">
         <ol aria-label="我的桃園積木" className="flex gap-1">
           {Array.from({ length: picks }, (_, i) => {
-            const x = byId.get(chosen[i] ?? "");
+            const p = theme.policies.find((x) => x.id === chosen[i]);
             return (
               <li key={i}>
-                {x ? (
-                  <button type="button" onClick={() => toggle(x.policy.id)} className="flex items-center gap-1.5 rounded-xl px-1.5 py-1 hover:bg-cream" title={`放回「${x.policy.short}」`}>
-                    <Brick color={x.group.color.base} className="h-8 w-11 [animation:pin-drop_.35s_both_var(--ease-out-soft)]" />
-                    <span className="hidden max-w-[7.5em] truncate text-[13px] font-bold lg:block">{x.policy.short}</span>
-                    <span className="sr-only lg:hidden">放回「{x.policy.short}」</span>
+                {p ? (
+                  <button type="button" onClick={() => toggle(p.id)} className="flex items-center gap-1.5 rounded-xl px-1.5 py-1 hover:bg-cream" title={`放回「${p.short}」`}>
+                    <Brick color={theme.color.base} className="h-8 w-11 [animation:pin-drop_.35s_both_var(--ease-out-soft)]" />
+                    <span className="hidden max-w-[7.5em] truncate text-[13px] font-bold lg:block">{p.short}</span>
+                    <span className="sr-only lg:hidden">放回「{p.short}」</span>
                   </button>
                 ) : (
                   <span className="block px-1.5 py-1">
@@ -184,13 +223,13 @@ export function LabBoard({ groups, picks, chosen, onChange }: { groups: LabGroup
 
 function PickCard({
   policy: p,
-  group: g,
+  theme: g,
   order,
   locked,
   onToggle,
 }: {
   policy: LabPolicy;
-  group: LabGroup;
+  theme: LabTheme;
   /** 第幾塊收下的（0 起算）；還沒收下是 -1 */
   order: number;
   /** 已經選滿、這塊又沒收下 */

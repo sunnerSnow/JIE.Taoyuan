@@ -1,8 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { categories, categoryColor, categoryMap } from "@/data/categories";
+import { categories, categoryColor } from "@/data/categories";
+import { labThemes } from "@/data/lab";
 import { policies, shortTitle, sourceTypeLabel } from "@/data/policies";
-import type { Policy } from "@/data/types";
+import type { CategorySlug, Policy } from "@/data/types";
 import { loadGoogleFont } from "./og";
 import { site } from "./site";
 
@@ -10,7 +11,8 @@ import { site } from "./site";
 // 底圖是插畫「企鵝不捨 桃園第①」，上方留白放卡片內容；直式版和頁面上的桃園卡同一個版型（components/lab/taoyuan-card.tsx）。
 
 export const CARD = {
-  eyebrow: "3 分鐘，拼出你心中的桃園",
+  /** 卡片最上面一行：活動＋主題，例如「3 分鐘探索・通勤與交通」 */
+  eyebrow: (theme: CategorySlug) => `3 分鐘探索・${labThemes[theme].label}`,
   title: "我探索的桃園",
   host: new URL(site.url).host,
   /** 取自插畫的口號與號次顏色，在米色紙張上維持足夠對比 */
@@ -32,9 +34,8 @@ export const wideArt = `data:image/jpeg;base64,${wide}`;
 /** 所有桃園卡共用一份字型子集（同一份參數才能命中快取） */
 const GLYPHS = [
   ...policies.map((p) => shortTitle(p.title)),
-  ...categories.map((c) => c.name),
+  ...categories.map((c) => CARD.eyebrow(c.slug)),
   ...Object.values(sourceTypeLabel),
-  CARD.eyebrow,
   CARD.title,
   site.stance,
   `杰伴桃園・${CARD.host}`,
@@ -59,13 +60,13 @@ function brickImage(color: string) {
 }
 
 const rows = (picks: Policy[]) =>
-  picks.map((p) => ({ id: p.id, short: shortTitle(p.title), meta: `${categoryMap[p.category].name}・${sourceTypeLabel[p.sourceType]}`, brick: brickImage(categoryColor[p.category].base) }));
+  picks.map((p) => ({ id: p.id, short: shortTitle(p.title), meta: sourceTypeLabel[p.sourceType], brick: brickImage(categoryColor[p.category].base) }));
 
 /** 卡片內容；u 是 1% 卡片寬（對應網頁版的 cqw），直式與橫式共用同一套比例 */
-function CardBody({ picks, u }: { picks: Policy[]; u: number }) {
+function CardBody({ theme, picks, u }: { theme: CategorySlug; picks: Policy[]; u: number }) {
   return (
     <>
-      <div style={{ display: "flex", fontSize: 3.4 * u, fontWeight: 900, letterSpacing: 0.35 * u, color: CARD.red }}>{CARD.eyebrow}</div>
+      <div style={{ display: "flex", fontSize: 3.4 * u, fontWeight: 900, letterSpacing: 0.35 * u, color: CARD.red }}>{CARD.eyebrow(theme)}</div>
       <div style={{ display: "flex", marginTop: 1.5 * u, fontSize: 9 * u, lineHeight: 1, fontWeight: 900, letterSpacing: 0.7 * u, color: CARD.navy }}>{CARD.title}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 3 * u, marginTop: 5 * u }}>
         {rows(picks).map((r) => (
@@ -96,14 +97,14 @@ function CardFooter({ u }: { u: number }) {
 }
 
 /** 直式桃園卡（2:3）：和網頁上的卡片同一個版型，適合存到手機、發限時動態 */
-export function StoryCard({ picks, width }: { picks: Policy[]; width: number }) {
+export function StoryCard({ theme, picks, width }: { theme: CategorySlug; picks: Policy[]; width: number }) {
   const u = width / 100;
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0" }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
       <img src={portraitArt} width={width} height={width * 1.5} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 8 * u, right: 8 * u, top: 7.5 * u }}>
-        <CardBody picks={picks} u={u} />
+        <CardBody theme={theme} picks={picks} u={u} />
       </div>
       <div style={{ display: "flex", position: "absolute", left: 8 * u, right: 8 * u, bottom: 6 * u }}>
         <CardFooter u={u} />
@@ -113,14 +114,14 @@ export function StoryCard({ picks, width }: { picks: Policy[]; width: number }) 
 }
 
 /** 橫式分享預覽（1200×630）：左邊是卡片內容（約 500px 寬），右邊是插畫 */
-export function WideCard({ picks }: { picks: Policy[] }) {
+export function WideCard({ theme, picks }: { theme: CategorySlug; picks: Policy[] }) {
   const u = 7.6;
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0" }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
       <img src={wideArt} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 64, top: 50, bottom: 40, width: 500 }}>
-        <CardBody picks={picks} u={u} />
+        <CardBody theme={theme} picks={picks} u={u} />
         <div style={{ display: "flex", marginTop: "auto" }}>
           <CardFooter u={u} />
         </div>

@@ -1,4 +1,4 @@
-const STEPS = ["挑 3 項政見", "拿桃園卡"];
+const STEPS = ["選主題", "挑 3 塊積木", "拿桃園卡"];
 
 /** 活動進度：目前這一步另外標「目前」給螢幕閱讀器，不只靠顏色 */
 export function Stepper({ at }: { at: number }) {
