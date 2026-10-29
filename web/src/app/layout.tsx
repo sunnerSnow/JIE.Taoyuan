@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   applicationName: site.name,
+  // Google Search Console「網址前置字元」資源 https://jie-taoyuan.vercel.app/ 的 HTML 標記驗證
+  verification: { google: "eRiWH3LL8GIF0jPNvX3Gwr_eqsd9n4C0URspJ8YIER8" },
   openGraph: {
     type: "website",
     locale: "zh_TW",
