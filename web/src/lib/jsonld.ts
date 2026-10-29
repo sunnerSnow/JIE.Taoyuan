@@ -4,6 +4,8 @@ import { site } from "./site";
 
 // 結構化資料（schema.org JSON-LD）。本站是非官方網站：發布者一律是支持者志工團隊，
 // 候選人只出現在 about（這些頁面在講誰），不能被標成發布者。不放聯絡信箱。
+// 每一份 JSON-LD 都自成一份：用 @id 指到的網站、維護者、候選人節點也放進同一份，
+// 因為有些解析器不會跨 <script> 對應 @id；同一個 @id 出現在多份裡，支援的解析器會合併成同一個節點。
 
 const c = site.candidate;
 const abs = (path: string) => new URL(path, site.url).toString();
@@ -14,36 +16,33 @@ export const ldIds = {
   candidate: abs("/#candidate"),
 };
 
-/** 全站共用：網站、維護者、候選人（sameAs 讓 AI 確認是哪一位黃世杰） */
+/** 用到網站節點的圖，也要放 orgNode 與 candidateNode（publisher、about 指到它們） */
+const websiteNode = {
+  "@type": "WebSite",
+  "@id": ldIds.website,
+  url: abs("/"),
+  name: site.name,
+  inLanguage: "zh-Hant-TW",
+  publisher: { "@id": ldIds.org },
+  about: { "@id": ldIds.candidate },
+};
+
+const orgNode = { "@type": "Organization", "@id": ldIds.org, name: site.organizer, url: abs("/about"), description: site.stanceLong };
+
+/** sameAs 讓 AI 確認是哪一位黃世杰 */
+const candidateNode = {
+  "@type": "Person",
+  "@id": ldIds.candidate,
+  name: c.name,
+  description: `${site.electionDate.slice(0, 4)} 年${c.office}（${c.ballotNo} 號）`,
+  sameAs: [c.wikipedia, c.wikidata, ...c.socials.filter((s) => s.key !== "line").map((s) => s.url)],
+};
+
+/** 全站共用：網站、維護者、候選人 */
 export function siteGraph(description: string) {
   return {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": ldIds.website,
-        url: abs("/"),
-        name: site.name,
-        inLanguage: "zh-Hant-TW",
-        description,
-        publisher: { "@id": ldIds.org },
-        about: { "@id": ldIds.candidate },
-      },
-      {
-        "@type": "Organization",
-        "@id": ldIds.org,
-        name: site.organizer,
-        url: abs("/about"),
-        description: site.stanceLong,
-      },
-      {
-        "@type": "Person",
-        "@id": ldIds.candidate,
-        name: c.name,
-        description: `${site.electionDate.slice(0, 4)} 年${c.office}（${c.ballotNo} 號）`,
-        sameAs: [c.wikipedia, c.wikidata, ...c.socials.filter((s) => s.key !== "line").map((s) => s.url)],
-      },
-    ],
+    "@graph": [{ ...websiteNode, description }, orgNode, candidateNode],
   };
 }
 
@@ -93,6 +92,9 @@ export function policyGraph(p: Policy) {
         { name: category.name, path: `/islands/${category.slug}` },
         { name: p.title },
       ]),
+      websiteNode,
+      orgNode,
+      candidateNode,
     ],
   };
 }
@@ -126,12 +128,19 @@ export function islandGraph(category: Category, list: Policy[]) {
 export function profileGraph(dateModified: string) {
   return {
     "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    url: abs("/record"),
-    name: `${c.name}過去的貢獻`,
-    inLanguage: "zh-Hant-TW",
-    dateModified,
-    mainEntity: { "@id": ldIds.candidate },
-    isPartOf: { "@id": ldIds.website },
+    "@graph": [
+      {
+        "@type": "ProfilePage",
+        url: abs("/record"),
+        name: `${c.name}過去的貢獻`,
+        inLanguage: "zh-Hant-TW",
+        dateModified,
+        mainEntity: { "@id": ldIds.candidate },
+        isPartOf: { "@id": ldIds.website },
+      },
+      websiteNode,
+      orgNode,
+      candidateNode,
+    ],
   };
 }
