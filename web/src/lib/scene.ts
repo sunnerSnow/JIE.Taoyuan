@@ -283,6 +283,16 @@ function future(g: Iso) {
   g.line([[26, 5, 17], [26, 5, 20]], INK, 0.9);
   g.free(26, 5, 20, ([x, y]) => `M${x - 0.5} ${y}a0.5 0.5 0 1 0 1 0a0.5 0.5 0 1 0 -1 0Z`, CORAL, { sw: 0.7 });
 
+  // 雙城藝術季的小舞台（馬祖交流）：先畫後排柱子和表演者，再畫前排柱子與屋頂
+  g.building(5);
+  g.box(15.6, 9, 0, 5, 2.6, 0.7, { top: "#E9D5B5", left: WALL2, right: "#EAD9BF" });
+  for (const px of [15.9, 20.3]) g.line([[px, 9.3, 0.7], [px, 9.3, 3.2]], INK, 0.9);
+  g.person(17.3, 10.2, 0.7, "#8DA8C9", { h: 0.9 });
+  g.person(18.9, 10.4, 0.7, SUN, { h: 0.8 });
+  for (const px of [15.9, 20.3]) g.line([[px, 11.3, 0.7], [px, 11.3, 3.2]], INK, 0.9);
+  g.gable(15.6, 9, 3.2, 5, 2.6, 1.2, "x", CORAL, WALL);
+  g.building(null);
+
   // 棒球場
   g.building(3);
   g.disk(9, 20, 0.02, 5.6, "#B9DC9A", { sw: 0.9 });
@@ -354,7 +364,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 26,
     screen: [-76, 2],
     anchor: [26, 5, 21],
-    spots: [[22, 18, 3.5], [17.8, 5.5, 8.4], [7, 5, 9.5], [9, 20, 1], [26, 5, 17.5]],
+    spots: [[22, 18, 3.5], [17.8, 5.5, 8.4], [7, 5, 9.5], [9, 20, 1], [26, 5, 17.5], [18.1, 10.3, 4.6]],
     draw: future,
   },
 };

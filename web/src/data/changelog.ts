@@ -26,6 +26,24 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-10-29-matsu",
+    date: "2026-10-29",
+    type: "added",
+    title: "新增政見「馬祖交流四大主張」",
+    summary:
+      "收錄候選人 10 月 28 日提出的「心桃園新故鄉」4 大主張：提升馬祖交流小組層級、成立桃園市駐馬祖聯絡處、推動閩東語言文化教育、舉辦桃園－馬祖雙城藝術季。具體做法依媒體報導整理，並附候選人 Threads 貼文。未來發展島多了一座藝術季小舞台。",
+    policies: ["matsu-exchange"],
+  },
+  {
+    id: "2026-10-29-traffic-threads",
+    date: "2026-10-29",
+    type: "source",
+    title: "科技執法合理化補上候選人 Threads 貼文",
+    summary:
+      "候選人 10 月 28 日到龍岡地下道會勘後發文，重申「設置標準公開透明」「宣導勸導完整到位」兩組做法。貼文沒有列出具體細節，主要來源維持媒體報導，貼文列為官方佐證。",
+    policies: ["fair-traffic-enforcement"],
+  },
+  {
     id: "2026-10-28-shorts-check",
     date: "2026-10-28",
     type: "reverified",

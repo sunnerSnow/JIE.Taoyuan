@@ -162,7 +162,7 @@ export function SiteHeader() {
             <div className="mt-10 flex items-end gap-3">
               <Penguin pose="wave" className="h-28 w-24 shrink-0" />
               <p className="relative mb-10 rounded-2xl border-2 border-edge bg-paper px-4 py-3 text-[15px] font-bold leading-relaxed">
-                不知道從哪裡開始？先玩「3 分鐘探索」，選一個生活主題就好！
+                不知道從哪裡開始？先玩「3 分鐘探索」，挑 3 項最想了解的政見就好！
               </p>
             </div>
           </nav>

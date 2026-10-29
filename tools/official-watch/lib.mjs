@@ -162,7 +162,13 @@ export function threadsText(texts) {
   const handle = config.threads.split("@")[1];
   // 「翻譯」按鈕的文字在不同環境可能夾著看不見的字元，比對前先拿掉
   const bare = (t) => t.replace(/[\s\u200b-\u200f\u2060\ufeff]/g, "");
+  // 「翻譯」有時和內文擠在同一段，變成最後一行
+  const dropTranslate = (t) => {
+    const lines = t.split("\n");
+    return /^(查看)?翻譯$/.test(bare(lines.at(-1))) ? lines.slice(0, -1).join("\n").trimEnd() : t;
+  };
   return texts
+    .map(dropTranslate)
     .filter(
       (t) =>
         t !== handle &&

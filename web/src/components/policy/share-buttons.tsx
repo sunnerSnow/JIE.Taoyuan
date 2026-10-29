@@ -5,8 +5,11 @@ import { useState, useSyncExternalStore } from "react";
 const noop = () => () => {};
 const canNativeShare = () => typeof navigator !== "undefined" && typeof navigator.share === "function";
 
-/** 分享按鈕（政見頁、桃園卡共用）：系統分享（手機）、複製連結、LINE、Facebook、Threads，以及下載分享圖 */
-export function ShareButtons({ title, fileName, label = "分享這項政見" }: { title: string; fileName: string; label?: string }) {
+/**
+ * 分享按鈕（政見頁、桃園卡共用）：系統分享（手機）、複製連結、LINE、Facebook、Threads，以及下載分享圖。
+ * 下載的圖預設是頁面的 og:image；桃園卡另外傳入直式卡片圖（image）。
+ */
+export function ShareButtons({ title, fileName, image, label = "分享這項政見" }: { title: string; fileName: string; image?: string; label?: string }) {
   const native = useSyncExternalStore(noop, canNativeShare, () => false);
   const [copied, setCopied] = useState(false);
 
@@ -14,9 +17,9 @@ export function ShareButtons({ title, fileName, label = "分享這項政見" }: 
   const here = () => window.location.href.split("#")[0];
   const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
-  // 分享圖網址帶雜湊（opengraph-image-xxxx），從頁面的 og:image 讀，再換成目前網域
+  // 有傳入 image 就下載那張；否則從頁面的 og:image 讀（網址帶雜湊 opengraph-image-xxxx），再換成目前網域
   const downloadImage = async () => {
-    const meta = document.querySelector<HTMLMetaElement>('meta[property="og:image"]')?.content;
+    const meta = image ?? document.querySelector<HTMLMetaElement>('meta[property="og:image"]')?.content;
     if (!meta) return;
     const u = new URL(meta, window.location.origin);
     const src = new URL(u.pathname + u.search, window.location.origin).toString();

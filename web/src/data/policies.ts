@@ -245,9 +245,16 @@ export const policies: Policy[] = [
     sourceUrl: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5516299",
     sourceType: "media",
     publishedAt: "2026-07-24",
-    retrievedAt: "2026-10-27",
-    updatedAt: "2026-10-27",
+    retrievedAt: "2026-10-29",
+    updatedAt: "2026-10-29",
     extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 Threads",
+        title: "世杰跟彭俊豪議員、黃崇真議員，來到曾經一個月開出三千張罰單的龍岡地下道",
+        url: "https://www.threads.com/@schuanglawyer/post/DfBljBsiIEk",
+        date: "2026-10-28",
+      },
       {
         type: "media",
         outlet: "聯合報",
@@ -2065,6 +2072,107 @@ export const policies: Policy[] = [
       },
     ],
     spot: 0,
+  },
+  // ✅ 可查證內容（四大主張依媒體對記者會的報導整理，用語照原文；附候選人 Threads 貼文）
+  {
+    id: "u6",
+    slug: "matsu-exchange",
+    title: "馬祖交流四大主張：心桃園新故鄉",
+    category: "future",
+    summary: "提升馬祖交流小組層級、由市長親自擔任召集人，成立桃園市駐馬祖聯絡處，推動閩東語言文化教育，舉辦桃園－馬祖雙城藝術季，深化桃園與馬祖的交流。",
+    problemStatement:
+      "候選人指出，桃園有超過 5 萬位市民來自馬祖，高中聯招也隸屬同一學區，雙城長年密切交流；馬祖四鄉五島的閩東語言、傳統戲劇與地方文化，也早已是桃園文化風景中不可或缺的一部分。",
+    description:
+      "黃世杰 10 月 28 日上午前往馬祖南竿，下午返台後召開記者會，提出「心桃園新故鄉」4 大主張。他在貼文中表示，要從語言教育、藝文展演和青年參與深化桃園、馬祖交流，讓馬祖第二代、第三代有機會認識自己的文化根源，讓更多市民都有機會看見馬祖的魅力。",
+    pillars: [
+      {
+        title: "提升馬祖交流小組層級",
+        tagline: "由桃園市長親自擔任召集人",
+        items: ["邀集各局處首長參與，強化文化、教育、觀光及產業等跨局處協調", "定期盤點馬祖鄉親需求與雙城合作事項，建立制度化的交流機制"],
+      },
+      {
+        title: "成立桃園市駐馬祖聯絡處",
+        items: [
+          "作為桃園市政府與連江縣政府、馬祖在地團體及鄉親之間的常態聯繫窗口",
+          "協助推動雙城合作、文化觀光交流及行政協調，提供更即時、便利的跨海服務",
+        ],
+      },
+      {
+        title: "推動閩東語言文化教育",
+        items: [
+          "規劃開設常態型親子課程，並在寒暑假舉辦馬祖文化營隊",
+          "串聯兩地學校及文化團體，讓年輕世代認識馬祖語言與文化",
+          "鼓勵志願者走入社區關懷據點及長照機構，透過陪伴與互動促進世代交流",
+        ],
+      },
+      {
+        title: "舉辦桃園－馬祖雙城藝術季",
+        items: [
+          "整合兩地藝文資源，邀請藝術家、表演團隊及青年創作者參與",
+          "透過不同藝術形式展現馬祖文化特色",
+          "串聯地方商圈、特色飲食及觀光資源，帶動文化觀光與地方經濟發展",
+        ],
+      },
+    ],
+    audience: "來自馬祖、在桃園生活的鄉親與第二代、第三代，以及想認識馬祖文化的市民",
+    tags: ["馬祖", "閩東語", "族群文化", "藝文"],
+    status: "proposed",
+    sourceTitle: "匯流新聞網〈提「桃馬共好」4主張　黃世杰拋設駐馬祖聯絡處、市長任交流召集人〉",
+    sourceUrl: "https://cnews.com.tw/262171028a04/",
+    sourceType: "media",
+    publishedAt: "2026-10-28",
+    retrievedAt: "2026-10-29",
+    updatedAt: "2026-10-29",
+    extraSources: [
+      {
+        type: "candidate",
+        outlet: "黃世杰 Threads",
+        title: "有人問我，為什麼要大老遠跑一趟馬祖？",
+        url: "https://www.threads.com/@schuanglawyer/post/DfCFywSE6rq",
+        date: "2026-10-28",
+      },
+      {
+        type: "media",
+        outlet: "三立新聞網",
+        title: "黃世杰快閃馬祖拋4大主張　被問桃園民調接近反應曝光",
+        url: "https://www.setn.com/news/1929957",
+        date: "2026-10-28",
+      },
+      {
+        type: "media",
+        outlet: "自由時報",
+        title: "5萬馬祖鄉親落腳桃園 黃世杰訪馬祖談理念",
+        url: "https://news.ltn.com.tw/news/politics/breakingnews/5621270",
+        date: "2026-10-28",
+      },
+      {
+        type: "media",
+        outlet: "聯合報",
+        title: "黃世杰快閃馬祖 盼深化桃園、馬祖2地交流",
+        url: "https://udn.com/news/story/124652/9841892",
+        date: "2026-10-28",
+      },
+    ],
+    notes: [
+      {
+        kind: "check",
+        text: "四大主張的具體做法出自候選人 10 月 28 日返台後的記者會（匯流新聞網、三立新聞網）；候選人的 Threads 貼文只提到要從語言教育、藝文展演和青年參與深化交流。報導沒有提到駐馬祖聯絡處的編制，也沒有提到雙城藝術季的舉辦時程或經費。",
+      },
+      { kind: "clarify", text: "記者會上的主張名稱是「心桃園新故鄉」；「桃馬共好」只出現在匯流新聞網的標題。" },
+    ],
+    scenarios: [
+      {
+        persona: "在桃園長大的馬祖第二代",
+        district: "中壢區",
+        text: "我聽得懂阿嬤講的馬祖話，自己卻不太會說。政見提到要開設常態型親子課程，寒暑假也辦馬祖文化營隊；如果做到，我可以帶孩子一起去學。",
+      },
+      {
+        persona: "在桃園開小吃店的馬祖鄉親",
+        district: "八德區",
+        text: "店裡賣的是家鄉的味道。政見說雙城藝術季要串聯地方商圈、特色飲食及觀光資源；如果真的辦，也許會有更多桃園人認識馬祖的味道。",
+      },
+    ],
+    spot: 5,
   },
 ];
 
