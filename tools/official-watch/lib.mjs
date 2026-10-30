@@ -47,6 +47,20 @@ export async function gh(path, init = {}) {
   return res.status === 204 ? null : res.json();
 }
 
+/**
+ * 上一次成功跑完的偵測時間。GitHub 的排程會延遲好幾個小時、偶爾整次跳過，不能只看設定的間隔；
+ * 讀不到（本機沒網路、API 失敗）就回傳 null，呼叫端退回用 config.intervalHours 估。
+ */
+export async function lastRunTime() {
+  try {
+    const { workflow_runs: runs } = await gh("/actions/workflows/official-watch.yml/runs?status=success&per_page=5");
+    const prev = runs.find((r) => String(r.id) !== process.env.GITHUB_RUN_ID);
+    return prev ? new Date(prev.run_started_at ?? prev.created_at) : null;
+  } catch {
+    return null;
+  }
+}
+
 /** 收件匣 Issue（最近 100 則，含留言）；state 可以是 open、closed、all */
 export async function inboxIssues(state = "all") {
   const issues = (await gh(`/issues?labels=${encodeURIComponent(config.label)}&state=${state}&per_page=100`)).filter((i) => !i.pull_request);

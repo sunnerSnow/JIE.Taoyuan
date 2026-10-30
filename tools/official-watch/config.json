@@ -3,7 +3,7 @@
   "label": "official-inbox",
   "issueTitle": "官方新貼文待整理",
   "since": "2026-10-28",
-  "intervalHours": 12,
+  "intervalHours": 3,
   "dataDir": "../../web/src/data",
   "youtube": {
     "channel": "https://www.youtube.com/@schuanglawyer",

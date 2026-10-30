@@ -13,14 +13,42 @@ import { site } from "./site";
 // 一類有幾項就有幾張，卡上標「第幾張／共幾張」，一次傳好幾張也看得出順序。
 // 直式 900×1600（手機全螢幕看剛好），底圖是插畫「企鵝不捨 桃園第①」放在下方、上方留素色給文字；橫式是連結預覽用。
 
-const EYEBROW = `${site.candidate.name}的政見重點`;
+const LABEL = "政見重點";
+
+/** 卡片最上面：號次圓圈＋候選人姓名（大字），旁邊小字「政見重點」；h 是姓名字級（px） */
+function Candidate({ h }: { h: number }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: h * 0.3 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: h * 1.25,
+          height: h * 1.25,
+          borderRadius: 999,
+          border: `${h * 0.1}px solid ${CARD.red}`,
+          background: "#FFFFFF",
+          fontSize: h * 0.82,
+          fontWeight: 900,
+          color: CARD.red,
+        }}
+      >
+        {site.candidate.ballotNo}
+      </div>
+      <div style={{ display: "flex", fontSize: h, lineHeight: 1.1, fontWeight: 900, letterSpacing: h * 0.06, color: CARD.ink }}>{site.candidate.name}</div>
+      <div style={{ display: "flex", marginLeft: h * 0.1, fontSize: h * 0.5, fontWeight: 700, color: CARD.soft }}>{LABEL}</div>
+    </div>
+  );
+}
 
 const voteDayText = () => `投票日：${voteDay()}`;
 
 const storyArt = `data:image/png;base64,${await readFile(join(process.cwd(), "public/lab/easy-card.png"), "base64")}`;
 
 const GLYPHS = [
-  EYEBROW,
+  site.candidate.name,
+  LABEL,
   voteDayText(),
   "第0123456789張／共",
   ...categories.map((c) => c.short),
@@ -55,8 +83,8 @@ export function EasyStoryCard({ policy: p, index, total, width }: { policy: Poli
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
       <img src={storyArt} width={width} height={width * (16 / 9)} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 7 * u, right: 7 * u, top: 7 * u }}>
-        <div style={{ display: "flex", fontSize: 4.6 * u, lineHeight: 1.3, fontWeight: 900, letterSpacing: 0.3 * u, color: CARD.red }}>{EYEBROW}</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 2 * u, marginTop: 2 * u }}>
+        <Candidate h={7.4 * u} />
+        <div style={{ display: "flex", alignItems: "center", gap: 2 * u, marginTop: 3 * u }}>
           <div
             style={{
               display: "flex",
@@ -111,8 +139,8 @@ export function EasyWideCard({ theme }: { theme: CategorySlug }) {
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
       <img src={wideArt} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 64, top: 44, bottom: 36, width: 500 }}>
-        <div style={{ display: "flex", fontSize: 28, fontWeight: 900, letterSpacing: 2, color: CARD.red }}>{EYEBROW}</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 4 }}>
+        <Candidate h={40} />
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 10 }}>
           <div style={{ display: "flex", width: 30, height: 30, borderRadius: 999, background: color }} />
           <div style={{ display: "flex", fontSize: 72, lineHeight: 1.15, fontWeight: 900, letterSpacing: 5, color: CARD.navy }}>{categoryMap[theme].short}</div>
         </div>

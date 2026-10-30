@@ -1,0 +1,745 @@
+import { policies } from "./policies";
+
+// 杰伴出發（JIE GO!）：已經發生的行程（走訪、活動、上節目），新的在前，畫在 /trail 的桃園 13 區地圖上。
+// 來源先找候選人官方帳號，找不到再用主流媒體報導；不代表全部行程，也不預告未來行程。
+// 地點、標題與內容照來源原文整理，不加詮釋；區名是本站依地點歸類。行程預告和當天的貼文算同一筆，兩則都列在 sources。
+// 來源明確提到的政見才放 policies（slug 打錯 build 會失敗）。
+
+/** 桃園市 13 區（依行政區順序） */
+export const districts = ["桃園區", "中壢區", "平鎮區", "八德區", "楊梅區", "蘆竹區", "大溪區", "龍潭區", "龜山區", "大園區", "觀音區", "新屋區", "復興區"] as const;
+export type District = (typeof districts)[number];
+
+export type TrailKind = "visit" | "event" | "media";
+
+export const trailKindLabel: Record<TrailKind, string> = { visit: "走訪", event: "活動", media: "上節目" };
+
+export type TrailEntry = {
+  /** 網址錨點（/trail#id） */
+  id: string;
+  /** 行程發生的台灣日期 */
+  date: string;
+  kind: TrailKind;
+  /** 桃園 13 區之一；桃園以外寫 outside；貼文沒寫地點就不填 */
+  district?: District | "outside";
+  /** 地點：照貼文寫的 */
+  place?: string;
+  title: string;
+  summary: string;
+  policies?: string[];
+  /** outlet 照政見資料的寫法，例如「黃世杰 Threads」「聯合報」 */
+  sources: { outlet: string; title: string; url: string; date: string }[];
+};
+
+export const trail: TrailEntry[] = [
+  {
+    id: "2026-10-30-dayuan-market",
+    date: "2026-10-30",
+    kind: "visit",
+    district: "大園區",
+    place: "大園公有零售市場",
+    title: "到大園市場向攤商、市民問好",
+    summary: "前一天預告會和游吾和議員及在地夥伴到大園公有零售市場，向辛勞的攤商、買菜的市民問好；當天貼文寫：「我在大園市場，感謝鄉親送我好彩頭」。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "我在大園市場，感謝鄉親送我好彩頭", url: "https://www.threads.com/@schuanglawyer/post/DfGWEZmCBZL", date: "2026-10-30" },
+      { outlet: "黃世杰 Threads", title: "杰伴逛市場，明早08:30大園市場來相見（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfEh8U-iSDF", date: "2026-10-29" },
+    ],
+  },
+  {
+    id: "2026-10-29-show",
+    date: "2026-10-29",
+    kind: "media",
+    place: "YouTube「94要客訴」",
+    title: "上陳柏惟的節目",
+    summary: "節目預告寫：無論是大家關心的交通、產業，或是育兒的實質支持，都已經有清晰的藍圖。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "今天上立院榮顧陳柏惟節目", url: "https://www.threads.com/@schuanglawyer/post/DfFSfv_iOyL", date: "2026-10-29" },
+      { outlet: "黃世杰 Threads", title: "明晚18:00，跟立院榮譽顧問陳柏惟聊聊對桃園的願景（節目預告）", url: "https://www.threads.com/@schuanglawyer/post/DfCi0Pymj60", date: "2026-10-28" },
+    ],
+  },
+  {
+    id: "2026-10-28-matsu",
+    date: "2026-10-28",
+    kind: "visit",
+    district: "outside",
+    place: "連江縣馬祖南竿",
+    title: "前往馬祖南竿",
+    summary:
+      "一早到南竿介壽獅子市場品嚐在地早餐、跟鄉親和攤商問好，到馬祖玄天宮、馬祖境天后宮參香祈福，拜訪桃園市民在馬祖投資的企業，並到年輕人開設的咖啡廳聆聽青年朋友的意見。",
+    policies: ["matsu-exchange"],
+    sources: [{ outlet: "黃世杰 Threads", title: "有人問我，為什麼要大老遠跑一趟馬祖？", url: "https://www.threads.com/@schuanglawyer/post/DfCFywSE6rq", date: "2026-10-28" }],
+  },
+  {
+    id: "2026-10-28-longgang",
+    date: "2026-10-28",
+    kind: "visit",
+    district: "中壢區",
+    place: "龍岡地下道",
+    title: "和彭俊豪、黃崇真議員到龍岡地下道",
+    summary: "來到曾經一個月開出三千張罰單的龍岡地下道，提出要推動科技執法合理化。",
+    policies: ["fair-traffic-enforcement"],
+    sources: [{ outlet: "黃世杰 Threads", title: "世杰跟彭俊豪議員、黃崇真議員，來到曾經一個月開出三千張罰單的龍岡地下道", url: "https://www.threads.com/@schuanglawyer/post/DfBljBsiIEk", date: "2026-10-28" }],
+  },
+  // 10/28 以前：官方帳號讀不到，依主流媒體報導整理
+  {
+    id: "2026-10-26-1",
+    date: "2026-10-26",
+    kind: "event",
+    district: "平鎮區",
+    place: "平鎮區",
+    title: "出席王珮毓、劉仁照競選總部成立大會",
+    summary: "接連前往龍潭、平鎮，出席市議員王珮毓及劉仁照的競選總部成立大會，提到平鎮臨時車站周邊動線與鐵路地下化的交通配套。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰連趕龍潭、平鎮3場競總成立 喊話桃園市政不能再空轉", url: "https://news.ltn.com.tw/news/politics/breakingnews/5619349", date: "2026-10-26" },
+      { outlet: "聯合報", title: "桃園市長參選人黃世杰：市政不能再空轉 要回應市民實際需求", url: "https://udn.com/news/story/124652/9837929", date: "2026-10-26" },
+    ],
+  },
+  {
+    id: "2026-10-26-2",
+    date: "2026-10-26",
+    kind: "event",
+    district: "龍潭區",
+    place: "龍潭區",
+    title: "出席龍潭區議員候選人張贊聞競選總部成立大會",
+    summary: "為市議員參選人張贊聞站台，提到加速推動龍科三期、桃竹苗大矽谷計畫。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰連趕龍潭、平鎮3場競總成立 喊話桃園市政不能再空轉", url: "https://news.ltn.com.tw/news/politics/breakingnews/5619349", date: "2026-10-26" },
+    ],
+  },
+  {
+    id: "2026-10-26-3",
+    date: "2026-10-26",
+    kind: "event",
+    district: "龜山區",
+    place: "桃園龜山顯安巖祖師廟",
+    title: "出席顯應祖師文化祭暨總統匾書揭匾典禮",
+    summary: "與民進黨秘書長徐國勇共同為總統致贈的匾額揭匾，致詞談龜山 A7 重劃區的交通、公共設施與托育服務。",
+    sources: [
+      { outlet: "聯合報", title: "龜山人口暴增 黃世杰：捷運接駁、學校托育要加速", url: "https://udn.com/news/story/124652/9837348", date: "2026-10-26" },
+      { outlet: "中時新聞網", title: "黃世杰赴顯安巖見證總統贈匾 談龜山A7交通、托育發展", url: "https://www.chinatimes.com/realtimenews/20261026001259-260407", date: "2026-10-26" },
+    ],
+  },
+  {
+    id: "2026-10-25-1",
+    date: "2026-10-25",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢美豐福德祠",
+    title: "彭俊豪與黃世杰聯合競選總部成立大會",
+    summary: "中壢區議員彭俊豪與市長候選人黃世杰的聯合競選總部成立大會，在中壢美豐福德祠舉辦。",
+    sources: [
+      { outlet: "自由時報", title: "「中壢周杰倫」彭俊豪聯合競選成立 余天站台高歌、王義川力挺", url: "https://news.ltn.com.tw/news/politics/breakingnews/5618515", date: "2026-10-25" },
+      { outlet: "ETtoday", title: "選戰倒數33天！黃世杰接連站台議員競總　喊話讓桃園重新動起來", url: "https://www.ettoday.net/news/20261025/3260813.htm", date: "2026-10-25" },
+    ],
+  },
+  {
+    id: "2026-10-25-2",
+    date: "2026-10-25",
+    kind: "event",
+    district: "蘆竹區",
+    place: "蘆竹區仁愛路一段",
+    title: "出席胡家智競選總部成立大會",
+    summary: "蘆竹區議員參選人胡家智的競選總部在蘆竹區仁愛路一段成立，黃世杰到場助講，表示公車路線應全面翻新、「告別幽靈公車」。",
+    policies: ["bus-network-reform"],
+    sources: [
+      { outlet: "聯合報", title: "出席新人競總成立 黃世杰喊告別幽靈公車、市黨部主委催票怒批張善政", url: "https://udn.com/news/story/124652/9836008", date: "2026-10-25" },
+    ],
+  },
+  {
+    id: "2026-10-25-3",
+    date: "2026-10-25",
+    kind: "event",
+    district: "龜山區",
+    place: "龜山區",
+    title: "出席龜山區市議員參選人李宗豪聯合競選總部成立大會",
+    summary: "當天連跑 4 場議員參選人的競選總部成立大會，其中一場在龜山區。",
+    sources: [
+      { outlet: "中時新聞網", title: "桃園人羨慕演唱會！黃世杰拋公私合建展演館", url: "https://www.chinatimes.com/realtimenews/20261025002130-260407", date: "2026-10-25" },
+    ],
+  },
+  {
+    id: "2026-10-25-4",
+    date: "2026-10-25",
+    kind: "event",
+    district: "桃園區",
+    place: "桃園區",
+    title: "出席桃園區市議員參選人黃家齊聯合競選總部成立大會",
+    summary: "當天連跑 4 場議員參選人的競選總部成立大會，其中一場在桃園區。",
+    sources: [
+      { outlet: "中時新聞網", title: "桃園人羨慕演唱會！黃世杰拋公私合建展演館", url: "https://www.chinatimes.com/realtimenews/20261025002130-260407", date: "2026-10-25" },
+    ],
+  },
+  {
+    id: "2026-10-21-1",
+    date: "2026-10-21",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢",
+    title: "出席與市議員魏筠的中壢聯合競總成立",
+    summary: "表示會持續透過市場掃街、路口拜票及地方座談等方式爭取支持。",
+    sources: [
+      {
+        outlet: "中央社",
+        title: "選戰倒數階段　黃世杰持續深入桃園各區尋求支持",
+        url: "https://tw.news.yahoo.com/%E9%81%B8%E6%88%B0%E5%80%92%E6%95%B8%E9%9A%8E%E6%AE%B5-%E9%BB%83%E4%B8%96%E6%9D%B0%E6%8C%81%E7%BA%8C%E6%B7%B1%E5%85%A5%E6%A1%83%E5%9C%92%E5%90%84%E5%8D%80%E5%B0%8B%E6%B1%82%E6%94%AF%E6%8C%81-%E5%9C%96-063333390.html",
+        date: "2026-10-21",
+      },
+      { outlet: "自由時報", title: "聯合競總成立 黃世杰、魏筠共推中壢發展", url: "https://news.ltn.com.tw/news/Taoyuan/paper/1775544", date: "2026-10-22" },
+    ],
+  },
+  {
+    id: "2026-10-18-1",
+    date: "2026-10-18",
+    kind: "event",
+    district: "桃園區",
+    place: "桃園區朝陽公園",
+    title: "北區競選總部成立大會",
+    summary: "北區競選總部成立大會晚間在桃園區朝陽公園登場，行政院秘書長張惇涵到場致詞。",
+    policies: ["bus-network-reform"],
+    sources: [
+      { outlet: "ETtoday", title: "黃世杰北區競選成立拋「交通新治理」 張惇涵：桃園進步不能再等", url: "https://www.ettoday.net/news/20261018/3256964.htm", date: "2026-10-18" },
+      { outlet: "聯合報", title: "北桃園競總成立破萬人 黃世杰猛攻桃園交通再邀張善政辯論", url: "https://udn.com/news/story/124652/9822500", date: "2026-10-18" },
+    ],
+  },
+  {
+    id: "2026-10-17-1",
+    date: "2026-10-17",
+    kind: "event",
+    district: "中壢區",
+    place: "中原文創園區",
+    title: "客家後援會成立大會",
+    summary: "客家後援會在中原文創園區舉行成立大會，他表示要讓客語回到日常生活。",
+    policies: ["hakka-language"],
+    sources: [
+      { outlet: "自由時報", title: "我是客家人！黃世杰：大家對客語感情還在 有機會把語言找回來", url: "https://news.ltn.com.tw/news/politics/breakingnews/5609721", date: "2026-10-17" },
+      { outlet: "聯合報", title: "客語演說引迴響！出席客家後援會 黃世杰：讓客語回到日常生活", url: "https://udn.com/news/story/124652/9821178", date: "2026-10-17" },
+    ],
+  },
+  {
+    id: "2026-10-16-lawyers",
+    date: "2026-10-16",
+    kind: "event",
+    title: "律師後援會成立大會",
+    summary: "晚間舉辦律師後援會成立大會，法律界人士齊聚力挺；10 月 28 日的貼文寫：「感謝站出來推薦的每一位律師先進」。",
+    sources: [
+      { outlet: "中時新聞網", title: "律師後援會成立！法律界重量級人士齊聚挺黃世杰 盼以專業治理讓桃園動起來", url: "https://www.chinatimes.com/realtimenews/20261017002415-260407", date: "2026-10-17" },
+      { outlet: "黃世杰 Threads", title: "律師後援會成立！推薦專業又在地的黃世杰", url: "https://www.threads.com/@schuanglawyer/post/DfBQBTfiH64", date: "2026-10-28" },
+    ],
+  },
+  {
+    id: "2026-10-14-1",
+    date: "2026-10-14",
+    kind: "visit",
+    district: "八德區",
+    place: "八德置地廣場、大湳市場",
+    title: "到八德置地廣場、大湳市場拜票",
+    summary: "清晨在置地廣場前路口向民眾問候，再到大湳市場拜票，並提出治安 4 大主張。",
+    policies: ["public-safety-four"],
+    sources: [
+      { outlet: "自由時報", title: "黃世杰提治安4大主張 不讓桃園成為毒品與治安破口", url: "https://news.ltn.com.tw/news/politics/breakingnews/5605965", date: "2026-10-14" },
+      { outlet: "壹蘋新聞網", title: "黃世杰八德掃街拜票！　關切八德命案籲速釐清與毒品關聯", url: "https://news.nextapple.com/politics/20261014/302E7E40910EB6327BC2462B34874724", date: "2026-10-14" },
+    ],
+  },
+  {
+    id: "2026-10-12-1",
+    date: "2026-10-12",
+    kind: "visit",
+    district: "蘆竹區",
+    place: "蘆竹區南崁特力屋前路口",
+    title: "啟動第 2 輪地毯式拜票，在南崁路口向市民問候",
+    summary: "清晨 7 點在南崁特力屋前路口向晨運、通勤的市民問候。",
+    sources: [
+      { outlet: "自由時報", title: "網友諧音梗叫「四姐」 黃世杰蘆竹拜票：服務桃園的心都一樣", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5603274", date: "2026-10-12" },
+      { outlet: "新頭殼", title: "連續兩天跑桃園蘆竹！ 綠市長候選人黃世杰今晨在南崁路口率眾拜票", url: "https://newtalk.tw/news/view/2026-10-12/1064934", date: "2026-10-12" },
+    ],
+  },
+  {
+    id: "2026-10-11-1",
+    date: "2026-10-11",
+    kind: "event",
+    district: "蘆竹區",
+    place: "蘆竹",
+    title: "出席市議員許清順聯合競選總部成立造勢大會",
+    summary: "談到捷運綠線分段通車後的接駁，提出把公車路網分成幹線、生活圈與城鄉末端接駁三級。",
+    policies: ["bus-network-reform"],
+    sources: [
+      { outlet: "聯合報", title: "桃捷綠線通車倒數 黃世杰提三級公車路網補足接駁", url: "https://udn.com/news/story/124652/9807461", date: "2026-10-11" },
+      { outlet: "新頭殼", title: "連續兩天跑桃園蘆竹！ 綠市長候選人黃世杰今晨在南崁路口率眾拜票", url: "https://newtalk.tw/news/view/2026-10-12/1064934", date: "2026-10-12" },
+    ],
+  },
+  {
+    id: "2026-10-10-1",
+    date: "2026-10-10",
+    kind: "event",
+    district: "桃園區",
+    place: "桃園市政府前廣場",
+    title: "出席桃園市國慶升旗典禮",
+    summary: "在市議員黃家齊、黃瓊慧等人陪同下，到桃園市政府前廣場出席國慶升旗典禮。",
+    sources: [
+      { outlet: "中時新聞網", title: "2大咖同台國慶升旗 黃世杰邀張善政辯論桃園願景", url: "https://www.chinatimes.com/realtimenews/20261010001031-260407", date: "2026-10-10" },
+    ],
+  },
+  {
+    id: "2026-10-03-1",
+    date: "2026-10-03",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢區",
+    title: "南區競選總部成立大會",
+    summary: "晚間在中壢區舉辦南區競選總部成立大會，總統賴清德、行政院長卓榮泰到場。",
+    sources: [
+      { outlet: "中央社", title: "黃世杰南區競總成立　總統：年輕有活力市長最適合桃園", url: "https://www.cna.com.tw/news/aipl/202610030201.aspx", date: "2026-10-03" },
+      { outlet: "ETtoday", title: "黃世杰南區競總成立　賴清德授戰旗籲桃園動起來「讓世杰來加速」", url: "https://www.ettoday.net/news/20261003/3248589.htm", date: "2026-10-03" },
+    ],
+  },
+  {
+    id: "2026-10-03-2",
+    date: "2026-10-03",
+    kind: "event",
+    district: "平鎮區",
+    place: "台鐵平鎮臨時站",
+    title: "台鐵平鎮臨時站通車，與交通部長陳世凱搭車抵達",
+    summary: "上午與交通部長陳世凱從中壢車站搭 1139 次電聯車到平鎮車站，參加通車典禮。",
+    sources: [
+      { outlet: "三立新聞網", title: "台鐵平鎮臨時站通車！黃世杰與陳世凱搭車進站：公共建設是跨任期接力賽", url: "https://www.setn.com/ampnews/1916707", date: "2026-10-03" },
+    ],
+  },
+  {
+    id: "2026-10-02-1",
+    date: "2026-10-02",
+    kind: "visit",
+    district: "龜山區",
+    place: "龜山顯安巖顯應祖師廟",
+    title: "與總統賴清德參拜龜山顯安巖顯應祖師廟",
+    summary: "總統賴清德陪同他參拜龜山顯安巖顯應祖師廟。",
+    sources: [
+      { outlet: "中央社", title: "賴總統陪黃世杰桃園參拜　喊話市議員也要全壘打", url: "https://www.cna.com.tw/news/aipl/202610020134.aspx", date: "2026-10-02" },
+    ],
+  },
+  {
+    id: "2026-09-26-1",
+    date: "2026-09-26",
+    kind: "visit",
+    district: "復興區",
+    place: "復興區上巴陵、加拉文健站、溪口台",
+    title: "與謝卓儒深入復興區部落座談、參與義診",
+    summary: "在上巴陵舉辦部落座談，到加拉文健站參與中醫師義診，再到溪口台與族人座談；泰雅耆老當場賜他泰雅名字「Masing」。",
+    policies: ["indigenous-four"],
+    sources: [
+      { outlet: "ETtoday", title: "黃世杰深入復興原鄉拚選票　獲耆老賜名「Masing」期勇於接受挑戰", url: "https://www.ettoday.net/news/20260927/3244586.htm", date: "2026-09-27" },
+      { outlet: "自由時報", title: "泰雅耆老賜名「破石者」 黃世杰：提醒自己有突破困難的精神", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5587994", date: "2026-09-27" },
+    ],
+  },
+  {
+    id: "2026-09-22-1",
+    date: "2026-09-22",
+    kind: "visit",
+    district: "大溪區",
+    place: "大溪老茶廠",
+    title: "陪前總統蔡英文走訪大溪老茶廠",
+    summary: "化身桃園在地嚮導，陪前總統蔡英文走訪大溪老茶廠，並提出用「心桃園品牌力」整合 13 區觀光。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰化身在地嚮導！蔡英文重返大溪老茶廠喊話「我都選上總統，市長你也要選上」", url: "https://news.ltn.com.tw/news/politics/breakingnews/5582575", date: "2026-09-22" },
+    ],
+  },
+  {
+    id: "2026-09-20-1",
+    date: "2026-09-20",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢觀光夜市",
+    title: "與沈伯洋到中壢觀光夜市掃街",
+    summary: "晚上和台北市長參選人沈伯洋到中壢觀光夜市掃街，行政院秘書長張惇涵與多名市議員、議員參選人同行。",
+    sources: [
+      { outlet: "自由時報", title: "沈伯洋合體黃世杰中壢觀光夜市掃街 淡季迎人潮 商家坦言超振奮", url: "https://news.ltn.com.tw/news/politics/breakingnews/5580618", date: "2026-09-20" },
+      { outlet: "中央社", title: "沈伯洋合體桃園市長參選人黃世杰　支持者擠爆中壢夜市", url: "https://www.cna.com.tw/news/aipl/202609200220.aspx", date: "2026-09-20" },
+    ],
+  },
+  {
+    id: "2026-09-17-1",
+    date: "2026-09-17",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢華勛市場",
+    title: "到中壢華勛市場掃街拜票",
+    summary: "先後到中壢華勛市場和八德公有市場掃街拜票，允諾研議設置市場服務員、寬列市場改善經費。",
+    policies: ["traditional-markets"],
+    sources: [
+      { outlet: "聯合報", title: "改善桃園傳統市場環境 綠營黃世杰允研議市場服務員", url: "https://udn.com/news/story/124652/9761759", date: "2026-09-17" },
+    ],
+  },
+  {
+    id: "2026-09-17-2",
+    date: "2026-09-17",
+    kind: "visit",
+    district: "八德區",
+    place: "八德公有市場",
+    title: "到八德公有市場掃街拜票",
+    summary: "同一天從中壢華勛市場轉往八德公有市場掃街拜票；垃圾費隨袋徵收在沒有達成共識前會暫緩推動。",
+    policies: ["traditional-markets", "garbage-fee-consensus"],
+    sources: [
+      { outlet: "壹蘋新聞網", title: "黃世杰市場拜票 提出寬列市場改善經費、設置市場服務員政見", url: "https://news.nextapple.com/politics/20260917/6EA27B1953F22F95F80E194E4B11C3B2", date: "2026-09-17" },
+      { outlet: "聯合報", title: "改善桃園傳統市場環境 綠營黃世杰允研議市場服務員", url: "https://udn.com/news/story/124652/9761759", date: "2026-09-17" },
+    ],
+  },
+  {
+    id: "2026-09-09-1",
+    date: "2026-09-09",
+    kind: "visit",
+    district: "觀音區",
+    place: "觀音愛心家園",
+    title: "與何志偉走訪觀音愛心家園，和學員製作中秋禮盒",
+    summary: "和總統府副秘書長何志偉走訪觀音愛心家園，與學員一起製作中秋禮盒，各自訂購五十盒。",
+    sources: [{ outlet: "自由時報", title: "黃世杰挺庇護工場 化身推銷員", url: "https://news.ltn.com.tw/news/life/paper/1770097", date: "2026-09-10" }],
+  },
+  {
+    id: "2026-09-06-1",
+    date: "2026-09-06",
+    kind: "event",
+    place: "新勢公園（中壢、平鎮區交界）",
+    title: "副總統蕭美琴陪同參加民進黨 40 周年黨慶健走",
+    summary: "民進黨桃園市黨部在新勢公園舉行「作伙同行 迎向肆拾」40 周年黨慶健走造勢，副總統蕭美琴陪同。",
+    sources: [
+      { outlet: "中央社", title: "陪同黃世杰健走造勢　副總統：相信他能翻轉桃園", url: "https://www.cna.com.tw/news/aloc/202609060086.aspx", date: "2026-09-06" },
+    ],
+  },
+  {
+    id: "2026-08-30-1",
+    date: "2026-08-30",
+    kind: "visit",
+    district: "桃園區",
+    place: "桃園觀光夜市",
+    title: "到桃園觀光夜市掃街拜票",
+    summary: "晚上偕同議員參選人到桃園觀光夜市掃街拜票，表示要讓夜市升級，並和景福宮、桃園藝文特區等地串連。",
+    sources: [
+      { outlet: "自由時報", title: "翻轉桃園觀光！黃世杰拋「夜市升級」：國內外觀光客必訪景點", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5557534", date: "2026-08-30" },
+    ],
+  },
+  {
+    id: "2026-08-27-1",
+    date: "2026-08-27",
+    kind: "visit",
+    district: "桃園區",
+    place: "新永和市場",
+    title: "到新永和市場掃街拜票",
+    summary: "上午到新永和市場掃街拜票，主張整合捷運、停車及接駁，改善商圈交通。",
+    sources: [
+      { outlet: "匯流新聞網", title: "黃世杰新永和市場掃街　主張整合捷運、停車及接駁改善商圈交通", url: "https://cnews.com.tw/262170827a06/", date: "2026-08-27" },
+    ],
+  },
+  {
+    id: "2026-08-26-1",
+    date: "2026-08-26",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢區內壢市場、福海宮",
+    title: "到內壢市場掃街拜票，先到福海宮參拜",
+    summary: "表示會和中央合作追蹤鐵路地下化進度，推動內壢與中壢工業區轉型為「智慧產業園區」。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰內壢掃街 主打鐵路地下化、推動智慧產業園區", url: "https://news.ltn.com.tw/news/politics/breakingnews/5553138", date: "2026-08-26" },
+    ],
+  },
+  {
+    id: "2026-08-22-1",
+    date: "2026-08-22",
+    kind: "event",
+    district: "楊梅區",
+    place: "楊梅區瑞塘市民活動中心",
+    title: "出席謝卓儒問政說明會",
+    summary: "晚上出席山地原住民市議員參選人謝卓儒的問政說明會，提出原民政策藍圖，主張讓資源回到族人手上。",
+    policies: ["indigenous-four"],
+    sources: [
+      { outlet: "匯流新聞網", title: "讚謝卓儒第一線服務經驗豐　黃世杰拋原民政策藍圖讓資源回到族人手上", url: "https://cnews.com.tw/250260823a03/", date: "2026-08-23" },
+    ],
+  },
+  {
+    id: "2026-08-19-1",
+    date: "2026-08-19",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢新明市場",
+    title: "到中壢新明市場掃街，關注市場改建",
+    summary: "上午到新明市場問候鄉親、聽取改建建言，他認為現行改建方案還有很大改善空間。",
+    policies: ["traditional-markets"],
+    sources: [
+      { outlet: "自由時報", title: "中壢掃街關注新明市場改建 民進黨黃世杰：現行方案還有很大改善空間", url: "https://news.ltn.com.tw/news/politics/breakingnews/5545117", date: "2026-08-19" },
+    ],
+  },
+  {
+    id: "2026-08-05-1",
+    date: "2026-08-05",
+    kind: "event",
+    district: "大溪區",
+    place: "大溪",
+    title: "連兩天參加「大溪大禧」關聖帝君聖誕慶典遶境",
+    summary: "從前一晚到隔天早上都在大溪參加關聖帝君聖誕慶典和遶境，他說「越在地越國際」。",
+    sources: [
+      { outlet: "聯合報", title: "連兩天參加「大溪大禧」關聖帝君誕辰慶典遶境 黃世杰：越在地越國際", url: "https://udn.com/news/story/124652/9674457", date: "2026-08-06" },
+    ],
+  },
+  {
+    id: "2026-08-04-1",
+    date: "2026-08-04",
+    kind: "visit",
+    district: "新屋區",
+    place: "新屋區",
+    title: "到新屋區了解農民高溫作業",
+    summary: "下午前往新屋區實地了解農民高溫作業情形，親自體驗水冷服、空調服等抗高溫裝備。",
+    policies: ["farmer-heat-relief"],
+    sources: [
+      { outlet: "聯合報", title: "實地了解高溫作業困境 黃世杰盼推動防熱設備補助守護農友", url: "https://udn.com/news/story/124652/9670749", date: "2026-08-04" },
+    ],
+  },
+  {
+    id: "2026-08-03-1",
+    date: "2026-08-03",
+    kind: "event",
+    district: "龜山區",
+    place: "國立體育大學",
+    title: "出席國立體育大學校長就職典禮",
+    summary: "出席體大第十二任校長就職典禮，提出推動全民運動、健全選手照顧網、打造國際運動品牌三大核心政見。",
+    policies: ["sports-city"],
+    sources: [{ outlet: "自由時報", title: "體大校長交接 黃世杰拋體育3政見", url: "https://news.ltn.com.tw/news/politics/paper/1765333", date: "2026-08-04" }],
+  },
+  {
+    id: "2026-08-03-2",
+    date: "2026-08-03",
+    kind: "visit",
+    district: "八德區",
+    place: "八德區東勇黃昏市場",
+    title: "到八德東勇黃昏市場掃街拜票",
+    summary: "傍晚由在地市議員與議員參選人陪同掃街拜票，表示要加速捷運綠線施工，並完善公車路網與捷運接駁。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰八德東勇黃昏市場掃街 攜手在地團隊拚八德建設", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5527500", date: "2026-08-04" },
+    ],
+  },
+  {
+    id: "2026-07-30-1",
+    date: "2026-07-30",
+    kind: "visit",
+    district: "楊梅區",
+    place: "楊梅市場、錫福宮",
+    title: "到楊梅市場掃街，在錫福宮參香祈福",
+    summary: "上午由市議員鄭淑方、議員參選人項柏翰陪同到楊梅市場掃街，再到錫福宮參香祈福，並談到敬老卡。",
+    policies: ["senior-card-plus"],
+    sources: [
+      { outlet: "聯合報", title: "赴楊梅市場掃街談敬老卡 黃世杰喊話張善政：出面說明政策規畫", url: "https://udn.com/news/story/124652/9660415", date: "2026-07-30" },
+    ],
+  },
+  {
+    id: "2026-07-29-1",
+    date: "2026-07-29",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢區興國市場、美豐福德祠",
+    title: "到中壢興國市場掃街，先到美豐福德祠參拜",
+    summary: "先到美豐福德祠參拜祈福，再到興國市場掃街；他說做好交通配套，中壢的大型工程才能井然有序。",
+    sources: [
+      { outlet: "聯合報", title: "興國市場掃街 黃世杰：做好交通配套、才能讓中壢大型工程井然有序", url: "https://udn.com/news/story/124652/9658828", date: "2026-07-29" },
+      { outlet: "自由時報", title: "與家人常逛興國市場 黃世杰：看市場轉型升級感到開心", url: "https://news.ltn.com.tw/news/politics/breakingnews/5521643", date: "2026-07-29" },
+    ],
+  },
+  {
+    id: "2026-07-26-1",
+    date: "2026-07-26",
+    kind: "event",
+    district: "觀音區",
+    place: "觀音區草漯保障宮",
+    title: "出席張佩芸「心桃園政見說明會」",
+    summary: "到觀音區草漯保障宮出席議員參選人張佩芸的政見說明會，談海線建設，主張串接大桃園山海城。",
+    sources: [
+      { outlet: "聯合報", title: "黃世杰海線政見：中央與地方資源推動建設 串接大桃園山海城", url: "https://udn.com/news/story/124652/9651836", date: "2026-07-26" },
+    ],
+  },
+  {
+    id: "2026-07-26-2",
+    date: "2026-07-26",
+    kind: "event",
+    district: "桃園區",
+    place: "桃園區",
+    title: "出席余信憲「心桃園政見說明會」",
+    summary: "下午出席市議員余信憲的政見說明會，提出擴大敬老愛心卡使用範圍、改革公車路網、補助兒童與長者健保費、完善托育等政見。",
+    policies: ["senior-card-plus", "bus-network-reform", "nhi-premium-subsidy", "friendly-childcare"],
+    sources: [
+      { outlet: "聯合報", title: "3大咖難得同框 黃世杰、何志偉、王義川合體催票", url: "https://udn.com/news/story/124652/9651864", date: "2026-07-26" },
+      { outlet: "聯合報", title: "桃園攻防…藍綠拚整隊 衝刺年底選戰", url: "https://udn.com/news/story/124652/9652343", date: "2026-07-27" },
+    ],
+  },
+  {
+    id: "2026-07-25-1",
+    date: "2026-07-25",
+    kind: "event",
+    place: "明倫三聖宮",
+    title: "出席李柏瑟「心桃園政見說明會」，支持成立「校園反霸凌聯盟」",
+    summary: "出席議員參選人李柏瑟在明倫三聖宮舉辦的政見說明會，表示支持成立「校園反霸凌聯盟」，從法律支援等三大方向推動。",
+    policies: ["anti-bullying"],
+    sources: [
+      { outlet: "自由時報", title: "力挺李柏瑟推動「校園反霸凌聯盟」 黃世杰：從法律支援等三大方向推動", url: "https://news.ltn.com.tw/news/politics/breakingnews/5517150", date: "2026-07-25" },
+      { outlet: "聯合報", title: "處理校園霸凌案 黃世杰：協助對接律師資源", url: "https://udn.com/news/story/6885/9650574", date: "2026-07-25" },
+    ],
+  },
+  {
+    id: "2026-07-23-1",
+    date: "2026-07-23",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢區大崙崇德宮",
+    title: "出席張曉昀「心桃園政見說明會」",
+    summary: "上午到中壢區大崙崇德宮出席市議員張曉昀的政見說明會，表示當選後會一起推動大崙休閒農業等政見。",
+    sources: [
+      { outlet: "聯合報", title: "黃世杰出席中壢大崙政見說明會談市政 盼加速地方建設", url: "https://udn.com/news/story/124652/9646537", date: "2026-07-23" },
+    ],
+  },
+  {
+    id: "2026-07-22-1",
+    date: "2026-07-22",
+    kind: "visit",
+    district: "蘆竹區",
+    place: "蘆竹區南崁市場",
+    title: "到南崁市場掃街拜票",
+    summary: "呼籲改善南崁市場周邊的交通和停車空間，並做好捷運綠線通車後與南崁市區的接駁規劃。",
+    sources: [
+      { outlet: "自由時報", title: "黃世杰赴南崁市場拜票 籲改善交通與停車問題", url: "https://news.ltn.com.tw/news/life/breakingnews/5513534", date: "2026-07-22" },
+    ],
+  },
+  {
+    id: "2026-07-21-1",
+    date: "2026-07-21",
+    kind: "visit",
+    district: "龍潭區",
+    place: "龍潭市場、龍元宮",
+    title: "到龍潭市場掃街拜票，再到龍元宮參拜",
+    summary: "和市議員參選人張贊聞到龍潭市場掃街拜票，與攤商、市民近距離互動，聽第一線民意。",
+    sources: [
+      { outlet: "聯合報", title: "黃世杰桃園龍潭市場客家重地拜票聽民意 允強化觀光、科技、文化產業", url: "https://udn.com/news/story/124652/9641819", date: "2026-07-21" },
+    ],
+  },
+  {
+    id: "2026-07-18-1",
+    date: "2026-07-18",
+    kind: "event",
+    district: "平鎮區",
+    place: "平鎮區",
+    title: "啟動 13 區政策座談，首場在平鎮區",
+    summary: "啟動「心桃園 動起來」13 行政區政策座談，首場平鎮區座談由市議員王珮毓邀集地方人士參與。",
+    sources: [
+      { outlet: "中央社", title: "黃世杰啟動13區政策座談　首站平鎮大園蒐集民意", url: "https://www.cna.com.tw/news/aloc/202607180185.aspx", date: "2026-07-18" },
+      { outlet: "ETtoday", title: "黃世杰啟動「心桃園、動起來」13區政策座談　打造市政藍圖", url: "https://www.ettoday.net/news/20260719/3203657.htm", date: "2026-07-19" },
+    ],
+  },
+  {
+    id: "2026-07-18-2",
+    date: "2026-07-18",
+    kind: "event",
+    district: "大園區",
+    place: "大園區",
+    title: "13 區政策座談首日下午到大園區",
+    summary: "政策座談首日下午到大園區，參加市議員游吾和舉辦的地方政策座談。",
+    sources: [
+      { outlet: "中央社", title: "黃世杰啟動13區政策座談　首站平鎮大園蒐集民意", url: "https://www.cna.com.tw/news/aloc/202607180185.aspx", date: "2026-07-18" },
+    ],
+  },
+  {
+    id: "2026-07-16-1",
+    date: "2026-07-16",
+    kind: "visit",
+    district: "大溪區",
+    place: "大溪市場",
+    title: "到大溪市場拜票",
+    summary: "早上由市議員陳治文等人陪同到大溪市場拜票，並說普濟堂關聖帝君誕辰慶典是大溪人的第二個過年。",
+    sources: [
+      { outlet: "自由時報", title: "民進黨黃世杰：關聖帝君誕辰是大溪人第二個過年 也是觀光產業重要時刻", url: "https://news.ltn.com.tw/news/politics/breakingnews/5506906", date: "2026-07-16" },
+    ],
+  },
+  {
+    id: "2026-07-14-1",
+    date: "2026-07-14",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢青果商圈及批發市場",
+    title: "清晨到中壢青果商圈及批發市場，啟動掃街行動",
+    summary: "清晨到中壢青果商圈及批發市場掃街，象徵選戰進入新階段，並提出健保費補助和敬老卡升級政見。",
+    policies: ["nhi-premium-subsidy", "senior-card-plus"],
+    sources: [
+      { outlet: "自由時報", title: "黃世杰啟動桃園掃街行動 提出健保費補助、敬老卡升級政見", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5504412", date: "2026-07-14" },
+    ],
+  },
+  {
+    id: "2026-07-05-1",
+    date: "2026-07-05",
+    kind: "event",
+    district: "八德區",
+    place: "八德區桃漾館",
+    title: "出席許家睿台南同鄉會暨旅桃之友後援會成立大會",
+    summary: "下午到八德區出席市議員許家睿的後援會成立大會並授旗，表示會加速推動八德的捷運和大眾運輸路網。",
+    sources: [
+      { outlet: "中央社", title: "黃世杰提育兒與交通政見 籲支持綠營市長議員人選", url: "https://udn.com/news/story/124652/9608337", date: "2026-07-05" },
+      { outlet: "自由時報", title: "黃世杰挺許家睿連任 批張善政施政、強調年輕世代傾聽市民聲音", url: "https://news.ltn.com.tw/news/Taoyuan/breakingnews/5494723", date: "2026-07-05" },
+    ],
+  },
+  {
+    id: "2026-07-05-2",
+    date: "2026-07-05",
+    kind: "event",
+    district: "蘆竹區",
+    place: "蘆竹區羊稠步道",
+    title: "出席羊稠步道甲蟲季 10 週年活動",
+    summary: "上午出席蘆竹區「2026 台灣百大行腳趣－羊稠步道甲蟲季」活動，提出 0 至 12 歲兒童免健保費、強化托育等主張。",
+    policies: ["nhi-premium-subsidy", "friendly-childcare"],
+    sources: [
+      { outlet: "中央社", title: "黃世杰提育兒與交通政見 籲支持綠營市長議員人選", url: "https://udn.com/news/story/124652/9608337", date: "2026-07-05" },
+    ],
+  },
+  {
+    id: "2026-07-01-1",
+    date: "2026-07-01",
+    kind: "event",
+    district: "大園區",
+    place: "竹圍漁港",
+    title: "出席竹圍漁港漁民節慶祝活動",
+    summary: "出席桃園區漁會在竹圍漁港舉辦的漁民節慶祝活動，提到希望明年啟用新魚市、帶動竹圍漁港轉型。",
+    sources: [
+      { outlet: "聯合報", title: "桃園區捕魚達人今獲模範漁民 張善政黃世杰為竹圍漁港建設隔空交火", url: "https://udn.com/news/story/124652/9600050", date: "2026-07-01" },
+    ],
+  },
+  {
+    id: "2026-06-30-1",
+    date: "2026-06-30",
+    kind: "event",
+    district: "新屋區",
+    place: "新屋",
+    title: "回故鄉新屋出席漁民節表揚慶祝大會",
+    summary: "回到故鄉新屋，出席中壢區漁會的漁民節活動，到場致詞並和漁民握手致意。",
+    sources: [
+      { outlet: "自由時報", title: "桃園市長選戰加溫！ 黃世杰、張善政出席漁民節拚政見", url: "https://news.ltn.com.tw/news/politics/breakingnews/5488662", date: "2026-06-30" },
+      { outlet: "聯合報", title: "中壢區漁會漁民節慶祝大會 張善政、黃世杰端漁港觀光建設牛肉", url: "https://udn.com/news/story/124652/9597460", date: "2026-06-30" },
+    ],
+  },
+  {
+    id: "2026-06-12-1",
+    date: "2026-06-12",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢區大河壩小書店",
+    title: "出席熬民主系列講座中壢場",
+    summary: "在民進黨青年部的熬民主講座談產業、交通、運動娛樂等議題，並提出推動市營公車。",
+    policies: ["bus-network-reform"],
+    sources: [{ outlet: "ETtoday", title: "桃園交通改善迫在眉睫　黃世杰提推動市營公車政見", url: "https://www.ettoday.net/news/20260613/3182563.htm", date: "2026-06-13" }],
+  },
+  {
+    id: "2026-05-30-1",
+    date: "2026-05-30",
+    kind: "event",
+    district: "中壢區",
+    place: "中壢區大舊社市民活動中心",
+    title: "出席「粽情新住民、美味好滋味」新住民家鄉粽活動",
+    summary: "端午節前，民進黨桃園市黨部在中壢區大舊社市民活動中心舉辦新住民家鄉粽 PK 賽，他在活動中倡議新住民福利政策。",
+    policies: ["new-immigrants"],
+    sources: [
+      { outlet: "ETtoday", title: "迎端午！桃園新住民家鄉粽PK賽　黃世杰倡新住民福利政策", url: "https://www.ettoday.net/news/20260530/3174952.htm", date: "2026-05-30" },
+    ],
+  },
+];
+
+for (const t of trail) {
+  for (const slug of t.policies ?? []) if (!policies.some((p) => p.slug === slug)) throw new Error(`杰伴出發 ${t.id} 的政見 slug 不存在：${slug}`);
+}

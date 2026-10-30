@@ -2,13 +2,14 @@
 // 寫到「官方新貼文待整理」Issue（已經有開著的就留言）。只回報，不改網站；整理與更新由人呼叫 Claude（/sync-official）處理。
 // 本機試跑：npm run dry（只印出結果，不寫 GitHub；沒有 GITHUB_TOKEN 時也一律只印出）
 
-import { config, gh, hasToken, hasYoutubeKey, inboxIssues, knownKeys, postKeys, threadsProfilePosts, threadsText, twTime, withBrowser, youtubeTabList, youtubeUploads } from "./lib.mjs";
+import { config, gh, hasToken, hasYoutubeKey, inboxIssues, knownKeys, lastRunTime, postKeys, threadsProfilePosts, threadsText, twTime, withBrowser, youtubeTabList, youtubeUploads } from "./lib.mjs";
 
 const dry = process.argv.includes("--dry") || !hasToken;
 const since = new Date(`${config.since}T00:00:00+08:00`);
 const now = new Date();
 
 const known = knownKeys();
+const lastRun = (await lastRunTime()) ?? new Date(now - config.intervalHours * 3600_000);
 const issues = await inboxIssues();
 const reported = new Set();
 for (const i of issues) for (const text of [i.body ?? "", ...i.commentList.map((c) => c.body ?? "")]) for (const k of postKeys(text)) reported.add(k);
@@ -60,9 +61,9 @@ await withBrowser(async (page) => {
     // 看得到的全是新貼文、最舊一篇又比上次偵測還新：上次和這次之間可能有貼文沒看到
     const oldest = new Date(Math.min(...posts.map((p) => Date.parse(p.publishedAt))));
     const overlaps = posts.some((p) => seen(`th:${p.code}`) || new Date(p.publishedAt) < since);
-    if (!overlaps && now - oldest < config.intervalHours * 3600_000) {
+    if (!overlaps && oldest > lastRun) {
       warnings.push(
-        `Threads 可能有漏抓：沒登入只看得到最近 ${posts.length} 篇，最舊一篇是 ${twTime(oldest.toISOString())}，比上次偵測（約 ${config.intervalHours} 小時前）還新，中間可能還有貼文。請到 ${config.threads} 往下捲確認。`,
+        `Threads 可能有漏抓：沒登入只看得到最近 ${posts.length} 篇，最舊一篇是 ${twTime(oldest.toISOString())}，比上次偵測（${twTime(lastRun.toISOString())}）還新，中間可能還有貼文。請到 ${config.threads} 往下捲確認。`,
       );
     }
   } catch (err) {

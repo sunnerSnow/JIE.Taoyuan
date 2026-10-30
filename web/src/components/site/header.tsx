@@ -86,7 +86,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="pointer-events-auto flex items-center gap-2">
-          <span className="hidden xl:block">
+          {/* 主選單、大字版與 3 分鐘探索都在時，1360 以下放不下倒數（首頁首屏與頁尾也有倒數） */}
+          <span className="hidden min-[1360px]:block">
             <ElectionCountdown />
           </span>
           <Link

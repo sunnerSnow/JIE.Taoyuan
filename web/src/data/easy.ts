@@ -1,7 +1,7 @@
 import { site } from "@/lib/site";
 import { categoryMap } from "./categories";
 import { themePolicies } from "./lab";
-import { policies } from "./policies";
+import { formatDay, policies } from "./policies";
 import type { CategorySlug } from "./types";
 
 // 大字版（/easy）的重點：每項政見 2～4 句短句，給長輩一眼看懂。
@@ -40,11 +40,8 @@ export const easyPoints: Record<string, string[]> = {
   u6: ["由市長親自擔任馬祖交流小組召集人", "成立桃園市駐馬祖聯絡處", "推動閩東語言文化教育", "舉辦桃園－馬祖雙城藝術季"],
 };
 
-/** 2026-11-28 → 11 月 28 日（星期六）；大字版頁面與分享圖卡共用 */
-export function voteDay() {
-  const d = new Date(site.electionDate);
-  return `${d.getUTCMonth() + 1} 月 ${d.getUTCDate()} 日（星期${"日一二三四五六"[d.getUTCDay()]}）`;
-}
+/** 投票日：11 月 28 日（星期六）；大字版頁面與分享圖卡共用 */
+export const voteDay = () => formatDay(site.electionDate);
 
 /** 大字版圖卡網址裡的類別：要是真的類別（不吃原型鏈上的 constructor 之類）、而且有正式政見，否則回傳 null */
 export function easyCardTheme(theme: string): CategorySlug | null {

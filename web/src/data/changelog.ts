@@ -26,6 +26,15 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-10-30-trail",
+    date: "2026-10-30",
+    type: "added",
+    title: "新增「杰伴出發」行程地圖與紀錄",
+    summary:
+      "整理候選人已經發生的行程：走訪、活動與上節目，畫在桃園 13 區地圖上（去過的區放企鵝腳丫），並依日期排列。第一批收錄 2026 年 5 月 30 日到 10 月 30 日共 56 筆，13 區都有記錄；10 月 28 日以後依候選人官方貼文，更早的依主流媒體報導，每一筆都附來源。",
+    links: [{ href: "/trail", label: "杰伴出發" }],
+  },
+  {
     id: "2026-10-29-matsu",
     date: "2026-10-29",
     type: "added",

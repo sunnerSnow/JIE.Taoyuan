@@ -2233,3 +2233,9 @@ export function formatDate(iso?: string) {
   const [y, m, d] = iso.split("-");
   return d ? `${y}.${Number(m)}.${Number(d)}` : `${y}.${Number(m)}`;
 }
+
+/** 2026-10-30 → 10 月 30 日（星期五）：給長輩看的大字版與杰伴出發用 */
+export function formatDay(iso: string) {
+  const d = new Date(iso);
+  return `${d.getUTCMonth() + 1} 月 ${d.getUTCDate()} 日（星期${"日一二三四五六"[d.getUTCDay()]}）`;
+}

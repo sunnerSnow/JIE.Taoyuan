@@ -18,9 +18,10 @@ GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，�
    - 新政見：加進 `web/src/data/policies.ts`
    - 既有政見的新內容或更直接的官方來源：更新該政見
    - 參選前的事蹟：加進 `web/src/data/record.ts`
-   - 與政見無關（造勢、站台、問候、行程、號次宣傳）：不收錄
+   - 已經發生的行程（走訪、活動、上節目）：加進 `web/src/data/trail.ts`（「杰伴出發」頁）
+   - 與政見無關（造勢、拉票、站台、問候、號次宣傳），以及還沒發生的行程預告：不收錄。預告的行程等當天或之後有貼文，再和預告一起收成一筆
    完成條件：每則貼文都有分類和一句理由。
-4. **更新資料**：每項新增或修改都在 `web/src/data/changelog.ts` 最前面加一筆更新紀錄。
+4. **更新資料**：政見、來源與過去的貢獻，每項新增或修改都在 `web/src/data/changelog.ts` 最前面加一筆更新紀錄。行程紀錄不用另外加，杰伴出發頁本身就是依日期的紀錄。
 5. **驗證**：在 `web/` 跑 `npx eslint`、`npx next build`、`npx tsc --noEmit`（build 會產生路由型別，所以 tsc 放最後）。新政見要用 `npx next start -p 3341` 打開政見頁、所屬島嶼頁與 `/explore` 看一次。
 6. **回報與 commit**：列表回報每則貼文的分類與處理方式，貼出繁體中文 commit 訊息（不加 Co-Authored-By），最後每個處理完的 Issue 各一行 `Closes #編號`。使用者同意後才 commit、push。如果整批都不收錄，就不用 commit，請使用者到 GitHub 手動關閉 Issue。
 
@@ -31,5 +32,6 @@ GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，�
 - **日期**：`publishedAt` 是貼文的台灣日期，`retrievedAt` 與 `updatedAt` 是今天。日期不要混用：更新紀錄的日期是本站更新的日期。
 - **新政見**：要選島（`category`）和島上的建築點（`spot`），建築點定義在 `web/src/lib/scene.ts`。島上沒有空的建築點時，要新增一棟建築（可參考 commit 1e1ed69 的溫網室）。`scenarios` 是虛構情境，寫成一般市民的口吻，不冒用真實人物。另外在 `web/src/data/easy.ts` 補大字版的 2～4 個短重點（取自分項標題或做法原文，只刪不補，「研擬」「逐步」這類限定詞要留著），漏了 build 會失敗。
 - **政策關聯**（`web/src/data/relations.ts`）：只有貼文明確說兩項政見有關才能用 `source`；本站推論的關聯用 `scenario` 或 `editorial`。
+- **行程紀錄**：`date` 是行程發生的台灣日期；`place` 照貼文寫的地點，`district` 只在地點明確屬於桃園某一區時填（桃園以外填 `outside`，貼文沒寫地點就不填）；`title`、`summary` 用貼文原文的字句，不加詮釋；貼文沒講清楚的（例如節目名稱）就只寫確定的部分。同一個行程的預告和當天貼文合成一筆，兩則都放進 `sources`。貼文明確提到某項政見才放 `policies`。
 - **過去的貢獻**：每句引文用 `by` 標明出處類型（`official` 官方紀錄、`media` 媒體報導、`candidate` 候選人自述、`campaign` 競選方說法）。候選人在貼文裡講自己的事蹟算「候選人自述」，不是官方紀錄。
 - **格式**：不要對既有檔案跑 prettier，原始碼一行大約 160 字寬。
