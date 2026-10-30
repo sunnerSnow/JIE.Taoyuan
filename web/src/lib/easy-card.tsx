@@ -5,13 +5,14 @@ import { easyPoints, voteDay } from "@/data/easy";
 import { themePolicies } from "@/data/lab";
 import { policies, shortTitle } from "@/data/policies";
 import type { CategorySlug, Policy } from "@/data/types";
-import { CARD, wideArt } from "./card-image";
+import { pickArt } from "./card-art";
+import { CARD, wideArts } from "./card-image";
 import { loadGoogleFont } from "./og";
 import { site } from "./site";
 
 // 大字版的分享圖卡（只在伺服器端用）。長輩主要用手機看，所以一張只放一項政見：大字短標題＋這項的全部重點（2～4 句），
 // 一類有幾項就有幾張，卡上標「第幾張／共幾張」，一次傳好幾張也看得出順序。
-// 直式 900×1600（手機全螢幕看剛好），底圖是插畫「企鵝不捨 桃園第①」放在下方、上方留素色給文字；橫式是連結預覽用。
+// 直式 900×1600（手機全螢幕看剛好），底圖是兩張插畫之一（依政見 id 固定，見 lib/card-art.ts）放在下方、上方留素色給文字；橫式是連結預覽用。
 
 const LABEL = "政見重點";
 
@@ -44,7 +45,36 @@ function Candidate({ h }: { h: number }) {
 
 const voteDayText = () => `投票日：${voteDay()}`;
 
-const storyArt = `data:image/png;base64,${await readFile(join(process.cwd(), "public/lab/easy-card.png"), "base64")}`;
+// 每張圖卡依政見 id 固定用其中一張插畫：「企鵝不捨」是烤好的直式底圖（素色紙＋插畫在下方）；
+// 「桃園動起來！」用去背插畫，依文字占的高度放到最大（重點少的卡，插畫就大，中間不會空一大塊）
+const [penguinStory, goArt] = await Promise.all([
+  readFile(join(process.cwd(), "public/lab/easy-card.png"), "base64"),
+  readFile(join(process.cwd(), "public/lab/card-go-art.png"), "base64"),
+]);
+const penguinBg = `data:image/png;base64,${penguinStory}`;
+const goCutout = `data:image/png;base64,${goArt}`;
+const GO_RATIO = 761 / 760; // 去背插畫的高寬比
+
+/** 估計一段字占幾行：中文字算一個字寬，英數字與空白算半個多一點；size、width 都是 u */
+function lineCount(text: string, size: number, width: number) {
+  let w = 0;
+  for (const ch of text) w += /[ -~]/.test(ch) ? 0.55 : 1;
+  return Math.max(1, Math.ceil((w * size) / width));
+}
+
+/** 文字區最底下大約在哪（u），數字和 EasyStoryCard 的排版一致；寧可估多，插畫小一點也不要壓到字 */
+function textBottom(p: Policy) {
+  const points = easyPoints[p.id];
+  const title = lineCount(shortTitle(p.title), 9.35, 86) * 9.2 * 1.2;
+  const body = points.reduce((n, t) => n + lineCount(t, 6.6, 81.2) * 6.6 * 1.4, 0) + (points.length - 1) * 2.6;
+  return 7 + 7.4 * 1.25 + 3 + 7.6 + 3 + title + 4.5 + body;
+}
+
+/** 去背插畫的大小：從文字下方 4u 到頁尾上緣（160u），最小 40u、最大 80u */
+function goArtBox(p: Policy) {
+  const h = Math.min(80, Math.max(40, 160 - (textBottom(p) + 4)));
+  return { h, w: h / GO_RATIO, top: 160 - h };
+}
 
 const GLYPHS = [
   site.candidate.name,
@@ -74,14 +104,22 @@ export async function easyCardFonts() {
 /**
  * 直式圖卡（900×1600），一張一項政見；u 是 1% 卡片寬。
  * 字級以手機全螢幕（約 390px 寬）換算：標題約 36px、重點約 26px。最長的情況（重點共 6 行，例如毛孩友善、敬老愛心卡）文字也停在插畫上方。
+ * 「桃園動起來！」那張的插畫大小跟著文字長度變（goArtBox）。
  */
 export function EasyStoryCard({ policy: p, index, total, width }: { policy: Policy; index: number; total: number; width: number }) {
   const u = width / 100;
   const color = categoryColor[p.category];
+  const art = pickArt(p.id);
+  const go = goArtBox(p);
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0", color: CARD.ink }}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
-      <img src={storyArt} width={width} height={width * (16 / 9)} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+      {art === "penguin" ? (
+        // eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img
+        <img src={penguinBg} width={width} height={width * (16 / 9)} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img
+        <img src={goCutout} width={go.w * u} height={go.h * u} alt="" style={{ position: "absolute", left: ((100 - go.w) / 2 + 1) * u, top: go.top * u }} />
+      )}
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 7 * u, right: 7 * u, top: 7 * u }}>
         <Candidate h={7.4 * u} />
         <div style={{ display: "flex", alignItems: "center", gap: 2 * u, marginTop: 3 * u }}>
@@ -137,7 +175,7 @@ export function EasyWideCard({ theme }: { theme: CategorySlug }) {
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0", color: CARD.ink }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
-      <img src={wideArt} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+      <img src={wideArts[pickArt(theme)]} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 64, top: 44, bottom: 36, width: 500 }}>
         <Candidate h={40} />
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 10 }}>

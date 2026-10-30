@@ -1,14 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { categories, categoryColor } from "@/data/categories";
-import { labThemes } from "@/data/lab";
+import { cardCode, labThemes } from "@/data/lab";
 import { policies, shortTitle, sourceTypeLabel } from "@/data/policies";
 import type { CategorySlug, Policy } from "@/data/types";
+import { type CardArt, pickArt } from "./card-art";
 import { loadGoogleFont } from "./og";
 import { site } from "./site";
 
 // 桃園卡的圖片（只在伺服器端用）：分享預覽的橫式圖（opengraph-image）與「下載分享圖」的直式圖（story）共用。
-// 底圖是插畫「企鵝不捨 桃園第①」，上方留白放卡片內容；直式版和頁面上的桃園卡同一個版型（components/lab/taoyuan-card.tsx）。
+// 底圖是兩張插畫之一（依組合固定，見 lib/card-art.ts），上方留白放卡片內容；直式版和頁面上的桃園卡同一個版型（components/lab/taoyuan-card.tsx）。
 
 export const CARD = {
   /** 卡片最上面一行：活動＋主題，例如「3 分鐘探索・通勤與交通」 */
@@ -23,13 +24,19 @@ export const CARD = {
   teal: "#007A74",
 };
 
-// 底圖在 build 與執行時都一樣，讀一次就好（next/og 的 img 只吃 data URI 或網址）
-const [portrait, wide] = await Promise.all([
+// 底圖在 build 與執行時都一樣，讀一次就好（next/og 的 img 只吃 data URI 或網址）；兩張插畫各一組直式、橫式
+const jpeg = (b: string) => `data:image/jpeg;base64,${b}`;
+const [penguinPortrait, penguinWide, goPortrait, goWide] = await Promise.all([
   readFile(join(process.cwd(), "public/lab/taoyuan-card.jpg"), "base64"),
   readFile(join(process.cwd(), "public/lab/taoyuan-card-wide.jpg"), "base64"),
+  readFile(join(process.cwd(), "public/lab/taoyuan-card-go.jpg"), "base64"),
+  readFile(join(process.cwd(), "public/lab/taoyuan-card-go-wide.jpg"), "base64"),
 ]);
-export const portraitArt = `data:image/jpeg;base64,${portrait}`;
-export const wideArt = `data:image/jpeg;base64,${wide}`;
+const portraitArts: Record<CardArt, string> = { penguin: jpeg(penguinPortrait), go: jpeg(goPortrait) };
+export const wideArts: Record<CardArt, string> = { penguin: jpeg(penguinWide), go: jpeg(goWide) };
+
+/** 桃園卡用哪一張插畫：依三項政見的組合固定（和網頁上的卡片一致） */
+const artFor = (picks: Policy[]) => pickArt(cardCode(picks.map((p) => p.id)));
 
 /** 所有桃園卡共用一份字型子集（同一份參數才能命中快取） */
 const GLYPHS = [
@@ -102,7 +109,7 @@ export function StoryCard({ theme, picks, width }: { theme: CategorySlug; picks:
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0" }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
-      <img src={portraitArt} width={width} height={width * 1.5} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+      <img src={portraitArts[artFor(picks)]} width={width} height={width * 1.5} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 8 * u, right: 8 * u, top: 7.5 * u }}>
         <CardBody theme={theme} picks={picks} u={u} />
       </div>
@@ -119,7 +126,7 @@ export function WideCard({ theme, picks }: { theme: CategorySlug; picks: Policy[
   return (
     <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", fontFamily: "Chiron GoRound TC", background: "#F6EFE0" }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
-      <img src={wideArt} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+      <img src={wideArts[artFor(picks)]} width={1200} height={630} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 64, top: 50, bottom: 40, width: 500 }}>
         <CardBody theme={theme} picks={picks} u={u} />
         <div style={{ display: "flex", marginTop: "auto" }}>
