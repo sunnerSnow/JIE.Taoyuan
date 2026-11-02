@@ -9,6 +9,7 @@ import { pickArt } from "./card-art";
 import { CARD, wideArts } from "./card-image";
 import { loadGoogleFont } from "./og";
 import { site } from "./site";
+import { lineCount } from "./text-fit";
 
 // 大字版的分享圖卡（只在伺服器端用）。長輩主要用手機看，所以一張只放一項政見：大字短標題＋這項的全部重點（2～4 句），
 // 一類有幾項就有幾張，卡上標「第幾張／共幾張」，一次傳好幾張也看得出順序。
@@ -16,8 +17,8 @@ import { site } from "./site";
 
 const LABEL = "政見重點";
 
-/** 卡片最上面：號次圓圈＋候選人姓名（大字），旁邊小字「政見重點」；h 是姓名字級（px） */
-function Candidate({ h }: { h: number }) {
+/** 卡片最上面：號次圓圈＋候選人姓名（大字），旁邊小字標籤（預設「政見重點」）；h 是姓名字級（px）。行程預告圖卡也用 */
+export function Candidate({ h, label = LABEL }: { h: number; label?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: h * 0.3 }}>
       <div
@@ -38,7 +39,7 @@ function Candidate({ h }: { h: number }) {
         {site.candidate.ballotNo}
       </div>
       <div style={{ display: "flex", fontSize: h, lineHeight: 1.1, fontWeight: 900, letterSpacing: h * 0.06, color: CARD.ink }}>{site.candidate.name}</div>
-      <div style={{ display: "flex", marginLeft: h * 0.1, fontSize: h * 0.5, fontWeight: 700, color: CARD.soft }}>{LABEL}</div>
+      <div style={{ display: "flex", marginLeft: h * 0.1, fontSize: h * 0.5, fontWeight: 700, color: CARD.soft }}>{label}</div>
     </div>
   );
 }
@@ -52,15 +53,8 @@ const [penguinStory, goArt] = await Promise.all([
   readFile(join(process.cwd(), "public/lab/card-go-art.png"), "base64"),
 ]);
 const penguinBg = `data:image/png;base64,${penguinStory}`;
-const goCutout = `data:image/png;base64,${goArt}`;
-const GO_RATIO = 761 / 760; // 去背插畫的高寬比
-
-/** 估計一段字占幾行：中文字算一個字寬，英數字與空白算半個多一點；size、width 都是 u */
-function lineCount(text: string, size: number, width: number) {
-  let w = 0;
-  for (const ch of text) w += /[ -~]/.test(ch) ? 0.55 : 1;
-  return Math.max(1, Math.ceil((w * size) / width));
-}
+export const goCutout = `data:image/png;base64,${goArt}`;
+export const GO_RATIO = 761 / 760; // 去背插畫的高寬比
 
 /** 文字區最底下大約在哪（u），數字和 EasyStoryCard 的排版一致；寧可估多，插畫小一點也不要壓到字 */
 function textBottom(p: Policy) {

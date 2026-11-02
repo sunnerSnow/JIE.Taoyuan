@@ -1,46 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ShareImage, shareFiles, useShareFiles } from "@/components/site/use-share-files";
 
-export type EasyCard = { id: string; title: string; alt: string; image: string; fileName: string };
+export type EasyCard = ShareImage & { title: string; alt: string };
 
 const BIG = "flex min-h-[60px] w-full items-center justify-center gap-2 rounded-2xl px-4 text-center text-[21px] font-black shadow-soft";
 
-/**
- * 大字版圖卡清單：一張一項政見，每張都能單獨分享或下載，也能一次分享全部。
- * 「分享」用手機的系統分享（LINE、訊息…）直接傳圖片；不支援傳圖片檔的瀏覽器（多半是電腦）只顯示下載。
- * 圖片先在背景抓好：iOS 要求按下按鈕後馬上呼叫 navigator.share，中間不能再等下載。
- */
+/** 大字版圖卡清單：一張一項政見，每張都能單獨分享或下載，也能一次分享全部（分享方式見 useShareFiles） */
 export function EasyCards({ cards, title, pageUrl }: { cards: EasyCard[]; title: string; pageUrl: string }) {
-  const [files, setFiles] = useState<Record<string, File>>({});
-  const [shareAll, setShareAll] = useState(false);
-
-  useEffect(() => {
-    if (typeof navigator.canShare !== "function") return;
-    let alive = true;
-    Promise.allSettled(
-      cards.map(async (c) => {
-        const r = await fetch(c.image);
-        if (!r.ok) throw new Error(`圖卡讀取失敗：HTTP ${r.status}`);
-        return [c.id, new File([await r.blob()], `${c.fileName}.png`, { type: "image/png" })] as const;
-      }),
-    ).then((results) => {
-      if (!alive) return;
-      const ready = results.flatMap((r) => (r.status === "fulfilled" && navigator.canShare({ files: [r.value[1]] }) ? [r.value] : []));
-      setFiles(Object.fromEntries(ready));
-      setShareAll(ready.length === cards.length && cards.length > 1 && navigator.canShare({ files: ready.map(([, f]) => f) }));
-    });
-    return () => {
-      alive = false;
-    };
-  }, [cards]);
-
-  const share = (list: File[]) => navigator.share({ files: list, title }).catch(() => {});
+  const { files, canShareAll } = useShareFiles(cards);
+  const share = (list: File[]) => shareFiles(list, title);
 
   return (
     <>
       <div className="grid gap-3 sm:grid-cols-2">
-        {shareAll && (
+        {canShareAll && (
           <button type="button" className={`${BIG} bg-sun text-ink`} onClick={() => share(cards.map((c) => files[c.id]))}>
             一次分享全部 {cards.length} 張
           </button>
