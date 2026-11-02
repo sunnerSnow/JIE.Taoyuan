@@ -26,6 +26,24 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-11-02-record-748",
+    date: "2026-11-02",
+    type: "added",
+    title: "過去的貢獻新增「排審《釋字第 748 號解釋施行法》第 20 條修正」",
+    summary:
+      "依立法院司法及法制委員會會議概況表，2022 年 5 月 12 日由黃世杰以召集委員身分主持，併案審查第 20 條修正草案；2023 年 5 月 16 日三讀通過，開放同志家庭收養子女。附媒體報導與候選人 10 月 31 日的貼文。",
+    links: [{ href: "/record#same-sex-adoption", label: "過去的貢獻" }],
+  },
+  {
+    id: "2026-11-02-industry-threads",
+    date: "2026-11-02",
+    type: "source",
+    title: "產業好發展補上候選人 Threads 貼文",
+    summary:
+      "候選人 10 月 30 日在大園的貼文提到要兌現航空城發展「三低一高」產業的承諾、積極吸引 AI 相關產業進駐，列為官方佐證並加註；貼文沒有說明「三低一高」指哪些條件。主要來源維持媒體報導。",
+    policies: ["industry-four"],
+  },
+  {
     id: "2026-10-30-trail",
     date: "2026-10-30",
     type: "added",

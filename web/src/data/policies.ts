@@ -1632,8 +1632,8 @@ export const policies: Policy[] = [
     sourceUrl: "https://news.ltn.com.tw/news/politics/breakingnews/5586851",
     sourceType: "media",
     publishedAt: "2026-09-26",
-    retrievedAt: "2026-10-27",
-    updatedAt: "2026-10-27",
+    retrievedAt: "2026-11-02",
+    updatedAt: "2026-11-02",
     extraSources: [
       {
         type: "candidate",
@@ -1677,6 +1677,13 @@ export const policies: Policy[] = [
         url: "https://udn.com/news/story/124652/9704782",
         date: "2026-08-21",
       },
+      {
+        type: "candidate",
+        outlet: "黃世杰 Threads",
+        title: "世杰今天來到大園市場（談航空城「三低一高」產業）",
+        url: "https://www.threads.com/@schuanglawyer/post/DfGq-1AiQC2",
+        date: "2026-10-30",
+      },
     ],
     notes: [
       {
@@ -1686,6 +1693,10 @@ export const policies: Policy[] = [
       {
         kind: "supplement",
         text: "聯合報 2026 年 8 月 21 日報導：針對台積電進駐龍科三期案，桃園市政府新聞處長羅楚東表示，龍科三期在中央與市府團隊合作下推進，市府也與科管局協調，提前啟動用地取得、從優補償等工作。",
+      },
+      {
+        kind: "supplement",
+        text: "候選人 2026 年 10 月 30 日在大園的貼文寫：「我會兌現航空城發展『三低一高』產業的承諾，結合在地製造業跟科技產業優勢，積極吸引AI相關產業進駐」。貼文沒有說明「三低一高」指哪些條件。",
       },
     ],
     scenarios: [

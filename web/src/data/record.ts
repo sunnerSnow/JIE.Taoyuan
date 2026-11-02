@@ -100,7 +100,7 @@ const BILL_NOTE: EditorNote = {
   text: "「審查完畢（三讀）」是立法院議案系統對這份草案的處理狀態。委員會常把多份草案併案審查，最後通過的條文可能和原提案文字不同。",
 };
 
-export const recordUpdatedAt = "2026-10-27";
+export const recordUpdatedAt = "2026-11-02";
 
 /** 經歷一覽：只列有出處的職務 */
 export const career: {
@@ -317,6 +317,61 @@ export const records: RecordItem[] = [
           title: "立院初審犯保法 被害人保護命令等無共識待協商",
           url: "https://www.cna.com.tw/news/aipl/202205120412.aspx",
           date: "2022-05-12",
+        },
+      },
+    ],
+  },
+  {
+    id: "same-sex-adoption",
+    role: "legislator",
+    when: "2022–2023",
+    title: "排審《釋字第 748 號解釋施行法》第 20 條修正",
+    summary:
+      "2022 年 5 月，黃世杰以召集委員身分主持司法及法制委員會，併案審查《司法院釋字第 748 號解釋施行法》第 20 條修正草案，審查完竣後交由黨團協商；2023 年 5 月三讀通過，開放同志家庭收養子女。",
+    facts: [
+      {
+        text: "第 10 屆第 5 會期司法及法制委員會第 18 次全體委員會議（111 年 5 月 12 日），主席「黃召集委員世杰」，併案審查委員范雲等人、時代力量黨團、民眾黨黨團、委員鄭麗文等人及委員林昶佐等人分別擬具的「司法院釋字第七四八號解釋施行法第二十條條文修正草案」，審查完竣，交由黨團協商。",
+        source: {
+          type: "government",
+          outlet: "立法院",
+          title: "第10屆第5會期司法及法制委員會會議概況表",
+          url: "https://www.ly.gov.tw/Pages/Detail.aspx?nodeid=43616&pid=217514",
+          date: "2022-08-25",
+        },
+      },
+      {
+        text: "立法院於 2023 年 5 月 16 日三讀通過同婚專法修正，規定雙方當事人之一方收養他方之子女或共同收養時，準用民法關於收養之規定。",
+        source: {
+          type: "media",
+          outlet: "公視新聞網",
+          title: "同婚專法修法案三讀通過 開放同志家庭收養子女",
+          url: "https://news.pts.org.tw/article/637135",
+          date: "2023-05-16",
+        },
+      },
+    ],
+    claims: [
+      {
+        by: "media",
+        speaker: "NOWnews 引述黃世杰在委員會的說法",
+        quote: "原則上先按照范雲的版本通過，文字上再參考法務部所提的立法例，全案須交由黨團協商。",
+        source: {
+          type: "media",
+          outlet: "NOWnews 今日新聞",
+          title: "同婚家庭共同收養子女想入法　立院司委會今初審通過",
+          url: "https://www.nownews.com/news/5802779",
+          date: "2022-05-12",
+        },
+      },
+      {
+        by: "candidate",
+        quote: "過去在立法院，我擔任召委時排審《748施行法》第20條修正，拼上平權重要的一塊拼圖。保障孩子的親權，讓同志收養家庭可以順利成家。",
+        source: {
+          type: "candidate",
+          outlet: "黃世杰 Threads",
+          title: "過去在立法院，我擔任召委時排審《748施行法》第20條修正",
+          url: "https://www.threads.com/@schuanglawyer/post/DfJZL3Pmg4-",
+          date: "2026-10-31",
         },
       },
     ],
