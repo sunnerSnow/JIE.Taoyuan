@@ -32,6 +32,20 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-03-guishan",
+    date: "2026-11-03",
+    kind: "visit",
+    district: "龜山區",
+    place: "龜山",
+    title: "清晨在龜山通勤路上向市民問好",
+    summary:
+      "前一天預告：「上龜山的市民朋友，明早我們通勤路上見」，並提到參選半年多以來收到很多龜山市民的留言跟私訊，「大家為交通所苦的感受，我都記下來了」，未來會全力推動交通改善；當天早上貼文寫：「龜山的朋友𠢕早！」",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "龜山的朋友𠢕早", url: "https://www.threads.com/@schuanglawyer/post/DfQje7lEu4F", date: "2026-11-03" },
+      { outlet: "黃世杰 Threads", title: "上龜山的市民朋友，明早我們通勤路上見（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfPA85Qmveb", date: "2026-11-02" },
+    ],
+  },
+  {
     id: "2026-11-02-pusin",
     date: "2026-11-02",
     kind: "visit",
