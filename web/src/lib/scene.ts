@@ -251,7 +251,18 @@ function environment(g: Iso) {
   for (const wx of [22.4, 25.4]) g.free(wx, 19.3, 0.3, ([x, y]) => `M${x - 0.7} ${y}a0.7 0.7 0 1 0 1.4 0a0.7 0.7 0 1 0 -1.4 0Z`, "#3E5E66");
   g.building(null);
   g.tree(4.4, 22.4, 0, 0.95);
-  g.pine(9.6, 23, 0, 0.85);
+
+  // 社會住宅＋門口的長者（居住政策）
+  g.building(5);
+  g.box(6.6, 20.4, 0, 3.8, 3.6, 6.6, { top: "#F3E6D6", left: WALL2, right: "#EDDCC2" });
+  for (const [z0, z1] of [[1.4, 2.5], [3.2, 4.3], [5, 6.1]]) {
+    g.windowsL(24, 6.6, 10.4, z0, z1, 2, GLASS);
+    g.windowsR(10.4, 20.4, 24, z0, z1, 2, GLASS);
+  }
+  g.winL(24, 7.9, 9.1, 0, 1.05, "#7FB0D6");
+  g.person(11.4, 24.6, 0, CORAL, { h: 0.85 });
+  g.building(null);
+  g.pine(13.2, 21.4, 0, 0.85);
   g.tree(14.6, 23, 0, 0.8);
   g.tree(22.5, 23.2, 0, 1);
 }
@@ -356,7 +367,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 26,
     screen: [70, -4],
     anchor: [17, 9, 11],
-    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5], [22.8, 12.4, 4.4]],
+    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5], [22.8, 12.4, 4.4], [8.5, 22.2, 7]],
     draw: environment,
   },
   future: {

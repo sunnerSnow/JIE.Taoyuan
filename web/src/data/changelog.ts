@@ -26,6 +26,15 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-11-03-housing",
+    date: "2026-11-03",
+    type: "added",
+    title: "新增政見「四大居住政策方向」",
+    summary:
+      "收錄候選人 11 月 2 日在 Threads 提出的四大居住政策方向：推動「桃園安居租金加碼補貼」方案、4 年釋出至少 2000 戶婚育宅、8 年兩萬戶社宅完工入住、擴大長者友善租屋。具體做法依貼文附的 4 張圖卡整理。宜居環境島多了一棟社會住宅。",
+    policies: ["housing-policy"],
+  },
+  {
     id: "2026-11-02-record-748",
     date: "2026-11-02",
     type: "added",
