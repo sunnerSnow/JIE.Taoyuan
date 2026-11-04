@@ -25,6 +25,13 @@ export type ScheduleDay = {
 
 export const schedule: ScheduleDay[] = [
   {
+    date: "2026-11-04",
+    items: [
+      { time: "09:30", title: "陳治文&黃世杰 聯合競選總部成立大會", place: "大溪三角公園", address: "大溪區中央路和中正路交叉路" },
+      { time: "11:25", title: "大園後援會成立大會", place: "大園區中正一街50號" },
+    ],
+  },
+  {
     date: "2026-11-02",
     items: [
       { time: "07:00", title: "相約上班路！楊梅路口拜票", place: "星巴克楊梅埔心門市前", address: "楊梅區中山北路二段287號" },
