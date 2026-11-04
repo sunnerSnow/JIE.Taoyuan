@@ -92,12 +92,12 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
                             {it.address && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{it.address}</p>}
                             {it.route && <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{routeText(it)}</p>}
                             <a
-                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}
+                              href={it.url ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="link-ink mt-1.5 inline-block text-[13.5px] font-bold"
                             >
-                              在 Google 地圖上看 <span aria-hidden="true">↗</span>
+                              {it.url ? "觀看直播" : "在 Google 地圖上看"} <span aria-hidden="true">↗</span>
                               <span className="sr-only">（另開新視窗）</span>
                             </a>
                           </div>

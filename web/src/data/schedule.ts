@@ -19,6 +19,8 @@ export type ScheduleItem = {
   address?: string;
   /** 車隊掃街的路線：照公告順序列出經過的路段與加油打氣站 */
   route?: string[];
+  /** 線上節目的觀看網址（例如 YouTube 直播）；有網址的場次，頁面放觀看連結、不放地圖連結 */
+  url?: string;
 };
 
 /** LINE 推播沒有網址 */
@@ -113,8 +115,9 @@ export const schedule: ScheduleDay[] = [
     items: [
       { time: "09:30", title: "陳治文&黃世杰 聯合競選總部成立大會", place: "大溪三角公園", address: "大溪區中央路和中正路交叉路" },
       { time: "11:25", title: "大園後援會成立大會", place: "大園區中正一街50號" },
+      { time: "18:30", title: "一琪晚餐", place: "YouTube 直播", url: "https://www.youtube.com/live/4C7fueQRnQ8" },
     ],
-    sources: [line],
+    sources: [line, { outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DfT4Hfzie65" }],
   },
   {
     date: "2026-11-02",
