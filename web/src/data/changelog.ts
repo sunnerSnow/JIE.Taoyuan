@@ -26,6 +26,15 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-11-04-new-immigrants",
+    date: "2026-11-04",
+    type: "source",
+    title: "新住民政見更新為 11 月 3 日發表的四大政見",
+    summary:
+      "候選人 11 月 3 日在民進黨桃竹苗新住民政見記者會發表新住民 4 大政見，並在 Threads 附上 4 張圖卡：協助新住民在地就業安心創業、建構多語環境打造無障礙生活圈、跨局處一站整合專責法律守護、文化平權參與式治理。主要來源改為候選人貼文，做法依圖卡整理；5 月首次提出時的四大面向寫在頁面的補充說明。",
+    policies: ["new-immigrants"],
+  },
+  {
     id: "2026-11-03-housing",
     date: "2026-11-03",
     type: "added",

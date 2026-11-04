@@ -32,15 +32,30 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-03-new-immigrants",
+    date: "2026-11-03",
+    kind: "event",
+    title: "和莊競程、陳品安一起發表新住民政見",
+    summary:
+      "參加民進黨「新住民有力量」桃竹苗候選人新住民政見記者會，和新竹市長候選人莊競程、苗栗縣長候選人陳品安一起發表新住民政見；貼文寫，來自桃園的好朋友林桂金理事長特地把來自越南的祝福「椰子保溫壺」送給他。",
+    policies: ["new-immigrants"],
+    sources: [
+      { outlet: "黃世杰 Threads", title: "新心共融 串聯國門", url: "https://www.threads.com/@schuanglawyer/post/DfReYQjk4Rg", date: "2026-11-03" },
+      { outlet: "自由時報", title: "黃世杰、莊競程、陳品安合體 拋桃竹苗新住民政見", url: "https://news.ltn.com.tw/news/politics/breakingnews/5627753", date: "2026-11-03" },
+    ],
+  },
+  {
     id: "2026-11-03-guishan",
     date: "2026-11-03",
     kind: "visit",
     district: "龜山區",
-    place: "龜山",
-    title: "清晨在龜山通勤路上向市民問好",
+    place: "上龜山",
+    title: "一早到上龜山向通勤的市民問好",
     summary:
-      "前一天預告：「上龜山的市民朋友，明早我們通勤路上見」，並提到參選半年多以來收到很多龜山市民的留言跟私訊，「大家為交通所苦的感受，我都記下來了」，未來會全力推動交通改善；當天早上貼文寫：「龜山的朋友𠢕早！」",
+      "前一天預告「明早我們通勤路上見」；當天貼文寫：「一早來到上龜山，感謝走路、騎車、開車經過的朋友，給我們熱情的招呼與鼓勵」。他提到龜山人口快速成長，跨縣市通勤台北、新北或到桃園市區時，交通壅塞、停車位不足與接駁問題亟需改善；未來要加速捷運棕線、推動「交通新治理」建立三級路網，並支持年輕家庭、提升托育量能跟服務。",
+    policies: ["three-hubs-six-lines", "bus-network-reform", "friendly-childcare"],
     sources: [
+      { outlet: "黃世杰 Threads", title: "一早來到上龜山，感謝走路、騎車、開車經過的朋友", url: "https://www.threads.com/@schuanglawyer/post/DfQ69eLk2lZ", date: "2026-11-03" },
       { outlet: "黃世杰 Threads", title: "龜山的朋友𠢕早", url: "https://www.threads.com/@schuanglawyer/post/DfQje7lEu4F", date: "2026-11-03" },
       { outlet: "黃世杰 Threads", title: "上龜山的市民朋友，明早我們通勤路上見（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfPA85Qmveb", date: "2026-11-02" },
     ],
