@@ -1,5 +1,5 @@
 import { voteDay } from "@/data/easy";
-import { type ScheduleDay, schedule, scheduleDate, scheduleNote } from "@/data/schedule";
+import { type ScheduleDay, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { CARD } from "./card-image";
 import { Candidate, GO_RATIO, goCutout } from "./easy-card";
 import { loadGoogleFont } from "./og";
@@ -7,7 +7,7 @@ import { HEAD, ITEM, ITEMS_TOP, SCHEDULE_CARD_WIDTH, scheduleLayout } from "./sc
 import { site } from "./site";
 
 // 行程預告的分享圖（只在伺服器端用）：一天一張，寬 900、高度跟著行程多寡變（見 lib/schedule-layout.ts）。
-// 左上是號次姓名與日期，右上角放「桃園動起來！」去背插畫，下面一場行程一張白卡（時間、活動、地點、地址），字級和大字版圖卡差不多大。
+// 左上是號次姓名與日期，右上角放「桃園動起來！」去背插畫，下面一場行程一張白卡（時間、活動、地點、地址；車隊掃街另列路線），字級和大字版圖卡差不多大。
 
 const LABEL = "行程預告";
 const EYEBROW = "杰伴出發・下一站，和世杰一起！";
@@ -27,14 +27,14 @@ const GLYPHS = [
   voteDayText(),
   footerLink,
   site.stance,
-  ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, it.place, it.address ?? ""])]),
+  ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, it.place, it.address ?? "", routeText(it)])]),
 ].join("");
 
 export async function scheduleCardFonts() {
   const [black, bolder, display] = await Promise.all([
     loadGoogleFont("Chiron GoRound TC", 900, GLYPHS),
     loadGoogleFont("Chiron GoRound TC", 700, GLYPHS),
-    loadGoogleFont("Fredoka", 600, "JIE.Taoyuan0123456789:"),
+    loadGoogleFont("Fredoka", 600, "JIE.Taoyuan0123456789:~"),
   ]);
   return [
     { name: "Chiron GoRound TC", data: black, weight: 900 as const, style: "normal" as const },
@@ -74,7 +74,7 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
               background: "#FFFDF7",
             }}
           >
-            <div style={{ display: "flex", fontFamily: "Fredoka", fontSize: ITEM.time * s * u, lineHeight: 1, fontWeight: 600, color: CARD.red }}>{it.time}</div>
+            <div style={{ display: "flex", fontFamily: "Fredoka", fontSize: ITEM.time * s * u, lineHeight: 1, fontWeight: 600, color: CARD.red }}>{timeText(it)}</div>
             <div style={{ display: "flex", marginTop: 1 * s * u, fontSize: ITEM.title * s * u, lineHeight: 1.3, fontWeight: 900, color: CARD.ink }}>{it.title}</div>
             <div style={{ display: "flex", gap: 1.6 * s * u, marginTop: 1.4 * s * u }}>
               {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
@@ -86,6 +86,9 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
                 )}
               </div>
             </div>
+            {it.route && (
+              <div style={{ display: "flex", marginTop: 1.6 * s * u, fontSize: ITEM.route * s * u, lineHeight: 1.5, fontWeight: 700, color: CARD.soft }}>{routeText(it)}</div>
+            )}
           </div>
         ))}
       </div>

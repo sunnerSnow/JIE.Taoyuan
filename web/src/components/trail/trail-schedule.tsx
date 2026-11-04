@@ -2,11 +2,11 @@
 
 import { useMemo, useSyncExternalStore } from "react";
 import { type ShareImage, shareFiles, useShareFiles } from "@/components/site/use-share-files";
-import type { ScheduleItem } from "@/data/schedule";
+import { type ScheduleItem, type ScheduleSource, routeText } from "@/data/schedule";
 import { FootIcon } from "./trail-explorer";
 
 /** 一天的行程預告：日期文字、圖卡網址與大小先在伺服器端算好 */
-export type ScheduleCardDay = ShareImage & { date: string; day: string; items: ScheduleItem[]; alt: string; width: number; height: number };
+export type ScheduleCardDay = ShareImage & { date: string; day: string; items: ScheduleItem[]; sources: ScheduleSource[]; alt: string; width: number; height: number };
 
 const noop = () => () => {};
 const todayTaipei = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei" }).format(new Date());
@@ -55,16 +55,42 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
                       {when && <span className="rounded-full bg-sun px-2.5 py-0.5 text-[14px] text-ink">{when}</span>}
                       <time dateTime={d.date}>{d.day}</time>
                     </h3>
+                    <p className="mt-1.5 text-[13px] font-bold text-ink-soft">
+                      來源：
+                      {d.sources.map((src, i) => (
+                        <span key={src.outlet}>
+                          {i > 0 && "、"}
+                          {src.url ? (
+                            <a href={src.url} target="_blank" rel="noopener noreferrer" className="link-ink">
+                              {src.outlet} <span aria-hidden="true">↗</span>
+                              <span className="sr-only">（另開新視窗）</span>
+                            </a>
+                          ) : (
+                            src.outlet
+                          )}
+                        </span>
+                      ))}
+                    </p>
                     <ol className="mt-4 space-y-3">
                       {d.items.map((it) => (
                         <li key={`${it.time}-${it.title}`} className="flex gap-4 rounded-[20px] border-2 border-edge bg-cream/60 p-4 sm:gap-5 sm:p-5">
-                          <time dateTime={`${d.date}T${it.time}+08:00`} className="w-[62px] shrink-0 font-display text-[22px] leading-tight text-coral">
-                            {it.time}
-                          </time>
+                          <p className="w-[62px] shrink-0 font-display leading-tight text-coral">
+                            <time dateTime={`${d.date}T${it.time}+08:00`} className="block text-[22px]">
+                              {it.time}
+                            </time>
+                            {it.end && (
+                              <span className="mt-0.5 block text-[15px]">
+                                <span className="sr-only">到</span>
+                                <span aria-hidden="true">~ </span>
+                                <time dateTime={`${d.date}T${it.end}+08:00`}>{it.end}</time>
+                              </span>
+                            )}
+                          </p>
                           <div className="min-w-0">
                             <p className="text-[17px] font-black leading-snug">{it.title}</p>
                             <p className="mt-1.5 text-[15px] font-bold leading-snug text-teal-deep">{it.place}</p>
                             {it.address && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{it.address}</p>}
+                            {it.route && <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{routeText(it)}</p>}
                             <a
                               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}
                               target="_blank"

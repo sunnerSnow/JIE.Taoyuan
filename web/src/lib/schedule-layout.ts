@@ -1,4 +1,4 @@
-import type { ScheduleDay } from "@/data/schedule";
+import { type ScheduleDay, routeText } from "@/data/schedule";
 import { lineCount } from "./text-fit";
 
 // 行程預告圖卡的版面（純計算：圖卡和網頁上的預覽大小都用這一份）。數字單位都是 u（1% 卡片寬）。
@@ -11,7 +11,7 @@ export const HEAD = { top: 7, candidate: 7, eyebrow: 3.4, date: 9, weekday: 4.6,
 /** 行程清單從哪裡開始：日期下方和插畫下方，取低的那個再留一點空 */
 export const ITEMS_TOP = Math.max(HEAD.top + HEAD.candidate * 1.25 + 3 + HEAD.eyebrow * 1.25 + 2 + HEAD.date * 1.15 + 4.5, 6 + HEAD.art + 2.5);
 /** 一場行程一張白卡：字級與間距（會乘上縮放比例 s） */
-export const ITEM = { padY: 3, padX: 3.6, border: 0.3, time: 6.4, title: 5.8, place: 4.4, address: 3.6, pin: 2.4, gap: 2.4 };
+export const ITEM = { padY: 3, padX: 3.6, border: 0.3, time: 6.4, title: 5.8, place: 4.4, address: 3.6, route: 3.4, pin: 2.4, gap: 2.4 };
 /** 清單下方到卡片底：留白＋頁尾四行 */
 const FOOTER = 27.4;
 const MIN_H = 125; // 4:5
@@ -24,7 +24,8 @@ function itemHeight(it: ScheduleDay["items"][number], s: number) {
   const title = lineCount(it.title, ITEM.title * s, inner) * ITEM.title * s * 1.3;
   const place = lineCount(it.place, ITEM.place * s, placeWidth) * ITEM.place * s * 1.35;
   const address = it.address ? 0.4 * s + lineCount(it.address, ITEM.address * s, placeWidth) * ITEM.address * s * 1.4 : 0;
-  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + 1.4 * s + place + address;
+  const route = it.route ? 1.6 * s + lineCount(routeText(it), ITEM.route * s, inner) * ITEM.route * s * 1.5 : 0;
+  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + 1.4 * s + place + address + route;
 }
 
 const listHeight = (day: ScheduleDay, s: number) => day.items.reduce((n, it) => n + itemHeight(it, s), 0) + (day.items.length - 1) * ITEM.gap * s;

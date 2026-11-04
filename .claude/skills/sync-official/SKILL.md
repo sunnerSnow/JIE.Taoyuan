@@ -19,7 +19,8 @@ GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，�
    - 既有政見的新內容或更直接的官方來源：更新該政見
    - 參選前的事蹟：加進 `web/src/data/record.ts`
    - 已經發生的行程（走訪、活動、上節目）：加進 `web/src/data/trail.ts`（「杰伴出發」頁）
-   - 與政見無關（造勢、拉票、站台、問候、號次宣傳），以及還沒發生的行程預告：不收錄。預告的行程等當天或之後有貼文，再和預告一起收成一筆（頁面上的「行程預告」只依 LINE 官方帳號的公告，見 `/line-schedule`）
+   - 還沒發生的行程預告：寫明日期、時間、地點的（例如車隊掃街的時段與路線）收進 `web/src/data/schedule.ts`（「行程預告」，見 `/line-schedule`）；行程本身等當天或之後有貼文，再和預告一起收成 `trail.ts` 的一筆
+   - 與政見無關（造勢、拉票、站台、問候、號次宣傳）：不收錄
    完成條件：每則貼文都有分類和一句理由。
 4. **更新資料**：政見、來源與過去的貢獻，每項新增或修改都在 `web/src/data/changelog.ts` 最前面加一筆更新紀錄。行程紀錄不用另外加，杰伴出發頁本身就是依日期的紀錄。
 5. **驗證**：在 `web/` 跑 `npx eslint`、`npx next build`、`npx tsc --noEmit`（build 會產生路由型別，所以 tsc 放最後）。新政見要用 `npx next start -p 3341` 打開政見頁、所屬島嶼頁與 `/explore` 看一次。

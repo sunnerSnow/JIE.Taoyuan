@@ -4,14 +4,14 @@ import { PageHead } from "@/components/site/page-head";
 import { type TrailItem, TrailExplorer } from "@/components/trail/trail-explorer";
 import { type ScheduleCardDay, TrailSchedule } from "@/components/trail/trail-schedule";
 import { formatDay, policies, shortTitle } from "@/data/policies";
-import { placeText, schedule, scheduleDate, scheduleNote } from "@/data/schedule";
+import { placeText, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { districts, trail, trailKindLabel } from "@/data/trail";
 import { pageMetadata } from "@/lib/metadata";
 import { scheduleCardSize } from "@/lib/schedule-layout";
 import { candidateFull } from "@/lib/seo";
 import { site } from "@/lib/site";
 
-// 杰伴出發（JIE GO!）：最上面是 LINE 官方帳號公告的行程預告（data/schedule.ts，整理規則見 /line-schedule），
+// 杰伴出發（JIE GO!）：最上面是官方帳號公告的行程預告（data/schedule.ts，整理規則見 /line-schedule），
 // 下面是已經發生的行程，畫在桃園 13 區地圖上（去過的區放企鵝腳丫；data/trail.ts，整理規則見 /sync-official）。
 
 export const metadata: Metadata = pageMetadata({
@@ -34,9 +34,10 @@ const scheduleDays: ScheduleCardDay[] = schedule.map((d) => ({
   date: d.date,
   day: formatDay(d.date),
   items: d.items,
+  sources: d.sources,
   image: `/trail/schedule/${d.date}`,
   fileName: `${site.candidate.name}行程預告-${scheduleDate(d.date).day}`,
-  alt: `${formatDay(d.date)}行程預告圖卡：${d.items.map((it) => `${it.time} ${it.title}，${placeText(it)}`).join("；")}`,
+  alt: `${formatDay(d.date)}行程預告圖卡：${d.items.map((it) => [`${timeText(it)} ${it.title}`, placeText(it), routeText(it)].filter(Boolean).join("，")).join("；")}`,
   ...scheduleCardSize(d),
 }));
 const lineUrl = site.candidate.socials.find((s) => s.key === "line")!.url;
