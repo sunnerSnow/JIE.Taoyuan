@@ -32,6 +32,32 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-04-show",
+    date: "2026-11-04",
+    kind: "media",
+    place: "YouTube「一琪晚餐」",
+    title: "上安琪的節目「一琪晚餐」",
+    summary:
+      "下午預告：「今晚要不要『一琪晚餐』？感謝安琪邀請，大家18:30不見不散」；節目中貼文寫：「跟安琪一起吃播中，今天帶新明牛肉麵來錄影」。節目完整版的標題寫到交通、敬老、育兒、醫療、科技等政見。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "跟安琪一起吃播中，今天帶新明牛肉麵來錄影", url: "https://www.threads.com/@schuanglawyer/post/DfUSXWuCZ8S", date: "2026-11-04" },
+      { outlet: "YouTube", title: "【#一琪晚餐】2026.11.04完整版", url: "https://www.youtube.com/live/4C7fueQRnQ8", date: "2026-11-04" },
+      { outlet: "黃世杰 Threads", title: "今晚要不要「一琪晚餐」？大家18:30不見不散（節目預告）", url: "https://www.threads.com/@schuanglawyer/post/DfT4Hfzie65", date: "2026-11-04" },
+    ],
+  },
+  {
+    id: "2026-11-04-dayuan-support",
+    date: "2026-11-04",
+    kind: "event",
+    district: "大園區",
+    place: "大園後援會",
+    title: "參加大園後援會成立大會",
+    summary:
+      "貼文寫：「大園後援會正式成立！」提到未來將持續推進航空城建設，落實先建後遷、堅持三低一高的承諾；也要吸引頂尖醫學院合作、強化醫療服務跟量能，全力推動國2甲線銜接台61線，加速航青路、航城路提早開放，完善捷運支線與公車路網。游吾和議員、張佩芸議員候選人及大園後援會許阿鐘主任委員同行。",
+    policies: ["industry-four", "better-healthcare", "bus-network-reform"],
+    sources: [{ outlet: "黃世杰 Threads", title: "大園後援會正式成立！", url: "https://www.threads.com/@schuanglawyer/post/DfUQE7FEyFR", date: "2026-11-04" }],
+  },
+  {
     id: "2026-11-03-new-immigrants",
     date: "2026-11-03",
     kind: "event",

@@ -101,14 +101,17 @@ export const schedule: ScheduleDay[] = [
           "延平路",
           "金門二路",
           "保羅街",
-          "民族路橋",
+          "民族路橋", // 原圖卡寫「民族路橋」；11/4 路線更新貼文寫「民族陸橋」（OSM 也是），路線圖靠 tools/route-map 的 ALIASES 對照
           "復興路",
-          "春日路",
           "三民路",
         ],
       },
     ],
-    sources: [{ outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DfTlYUKIwfm" }],
+    sources: [
+      { outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DfTlYUKIwfm" },
+      // 11/4 晚上更新晚場路線：民族陸橋→復興路→三民路→北競總（改為不左轉春日路）
+      { outlet: "Threads 路線更新", url: "https://www.threads.com/@schuanglawyer/post/DfUTGn_iTaV" },
+    ],
   },
   {
     date: "2026-11-04",
@@ -146,3 +149,6 @@ export const placeText = (it: ScheduleItem) => (it.address ? `${it.place}（${it
 
 /** 車隊掃街的路線全文 */
 export const routeText = (it: ScheduleItem) => (it.route ? `路線：${it.route.join("→")}` : "");
+
+/** 路線圖卡網址裡的時間不放冒號：09:00 → 0900 */
+export const routeSlug = (time: string) => time.replace(":", "");

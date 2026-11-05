@@ -4,10 +4,11 @@ import { PageHead } from "@/components/site/page-head";
 import { type TrailItem, TrailExplorer } from "@/components/trail/trail-explorer";
 import { type ScheduleCardDay, TrailSchedule } from "@/components/trail/trail-schedule";
 import { formatDay, policies, shortTitle } from "@/data/policies";
-import { placeText, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
+import { routeMaps } from "@/data/route-maps";
+import { placeText, routeSlug, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { districts, trail, trailKindLabel } from "@/data/trail";
 import { pageMetadata } from "@/lib/metadata";
-import { scheduleCardSize } from "@/lib/schedule-layout";
+import { routeCardSize, scheduleCardSize } from "@/lib/schedule-layout";
 import { candidateFull } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -33,7 +34,21 @@ const scheduleDays: ScheduleCardDay[] = schedule.map((d) => ({
   id: d.date,
   date: d.date,
   day: formatDay(d.date),
-  items: d.items,
+  items: d.items.map((it) => {
+    const map = routeMaps[`${d.date} ${it.time}`];
+    if (!map) return it;
+    const slug = routeSlug(it.time);
+    return {
+      ...it,
+      routeCard: {
+        id: `${d.date}-${slug}`,
+        image: `/trail/schedule/${d.date}/route/${slug}`,
+        fileName: `${site.candidate.name}車掃路線圖-${scheduleDate(d.date).day}-${slug}`,
+        alt: `${formatDay(d.date)} ${timeText(it)} ${it.title}路線圖：${routeText(it)}`,
+        ...routeCardSize(it, map),
+      },
+    };
+  }),
   sources: d.sources,
   image: `/trail/schedule/${d.date}`,
   fileName: `${site.candidate.name}行程預告-${scheduleDate(d.date).day}`,
