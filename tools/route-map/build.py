@@ -4,9 +4,10 @@
 用法：python build.py [--cache 目錄]
   讀 web/src/data/schedule.ts 裡有 route 的場次，依公告的路名順序沿著道路走：
   從起點所在的路出發 → 每條路走到和下一條路交會的路口（取沿路最近的那個）→ 最後回到起點。
-  「加油打氣站」不是路名，畫路線時略過（只寫在路線文字裡）。
-  公告的路名和 OSM 寫法不同時，在 ALIASES 對照；起點座標寫在 PLACES。
-輸出：每場一張圖的 SVG 路徑（背景道路分三級、鐵路、路線、行進方向的箭頭）、起點位置與路名標籤位置。
+  「加油打氣站」不是路名，畫路線時略過；有查到地點的（STATIONS）在圖上另外標出來。
+  公告的路名和 OSM 寫法不同時，在 ALIASES 對照；起點座標寫在 PLACES；看圖認路用的地標寫在 LANDMARKS。
+輸出：每場一張圖的 SVG 路徑（背景道路分三級、鐵路、路線、行進方向的箭頭），以及要疊在圖上的東西：
+  起點、每條路的順序號碼（和路線清單的號碼一致）、加油打氣站、地標、路名標籤；路線清單（chips）。
 """
 
 import heapq
@@ -43,6 +44,25 @@ EXTENSIONS = {
 PLACES = {
     "北桃園競選總部": (24.9995472, 121.3092859, "三民路"),  # 桃園區三民路二段300號
 }
+
+# 加油打氣站：公告的站名 → (圖上的名字, 緯度, 經度)。有查到地點的才畫，其他只寫在路線清單裡
+STATIONS = {
+    # 桃園市議會議員介紹頁：黃瓊慧議員服務處在桃園區中山路129號（座標是 OSM 的地址點）
+    "黃瓊慧 加油打氣站": ("黃瓊慧服務處", 24.99372, 121.30996),
+}
+# 看圖認路用的地標（座標取自 OSM；公園、展演中心取鄰近的站點位置，畫在圖上只是示意）
+LANDMARKS = [
+    ("桃園車站", 24.98873, 121.31378),
+    ("桃園市政府", 24.99325, 121.30098),
+    ("景福宮", 24.99407, 121.31025),
+    ("南門市場", 24.99281, 121.30711),
+    ("桃園巨蛋", 24.99364, 121.32497),
+    ("三民運動公園", 25.00058, 121.31969),
+    ("大有梯田生態公園", 25.0126, 121.32149),
+    ("中正公園", 25.02304, 121.29838),
+    ("陽明運動公園", 24.98229, 121.30813),
+    ("桃園展演中心", 25.0173, 121.2992),
+]
 
 MAJOR = {"motorway", "trunk", "primary", "secondary", "motorway_link", "trunk_link", "primary_link", "secondary_link"}
 MID = {"tertiary", "tertiary_link", "unclassified"}
@@ -307,9 +327,81 @@ def render(osm, network, route):
             layers[layer].append(simplify(pts, 1.2))
     line = simplify([xy(p) for p in path], 0.6)
 
-    # 路名標籤：每條路取走最長的那段，放在中點；和已放的標籤重疊就跳過。起點的圓點和右邊的「起點・終點」標籤先佔位
     sx, sy = xy(start)
-    labels, boxes = [], [(sx - 40, sy - 40, sx + 240, sy + 40)]
+    boxes = [(sx - 40, sy - 40, sx + 240, sy + 40)]  # 起點的圓點和右邊的「起點・終點」標籤先佔位
+
+    def overlaps(box):
+        return sum(not (box[2] < b[0] or box[0] > b[2] or box[3] < b[1] or box[1] > b[3]) for b in boxes)
+
+    def free(box):
+        return 0 <= box[0] and box[2] <= WIDTH and 0 <= box[1] and box[3] <= height and not overlaps(box)
+
+    def on_route(box):
+        return any(box[0] <= x <= box[2] and box[1] <= y <= box[3] for x, y in line)
+
+    def along(seg, t):
+        """沿一段路走到 t（0～1）的位置"""
+        d = [0.0]
+        for a, b in zip(seg, seg[1:]):
+            d.append(d[-1] + meters(a, b))
+        goal = d[-1] * t
+        for i in range(1, len(seg)):
+            if d[i] >= goal:
+                r = (goal - d[i - 1]) / ((d[i] - d[i - 1]) or 1)
+                return xy((seg[i - 1][0] + (seg[i][0] - seg[i - 1][0]) * r, seg[i - 1][1] + (seg[i][1] - seg[i - 1][1]) * r))
+        return xy(seg[-1])
+
+    # 路線清單與順序號碼：每換一條路加一號（連續同一條路、加油打氣站不加號）；第 0 段是從起點出發的那條路，不編號
+    chips, k, prev = [], 0, ALIASES.get(PLACES[route["place"]][2], PLACES[route["place"]][2])
+    for stop in route["stops"]:
+        if "加油打氣站" in stop:
+            chips.append({"text": stop, "station": True, "mapped": stop in STATIONS})
+            continue
+        key = ALIASES.get(stop, stop)
+        if key != prev:
+            k += 1
+            chips.append({"n": k, "text": stop})
+        else:
+            chips.append({"text": stop})
+        prev = key
+
+    # 號碼圓圈放在那條路的中間；和已放的東西重疊就往前或往後挪，都會重疊時取重疊最少的位置（號碼一定要放）
+    steps = []
+    for n in range(1, k + 1):
+        seg = legs[n][2]
+        spots = [along(seg, t) for t in (0.5, 0.35, 0.65, 0.2, 0.8, 0.1, 0.9)]
+        x, y = min(spots, key=lambda q: overlaps((q[0] - 26, q[1] - 26, q[0] + 26, q[1] + 26)))
+        box = (x - 26, y - 26, x + 26, y + 26)
+        boxes.append(box)
+        steps.append({"n": n, "x": round(x, 1), "y": round(y, 1)})
+
+    # 加油打氣站：有地點的才畫；離路線太遠代表地點或路線有問題
+    stations = []
+    for stop in route["stops"]:
+        if stop not in STATIONS:
+            continue
+        text, slat, slon = STATIONS[stop]
+        gap = min(meters((slat, slon), q) for q in path)
+        if gap > 120:
+            print(f"  ※ {text} 離路線 {gap:.0f} 公尺，請確認", file=sys.stderr)
+        x, y = xy((slat, slon))
+        boxes.append((x - 30, y - 30, x + 30 + len(text) * 34 + 30, y + 30))
+        stations.append({"x": round(x, 1), "y": round(y, 1), "text": text})
+
+    # 地標：點在原位，名字放右邊或左邊（優先選不會蓋到路線的那邊；都放不下就不放）
+    landmarks = []
+    for text, llat, llon in LANDMARKS:
+        x, y = xy((llat, llon))
+        bw = len(text) * 28 + 36
+        sides = [("right", (x - 14, y - 22, x + bw, y + 22)), ("left", (x - bw, y - 22, x + 14, y + 22))]
+        sides = [sd for sd in sides if free(sd[1])]
+        if sides:
+            side, box = min(sides, key=lambda sd: on_route(sd[1]))
+            boxes.append(box)
+            landmarks.append({"x": round(x, 1), "y": round(y, 1), "text": text, "side": side})
+
+    # 路名標籤：每條路取走最長的那段，放在四分之一處（中間留給號碼）；放不下就跳過
+    labels = []
     shown = {ALIASES.get(n, n): n for n in route["stops"] if "加油打氣站" not in n}
     best = {}
     for name, d, seg in legs:
@@ -319,16 +411,15 @@ def render(osm, network, route):
     for key, (d, seg) in sorted(best.items(), key=lambda kv: -kv[1][0]):
         if d < 250:
             continue
-        x, y = xy(seg[len(seg) // 2])
         text = shown.get(key, key)
-        bw, bh = len(text) * 30 + 24, 44
-        box = (x - bw / 2, y - bh / 2, x + bw / 2, y + bh / 2)
-        if box[0] < 0 or box[2] > WIDTH or box[1] < 0 or box[3] > height:
-            continue
-        if any(not (box[2] < b[0] or box[0] > b[2] or box[3] < b[1] or box[1] > b[3]) for b in boxes):
-            continue
-        boxes.append(box)
-        labels.append({"x": round(x, 1), "y": round(y, 1), "text": text})
+        bw, bh = len(text) * 34 + 30, 50
+        for t in (0.25, 0.75, 0.15, 0.85):
+            x, y = along(seg, t)
+            box = (x - bw / 2, y - bh / 2, x + bw / 2, y + bh / 2)
+            if free(box):
+                boxes.append(box)
+                labels.append({"x": round(x, 1), "y": round(y, 1), "text": text})
+                break
 
     return {
         "width": WIDTH,
@@ -339,9 +430,13 @@ def render(osm, network, route):
         "minor": svg_path(layers["minor"]),
         "rail": svg_path(layers["rail"]),
         "route": svg_path([line]),
-        "arrows": arrows(line, 70, 9),
+        "arrows": arrows(line, 80, 13),
         "start": [round(sx, 1), round(sy, 1)],
+        "steps": steps,
+        "stations": stations,
+        "landmarks": landmarks,
         "labels": labels,
+        "chips": chips,
     }
 
 
@@ -362,7 +457,13 @@ def main():
         "// 車隊掃街的路線圖：鍵是「日期 時間」；座標是 viewBox 單位（寬 1000）。路網：© OpenStreetMap 貢獻者（ODbL）。\n\n"
         "export type RouteMap = {\n  width: number;\n  height: number;\n  /** 沿路線量出的總長（公里） */\n  km: number;\n"
         "  major: string;\n  mid: string;\n  minor: string;\n  rail: string;\n  route: string;\n  arrows: string;\n"
-        "  start: [number, number];\n  labels: { x: number; y: number; text: string }[];\n};\n\n"
+        "  start: [number, number];\n"
+        "  /** 每條路的順序號碼，和 chips 的 n 一致 */\n  steps: { n: number; x: number; y: number }[];\n"
+        "  /** 有查到地點的加油打氣站 */\n  stations: { x: number; y: number; text: string }[];\n"
+        "  /** 地標：side 是名字放在點的哪一邊 */\n  landmarks: { x: number; y: number; text: string; side: \"left\" | \"right\" }[];\n"
+        "  labels: { x: number; y: number; text: string }[];\n"
+        "  /** 路線清單：照公告順序，換一條路加一號；station 是加油打氣站，mapped 表示圖上有畫 */\n"
+        "  chips: { n?: number; text: string; station?: boolean; mapped?: boolean }[];\n};\n\n"
         f"export const routeMaps: Record<string, RouteMap> = {body};\n",
         encoding="utf-8",
         newline="\n",

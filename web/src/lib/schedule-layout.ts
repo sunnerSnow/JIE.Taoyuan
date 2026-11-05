@@ -1,3 +1,4 @@
+import type { RouteMap } from "@/data/route-maps";
 import { type ScheduleDay, type ScheduleItem, placeText, routeText } from "@/data/schedule";
 import { lineCount } from "./text-fit";
 
@@ -47,18 +48,35 @@ export function scheduleCardSize(day: ScheduleDay) {
 }
 
 /** 車隊掃街路線圖卡（/trail/schedule/日期/route/時間）：上方和行程預告圖卡相同，下面是時間、活動、起終點、地圖、路線文字 */
-export const ROUTE = { time: 6.4, title: 5.8, place: 3.8, map: 86, route: 3.2, note: 2.6 };
+export const ROUTE = { time: 6.4, title: 5.8, place: 3.8, map: 86, legend: 2.8, chip: 3.1, num: 3.4, note: 2.6 };
+export const ROUTE_LEGEND = "照號碼順序前進，白色箭頭是行進方向";
 export const ROUTE_NOTE = "路線示意：依公告的路名順序沿道路畫出，實際行經路段以現場為準。地圖資料 © OpenStreetMap 貢獻者";
+
+/** 路線清單一列一列排下去會排成幾列（和 RouteCard 的 chip 寬度算法一致） */
+export function chipRows(chips: RouteMap["chips"]) {
+  let rows = 1;
+  let x = 0;
+  chips.forEach((c, i) => {
+    const w = (c.n ? ROUTE.num + 0.6 : 0) + (c.mapped ? ROUTE.chip + 0.3 : 0) + c.text.length * ROUTE.chip + 0.4 + (i < chips.length - 1 ? 0.8 + ROUTE.chip + 0.8 : 0);
+    if (x > 0 && x + w > 86) {
+      rows += 1;
+      x = 0;
+    }
+    x += w;
+  });
+  return rows;
+}
 export const routePlaceLine = (it: ScheduleItem) => `起點・終點：${placeText(it)}`;
 
-export function routeCardLayout(it: ScheduleItem, map: { width: number; height: number }) {
+export function routeCardLayout(it: ScheduleItem, map: RouteMap) {
   const mapH = (ROUTE.map * map.height) / map.width;
   const head = ROUTE.time + 1 + lineCount(it.title, ROUTE.title, 86) * ROUTE.title * 1.3 + 1.4 + lineCount(routePlaceLine(it), ROUTE.place, 82) * ROUTE.place * 1.4;
-  const body = 3 + mapH + 0.6 + 2.4 + lineCount(routeText(it), ROUTE.route, 86) * ROUTE.route * 1.5 + 1.4 + lineCount(ROUTE_NOTE, ROUTE.note, 86) * ROUTE.note * 1.45;
+  const chips = chipRows(map.chips) * (ROUTE.num + 0.3) + (chipRows(map.chips) - 1) * 1.2;
+  const body = 3 + mapH + 0.6 + 1.6 + ROUTE.legend * 1.4 + 2.2 + chips + 1.8 + lineCount(ROUTE_NOTE, ROUTE.note, 86) * ROUTE.note * 1.45;
   return { mapH, height: ITEMS_TOP + head + body + FOOTER };
 }
 
-export function routeCardSize(it: ScheduleItem, map: { width: number; height: number }) {
+export function routeCardSize(it: ScheduleItem, map: RouteMap) {
   const u = SCHEDULE_CARD_WIDTH / 100;
   return { width: SCHEDULE_CARD_WIDTH, height: Math.round(routeCardLayout(it, map).height * u) };
 }

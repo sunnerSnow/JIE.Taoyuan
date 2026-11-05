@@ -23,7 +23,7 @@ description: 使用者貼上候選人 LINE 官方帳號的行程公告（文字�
 
 - **照原文**：`title` 是「活動」，`place` 是「地點」括號前的部分，`address` 是括號裡的地址（沒有就不填），全形標點、數字照抄，不補公告沒有的字。`time` 寫 24 小時制 `HH:MM`；公告有寫結束時間才填 `end`。
 - **車隊掃街**：`place`、`address` 寫起點（起點和終點相同時只寫一次），`route` 照公告順序列出經過的路段與加油打氣站，不含起點、終點。
-- **車掃路線圖**：新增或修改 `route` 後，在 repo 根目錄跑 `python tools/route-map/build.py`（從 OpenStreetMap 下載路網，重新產生 `web/src/data/route-maps.ts`），路線圖卡在 `/trail/schedule/<日期>/route/<時間去冒號>`。工具回報「找不到路名」或「沒有交會的路口」時，到 `build.py` 的 `ALIASES`（公告路名和 OSM 不同）或 `EXTENSIONS`（同一條路在 OSM 分成不同路名）補對照；新的起點要在 `PLACES` 補座標。打開圖卡確認路線沿著公告的路名走、標籤沒有疊在一起。
+- **車掃路線圖**：新增或修改 `route` 後，在 repo 根目錄跑 `python tools/route-map/build.py`（從 OpenStreetMap 下載路網，重新產生 `web/src/data/route-maps.ts`），路線圖卡在 `/trail/schedule/<日期>/route/<時間去冒號>`。工具回報「找不到路名」或「沒有交會的路口」時，到 `build.py` 的 `ALIASES`（公告路名和 OSM 不同）或 `EXTENSIONS`（同一條路在 OSM 分成不同路名）補對照；新的起點要在 `PLACES` 補座標。加油打氣站查得到官方地址（例如議員服務處，以市議會議員介紹頁為準）才寫進 `STATIONS` 並註明出處，查不到的只留在路線清單；看圖認路的地標在 `LANDMARKS`。打開圖卡確認：號碼照路線順序、路線沿著公告的路名走、標籤沒有疊在一起。
 - **線上節目**：`place` 寫平台（例如「YouTube 直播」），`url` 放貼文附的觀看網址（Threads 的連結要還原成原始網址，不要用 l.threads.com 轉址）。
 - **只收行程本身**：聯絡電話、報名連結、呼籲文字不收。
 - **預告不是紀錄**：行程結束後，等官方貼文或媒體報導再用 `/sync-official` 收進 `trail.ts`；LINE 公告不能當 `trail.ts` 的來源（Threads 的預告貼文可以，和當天貼文合成一筆）。

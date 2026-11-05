@@ -1,11 +1,11 @@
 import { voteDay } from "@/data/easy";
-import type { RouteMap } from "@/data/route-maps";
+import { type RouteMap, routeMaps } from "@/data/route-maps";
 import { type ScheduleDay, type ScheduleItem, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { CARD } from "./card-image";
 import { Candidate, GO_RATIO, goCutout } from "./easy-card";
 import { loadGoogleFont } from "./og";
 import { ROUTE_COLORS, routeMapDataUri } from "./route-map-svg";
-import { HEAD, ITEM, ITEMS_TOP, ROUTE, ROUTE_NOTE, SCHEDULE_CARD_WIDTH, routeCardLayout, routePlaceLine, scheduleLayout } from "./schedule-layout";
+import { HEAD, ITEM, ITEMS_TOP, ROUTE, ROUTE_LEGEND, ROUTE_NOTE, SCHEDULE_CARD_WIDTH, routeCardLayout, routePlaceLine, scheduleLayout } from "./schedule-layout";
 import { site } from "./site";
 
 // 行程預告的分享圖（只在伺服器端用）：一天一張，寬 900、高度跟著行程多寡變（見 lib/schedule-layout.ts）。
@@ -24,6 +24,11 @@ const PIN = `data:image/svg+xml;base64,${Buffer.from(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1.5a8 8 0 0 0-8 8c0 5.6 8 13 8 13s8-7.4 8-13a8 8 0 0 0-8-8z" fill="${CARD.teal}"/><circle cx="12" cy="9.5" r="3.2" fill="#FFFFFF"/></svg>`,
 ).toString("base64")}`;
 
+/** 加油打氣站的星星（字型不一定有「★」，用圖） */
+const STAR = `data:image/svg+xml;base64,${Buffer.from(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="${CARD.red}"/></svg>`,
+).toString("base64")}`;
+
 const GLYPHS = [
   site.candidate.name,
   LABEL,
@@ -35,6 +40,9 @@ const GLYPHS = [
   ROUTE_LABEL,
   START_LABEL,
   ROUTE_NOTE,
+  ROUTE_LEGEND,
+  "→",
+  ...Object.values(routeMaps).flatMap((m) => [...m.landmarks, ...m.stations, ...m.labels].map((l) => l.text)),
   ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, routePlaceLine(it), routeText(it)])]),
 ].join("");
 
@@ -137,12 +145,40 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
 /** 標籤的寬度：一個中文字約一個字寬，左右各留一點 */
 const pillWidth = (text: string, fs: number) => text.length * fs + 2.4 * U;
 
-/** 車隊掃街路線圖卡：時間、活動、起終點，下面是路線圖（路名標籤與起點疊在 SVG 底圖上）和完整路線文字 */
+/** 順序號碼：珊瑚色圓圈、白字（地圖上和路線清單共用） */
+function StepNumber({ n, size }: { n: number; size: number }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: size,
+        height: size,
+        borderRadius: 999,
+        border: `${size * 0.13}px solid #FFFFFF`,
+        background: ROUTE_COLORS.route,
+        fontFamily: "Fredoka",
+        fontSize: size * (n >= 10 ? 0.5 : 0.6),
+        fontWeight: 600,
+        color: "#FFFFFF",
+      }}
+    >
+      {n}
+    </div>
+  );
+}
+
+/**
+ * 車隊掃街路線圖卡：時間、活動、起終點，下面是路線圖和路線清單。
+ * 圖上疊：起點、每條路的順序號碼（和下面清單的號碼一樣，照號碼走就知道方向）、有查到地點的加油打氣站、地標、路名。
+ */
 export function RouteCard({ date, item: it, map }: { date: string; item: ScheduleItem; map: RouteMap }) {
   const u = U;
   const { mapH } = routeCardLayout(it, map);
   const k = (ROUTE.map * u) / map.width; // 地圖座標 → 圖卡像素
   const [sx, sy] = map.start;
+  const step = ROUTE.num * u;
   return (
     <div style={frame}>
       <CardHead date={date} label={ROUTE_LABEL} />
@@ -164,6 +200,36 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
           <img src={routeMapDataUri(map)} width={ROUTE.map * u} height={mapH * u} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
+          {map.landmarks.map((l) => (
+            <div
+              key={l.text}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: l.side === "right" ? "row" : "row-reverse",
+                gap: 0.6 * u,
+                position: "absolute",
+                left: l.side === "right" ? l.x * k - 0.9 * u : l.x * k - pillWidth(l.text, 2.3 * u) - 0.9 * u,
+                top: l.y * k - 1.6 * u,
+              }}
+            >
+              <div style={{ display: "flex", width: 1.8 * u, height: 1.8 * u, borderRadius: 0.4 * u, border: `${0.3 * u}px solid #FFFFFF`, background: CARD.navy }} />
+              <div
+                style={{
+                  display: "flex",
+                  padding: `${0.2 * u}px ${0.8 * u}px`,
+                  borderRadius: 0.8 * u,
+                  background: "rgba(255, 255, 255, 0.85)",
+                  fontSize: 2.3 * u,
+                  lineHeight: 1.2,
+                  fontWeight: 900,
+                  color: CARD.navy,
+                }}
+              >
+                {l.text}
+              </div>
+            </div>
+          ))}
           {map.labels.map((l) => (
             <div
               key={l.text}
@@ -184,6 +250,40 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
               }}
             >
               {l.text}
+            </div>
+          ))}
+          {map.stations.map((s) => (
+            <div key={s.text} style={{ display: "flex", alignItems: "center", gap: 0.8 * u, position: "absolute", left: s.x * k - 1.8 * u, top: s.y * k - 1.8 * u }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 3.6 * u,
+                  height: 3.6 * u,
+                  borderRadius: 999,
+                  border: `${0.5 * u}px solid #FFFFFF`,
+                  background: "#F9DE3A",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
+                <img src={STAR} width={2.2 * u} height={2.2 * u} alt="" />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  padding: `${0.4 * u}px ${1.2 * u}px`,
+                  borderRadius: 999,
+                  border: `${0.3 * u}px solid ${CARD.red}`,
+                  background: "#FFFDF7",
+                  fontSize: 2.6 * u,
+                  lineHeight: 1.2,
+                  fontWeight: 900,
+                  color: CARD.red,
+                }}
+              >
+                {s.text}
+              </div>
             </div>
           ))}
           <div
@@ -216,9 +316,36 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
           >
             {START_LABEL}
           </div>
+          {map.steps.map((s) => (
+            <div key={s.n} style={{ display: "flex", position: "absolute", left: s.x * k - step / 2, top: s.y * k - step / 2 }}>
+              <StepNumber n={s.n} size={step} />
+            </div>
+          ))}
         </div>
-        <div style={{ display: "flex", marginTop: 2.4 * u, fontSize: ROUTE.route * u, lineHeight: 1.5, fontWeight: 700, color: CARD.soft }}>{routeText(it)}</div>
-        <div style={{ display: "flex", marginTop: 1.4 * u, fontSize: ROUTE.note * u, lineHeight: 1.45, fontWeight: 700, color: CARD.soft }}>{ROUTE_NOTE}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 1 * u, marginTop: 1.6 * u, fontSize: ROUTE.legend * u, lineHeight: 1.4, fontWeight: 900, color: CARD.ink }}>
+          <StepNumber n={1} size={ROUTE.legend * 1.2 * u} />
+          {ROUTE_LEGEND}
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", rowGap: 1.2 * u, marginTop: 2.2 * u, fontSize: ROUTE.chip * u, lineHeight: 1.2 }}>
+          {map.chips.map((c, i) => (
+            <div key={`${i}-${c.text}`} style={{ display: "flex", alignItems: "center" }}>
+              {c.mapped && (
+                // eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img
+                <img src={STAR} width={ROUTE.chip * u} height={ROUTE.chip * u} alt="" style={{ marginRight: 0.3 * u }} />
+              )}
+              {c.n && (
+                <div style={{ display: "flex", marginRight: 0.6 * u }}>
+                  <StepNumber n={c.n} size={ROUTE.num * u} />
+                </div>
+              )}
+              <div style={{ display: "flex", fontWeight: c.station ? 700 : 900, color: c.mapped ? CARD.red : c.station ? CARD.soft : CARD.ink }}>
+                {c.text}
+              </div>
+              {i < map.chips.length - 1 && <div style={{ display: "flex", margin: `0 ${0.8 * u}px`, color: CARD.soft }}>→</div>}
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", marginTop: 1.8 * u, fontSize: ROUTE.note * u, lineHeight: 1.45, fontWeight: 700, color: CARD.soft }}>{ROUTE_NOTE}</div>
       </div>
       <CardFooter />
     </div>
