@@ -2,7 +2,7 @@
 
 import { useMemo, useSyncExternalStore } from "react";
 import { type ShareImage, shareFiles, useShareFiles } from "@/components/site/use-share-files";
-import { type ScheduleItem, type ScheduleSource, routeText } from "@/data/schedule";
+import { type ScheduleItem, type ScheduleSource, finishText, routeText } from "@/data/schedule";
 import { FootIcon } from "./trail-explorer";
 
 /** 分享圖：網址、檔名、替代文字與大小先在伺服器端算好 */
@@ -93,6 +93,7 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
                             <p className="text-[17px] font-black leading-snug">{it.title}</p>
                             <p className="mt-1.5 text-[15px] font-bold leading-snug text-teal-deep">{it.place}</p>
                             {it.address && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{it.address}</p>}
+                            {it.finish && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{finishText(it)}</p>}
                             {it.route && <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{routeText(it)}</p>}
                             <a
                               href={it.url ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}

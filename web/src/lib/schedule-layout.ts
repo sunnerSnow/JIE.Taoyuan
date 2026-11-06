@@ -1,5 +1,5 @@
 import type { RouteMap } from "@/data/route-maps";
-import { type ScheduleDay, type ScheduleItem, placeText, routeText } from "@/data/schedule";
+import { type ScheduleDay, type ScheduleItem, finishText, placeText, routeText } from "@/data/schedule";
 import { lineCount } from "./text-fit";
 
 // 行程預告圖卡的版面（純計算：圖卡和網頁上的預覽大小都用這一份）。數字單位都是 u（1% 卡片寬）。
@@ -25,8 +25,9 @@ function itemHeight(it: ScheduleDay["items"][number], s: number) {
   const title = lineCount(it.title, ITEM.title * s, inner) * ITEM.title * s * 1.3;
   const place = lineCount(it.place, ITEM.place * s, placeWidth) * ITEM.place * s * 1.35;
   const address = it.address ? 0.4 * s + lineCount(it.address, ITEM.address * s, placeWidth) * ITEM.address * s * 1.4 : 0;
+  const finish = it.finish ? 0.4 * s + lineCount(finishText(it), ITEM.address * s, placeWidth) * ITEM.address * s * 1.4 : 0;
   const route = it.route ? 1.6 * s + lineCount(routeText(it), ITEM.route * s, inner) * ITEM.route * s * 1.5 : 0;
-  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + 1.4 * s + place + address + route;
+  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + 1.4 * s + place + address + finish + route;
 }
 
 const listHeight = (day: ScheduleDay, s: number) => day.items.reduce((n, it) => n + itemHeight(it, s), 0) + (day.items.length - 1) * ITEM.gap * s;
@@ -66,7 +67,7 @@ export function chipRows(chips: RouteMap["chips"]) {
   });
   return rows;
 }
-export const routePlaceLine = (it: ScheduleItem) => `起點・終點：${placeText(it)}`;
+export const routePlaceLine = (it: ScheduleItem) => (it.finish ? `起點：${placeText(it)}；終點：${it.finish}` : `起點・終點：${placeText(it)}`);
 
 export function routeCardLayout(it: ScheduleItem, map: RouteMap) {
   const mapH = (ROUTE.map * map.height) / map.width;

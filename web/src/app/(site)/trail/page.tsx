@@ -5,7 +5,7 @@ import { type TrailItem, TrailExplorer } from "@/components/trail/trail-explorer
 import { type ScheduleCardDay, TrailSchedule } from "@/components/trail/trail-schedule";
 import { formatDay, policies, shortTitle } from "@/data/policies";
 import { routeMaps } from "@/data/route-maps";
-import { placeText, routeSlug, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
+import { finishText, placeText, routeSlug, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { districts, trail, trailKindLabel } from "@/data/trail";
 import { pageMetadata } from "@/lib/metadata";
 import { routeCardSize, scheduleCardSize } from "@/lib/schedule-layout";
@@ -52,7 +52,7 @@ const scheduleDays: ScheduleCardDay[] = schedule.map((d) => ({
   sources: d.sources,
   image: `/trail/schedule/${d.date}`,
   fileName: `${site.candidate.name}行程預告-${scheduleDate(d.date).day}`,
-  alt: `${formatDay(d.date)}行程預告圖卡：${d.items.map((it) => [`${timeText(it)} ${it.title}`, placeText(it), routeText(it)].filter(Boolean).join("，")).join("；")}`,
+  alt: `${formatDay(d.date)}行程預告圖卡：${d.items.map((it) => [`${timeText(it)} ${it.title}`, placeText(it), finishText(it), routeText(it)].filter(Boolean).join("，")).join("；")}`,
   ...scheduleCardSize(d),
 }));
 const lineUrl = site.candidate.socials.find((s) => s.key === "line")!.url;

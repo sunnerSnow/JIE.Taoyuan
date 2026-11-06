@@ -17,7 +17,9 @@ export type ScheduleItem = {
   place: string;
   /** 公告「地點」括號裡的地址 */
   address?: string;
-  /** 車隊掃街的路線：照公告順序列出經過的路段與加油打氣站 */
+  /** 終點：和起點不同時才填（例如「蘆竹德林寺（龍安街二段985號）」） */
+  finish?: string;
+  /** 車隊掃街的路線：照公告順序列出經過的路段與加油打氣站，不含起點、終點 */
   route?: string[];
   /** 線上節目的觀看網址（例如 YouTube 直播）；有網址的場次，頁面放觀看連結、不放地圖連結 */
   url?: string;
@@ -37,6 +39,54 @@ export type ScheduleDay = {
 const line: ScheduleSource = { outlet: "LINE 官方帳號公告" };
 
 export const schedule: ScheduleDay[] = [
+  {
+    date: "2026-11-06",
+    items: [
+      {
+        time: "09:25", // 貼文沒寫時間；09:25 是「蘆竹車掃出發囉！」貼文的時間
+        title: "蘆竹區車隊掃街",
+        place: "南崁五福宮",
+        address: "蘆竹區五福路1號",
+        finish: "蘆竹德林寺（龍安街二段985號）",
+        route: [
+          "五福一路",
+          "許清順競總打氣站",
+          "六福路",
+          "中山路",
+          "仁愛路一段",
+          "胡家智競總打氣站",
+          "南山路一段、二段、三段",
+          "山外路",
+          "山林路二段434巷",
+          "山林路二段、一段",
+          "南山路三段",
+          "南山北路一段、二段",
+          "海湖東路",
+          "海山路一段",
+          "大有街",
+          "坑菓路",
+          "三民路二段",
+          "菓林路",
+          "三民路二段",
+          "南崁路二段、一段",
+          "南崁路",
+          "忠孝東路",
+          "忠孝西路",
+          "南昌路",
+          "南福街",
+          "奉化路",
+          "南竹路二段、三段",
+          "南崁路四段、五段",
+          "大竹路",
+          "上興路",
+          "大興路",
+          "大新路",
+          "龍安街三段、二段",
+        ],
+      },
+    ],
+    sources: [{ outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DfYbGQjCQ9E" }],
+  },
   {
     date: "2026-11-05",
     items: [
@@ -146,6 +196,9 @@ export const timeText = (it: ScheduleItem) => (it.end ? `${it.time}~${it.end}` :
 
 /** 一場行程的地點全文，例如「北富里集會所（平鎮區金陵路三段197巷1弄50號）」 */
 export const placeText = (it: ScheduleItem) => (it.address ? `${it.place}（${it.address}）` : it.place);
+
+/** 終點：和起點不同時才有 */
+export const finishText = (it: ScheduleItem) => (it.finish ? `終點：${it.finish}` : "");
 
 /** 車隊掃街的路線全文 */
 export const routeText = (it: ScheduleItem) => (it.route ? `路線：${it.route.join("→")}` : "");

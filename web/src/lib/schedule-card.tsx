@@ -1,6 +1,6 @@
 import { voteDay } from "@/data/easy";
 import { type RouteMap, routeMaps } from "@/data/route-maps";
-import { type ScheduleDay, type ScheduleItem, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
+import { type ScheduleDay, type ScheduleItem, finishText, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { CARD } from "./card-image";
 import { Candidate, GO_RATIO, goCutout } from "./easy-card";
 import { loadGoogleFont } from "./og";
@@ -43,7 +43,7 @@ const GLYPHS = [
   ROUTE_LEGEND,
   "→",
   ...Object.values(routeMaps).flatMap((m) => [...m.landmarks, ...m.stations, ...m.labels].map((l) => l.text)),
-  ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, routePlaceLine(it), routeText(it)])]),
+  ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, routePlaceLine(it), finishText(it), routeText(it)])]),
 ].join("");
 
 export async function scheduleCardFonts() {
@@ -128,6 +128,9 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
                 <div style={{ display: "flex", fontSize: ITEM.place * s * u, lineHeight: 1.35, fontWeight: 900, color: CARD.teal }}>{it.place}</div>
                 {it.address && (
                   <div style={{ display: "flex", marginTop: 0.4 * s * u, fontSize: ITEM.address * s * u, lineHeight: 1.4, fontWeight: 700, color: CARD.soft }}>{it.address}</div>
+                )}
+                {it.finish && (
+                  <div style={{ display: "flex", marginTop: 0.4 * s * u, fontSize: ITEM.address * s * u, lineHeight: 1.4, fontWeight: 700, color: CARD.soft }}>{finishText(it)}</div>
                 )}
               </div>
             </div>

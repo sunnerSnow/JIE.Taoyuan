@@ -32,6 +32,37 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-05-sweep-pm",
+    date: "2026-11-05",
+    kind: "visit",
+    district: "桃園區",
+    place: "桃園區",
+    title: "和鄭運鵬在桃園區車隊掃街",
+    summary:
+      "貼文寫：「今晚的桃園區星光熠熠✨感謝所有沿途守候、為我們加油的市民朋友！」提到早上有個年輕男生騎腳踏車全程緊跟，晚上還有一群小企鵝車隊，以及整晚在車隊旁陪跑的「陪跑超人」；鄭運鵬來陪同車掃，送黃世杰「凍蒜T」。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "今晚的桃園區星光熠熠", url: "https://www.threads.com/@schuanglawyer/post/DfXWvaEicm_", date: "2026-11-05" },
+      { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 桃園區車隊掃街（月月鳥＋企鵝阿爸）", url: "https://www.threads.com/@schuanglawyer/post/DfW7jEXI4Y7", date: "2026-11-05" },
+      { outlet: "黃世杰 Threads", title: "杰伴大車掃，11/05 桃園區車隊掃街（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfTlYUKIwfm", date: "2026-11-04" },
+      { outlet: "黃世杰 Threads", title: "更新明晚車掃路線（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfUTGn_iTaV", date: "2026-11-04" },
+    ],
+  },
+  {
+    id: "2026-11-05-sweep-am",
+    date: "2026-11-05",
+    kind: "visit",
+    district: "桃園區",
+    place: "桃園區",
+    title: "和李正皓在桃園區車隊掃街",
+    summary:
+      "「杰伴車掃」啟動，李正皓陪同車掃。貼文寫：「雖然正值忙碌的上班時間，但我看見很多年輕市民來應援」，也看見一位坐在輪椅上的長輩，手裡緊握著大大的一號氣球。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "「杰伴車掃」啟動", url: "https://www.threads.com/@schuanglawyer/post/DfWYX2DCUmA", date: "2026-11-05" },
+      { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 桃園區車隊掃街", url: "https://www.threads.com/@schuanglawyer/post/DfV0z_eIxcl", date: "2026-11-05" },
+      { outlet: "黃世杰 Threads", title: "杰伴大車掃，11/05 桃園區車隊掃街（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfTlYUKIwfm", date: "2026-11-04" },
+    ],
+  },
+  {
     id: "2026-11-04-show",
     date: "2026-11-04",
     kind: "media",
