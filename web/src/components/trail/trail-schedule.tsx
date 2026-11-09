@@ -7,8 +7,10 @@ import { FootIcon } from "./trail-explorer";
 
 /** 分享圖：網址、檔名、替代文字與大小先在伺服器端算好 */
 type CardImage = ShareImage & { alt: string; width: number; height: number };
-/** 一天的行程預告；車隊掃街的場次另外帶一張路線圖卡 */
-export type ScheduleCardDay = CardImage & { date: string; day: string; items: (ScheduleItem & { routeCard?: CardImage })[]; sources: ScheduleSource[] };
+/** 車隊掃街的兩張圖卡：路線圖、路線清單 */
+type RouteCardImage = CardImage & { label: string };
+/** 一天的行程預告；車隊掃街的場次另外帶路線圖卡與路線清單卡 */
+export type ScheduleCardDay = CardImage & { date: string; day: string; items: (ScheduleItem & { routeCards?: RouteCardImage[] })[]; sources: ScheduleSource[] };
 
 const noop = () => () => {};
 const todayTaipei = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei" }).format(new Date());
@@ -21,7 +23,7 @@ const NONE: ScheduleCardDay[] = [];
 export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]; note: string; lineUrl: string }) {
   const today = useSyncExternalStore(noop, todayTaipei, () => null);
   const upcoming = useMemo(() => (today ? days.filter((d) => d.date >= today).sort((a, b) => a.date.localeCompare(b.date)) : NONE), [days, today]);
-  const images = useMemo(() => upcoming.flatMap((d) => [d, ...d.items.flatMap((it) => (it.routeCard ? [it.routeCard] : []))]), [upcoming]);
+  const images = useMemo(() => upcoming.flatMap((d) => [d, ...d.items.flatMap((it) => it.routeCards ?? [])]), [upcoming]);
   const { files } = useShareFiles(images);
   const tomorrow = today && new Date(Date.parse(today) + 86_400_000).toISOString().slice(0, 10);
 
@@ -104,7 +106,7 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
                               {it.url ? "觀看直播" : "在 Google 地圖上看"} <span aria-hidden="true">↗</span>
                               <span className="sr-only">（另開新視窗）</span>
                             </a>
-                            {it.routeCard && <RouteCardPreview card={it.routeCard} file={files[it.routeCard.id]} title={`${d.day} ${it.title} 路線圖`} />}
+                            {it.routeCards && <RouteCards cards={it.routeCards} files={files} title={`${d.day} ${it.title}`} />}
                           </div>
                         </li>
                       ))}
@@ -133,25 +135,32 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
   );
 }
 
-/** 車掃路線圖：縮圖點開看大圖，手機可以直接分享，也能下載 */
-function RouteCardPreview({ card, file, title }: { card: CardImage; file?: File; title: string }) {
+/** 車掃的路線圖與路線清單：兩張縮圖並排，點開看大圖，手機可以直接分享，也能下載 */
+function RouteCards({ cards, files, title }: { cards: RouteCardImage[]; files: Record<string, File>; title: string }) {
   return (
     <div className="mt-3">
-      <a href={card.image} target="_blank" rel="noopener noreferrer" className="block w-full max-w-[320px]">
-        {/* eslint-disable-next-line @next/next/no-img-element -- 圖是路由即時產生的，直接用原檔才能和分享、下載共用快取 */}
-        <img src={card.image} width={card.width} height={card.height} alt={card.alt} loading="lazy" className="h-auto w-full rounded-[14px] border-2 border-edge bg-[#F6EFE0]" />
-        <span className="sr-only">（在新視窗開啟路線圖）</span>
-      </a>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {file && (
-          <button type="button" className="btn btn-sm btn-sun" onClick={() => shareFiles([file], title)}>
-            分享路線圖
-          </button>
-        )}
-        <a href={card.image} download={`${card.fileName}.png`} className="btn btn-sm">
-          下載路線圖
-        </a>
-      </div>
+      <ul className="grid max-w-[560px] grid-cols-2 gap-3">
+        {cards.map((card) => (
+          <li key={card.id}>
+            <a href={card.image} target="_blank" rel="noopener noreferrer" className="block">
+              {/* eslint-disable-next-line @next/next/no-img-element -- 圖是路由即時產生的，直接用原檔才能和分享、下載共用快取 */}
+              <img src={card.image} width={card.width} height={card.height} alt={card.alt} loading="lazy" className="h-auto w-full rounded-[14px] border-2 border-edge bg-[#F6EFE0]" />
+              <span className="sr-only">（在新視窗開啟{card.label}）</span>
+            </a>
+            <p className="mt-1.5 text-[13.5px] font-black text-ink">{card.label}</p>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {files[card.id] && (
+                <button type="button" className="btn btn-sm btn-sun whitespace-nowrap" onClick={() => shareFiles([files[card.id]], `${title} ${card.label}`)}>
+                  分享<span className="sr-only">{card.label}</span>
+                </button>
+              )}
+              <a href={card.image} download={`${card.fileName}.png`} className="btn btn-sm whitespace-nowrap">
+                下載<span className="sr-only">{card.label}</span>
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
       <p className="mt-2 text-[12.5px] leading-relaxed text-ink-soft">
         路線示意圖，實際以現場為準。地圖資料 ©{" "}
         <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="link-ink">

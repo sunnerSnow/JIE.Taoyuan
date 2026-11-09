@@ -8,7 +8,7 @@ import { routeMaps } from "@/data/route-maps";
 import { finishText, placeText, routeSlug, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
 import { districts, trail, trailKindLabel } from "@/data/trail";
 import { pageMetadata } from "@/lib/metadata";
-import { routeCardSize, scheduleCardSize } from "@/lib/schedule-layout";
+import { routeListCardSize, routeMapCardSize, scheduleCardSize } from "@/lib/schedule-layout";
 import { candidateFull } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -40,13 +40,24 @@ const scheduleDays: ScheduleCardDay[] = schedule.map((d) => ({
     const slug = routeSlug(it.time);
     return {
       ...it,
-      routeCard: {
-        id: `${d.date}-${slug}`,
-        image: `/trail/schedule/${d.date}/route/${slug}`,
-        fileName: `${site.candidate.name}車掃路線圖-${scheduleDate(d.date).day}-${slug}`,
-        alt: `${formatDay(d.date)} ${timeText(it)} ${it.title}路線圖：${routeText(it)}`,
-        ...routeCardSize(it, map),
-      },
+      routeCards: [
+        {
+          id: `${d.date}-${slug}`,
+          label: "路線圖",
+          image: `/trail/schedule/${d.date}/route/${slug}`,
+          fileName: `${site.candidate.name}車掃路線圖-${scheduleDate(d.date).day}-${slug}`,
+          alt: `${formatDay(d.date)} ${timeText(it)} ${it.title}路線圖，起終點與號碼順序見圖`,
+          ...routeMapCardSize(it, map),
+        },
+        {
+          id: `${d.date}-${slug}-list`,
+          label: "路線清單",
+          image: `/trail/schedule/${d.date}/route/${slug}/list`,
+          fileName: `${site.candidate.name}車掃路線清單-${scheduleDate(d.date).day}-${slug}`,
+          alt: `${formatDay(d.date)} ${timeText(it)} ${it.title}路線清單：${routeText(it)}`,
+          ...routeListCardSize(it, map),
+        },
+      ],
     };
   }),
   sources: d.sources,

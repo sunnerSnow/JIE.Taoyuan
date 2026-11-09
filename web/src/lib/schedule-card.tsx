@@ -5,15 +5,16 @@ import { CARD } from "./card-image";
 import { Candidate, GO_RATIO, goCutout } from "./easy-card";
 import { loadGoogleFont } from "./og";
 import { ROUTE_COLORS, routeMapDataUri } from "./route-map-svg";
-import { HEAD, ITEM, ITEMS_TOP, ROUTE, ROUTE_LEGEND, ROUTE_NOTE, SCHEDULE_CARD_WIDTH, routeCardLayout, routePlaceLine, scheduleLayout } from "./schedule-layout";
+import { HEAD, ITEM, ITEMS_TOP, LIST_LEGEND, ROUTE, ROUTE_LEGEND, ROUTE_NOTE, SCHEDULE_CARD_WIDTH, routeMapLayout, routePlaceLine, scheduleLayout } from "./schedule-layout";
 import { site } from "./site";
 
 // 行程預告的分享圖（只在伺服器端用）：一天一張，寬 900、高度跟著行程多寡變（見 lib/schedule-layout.ts）。
 // 左上是號次姓名與日期，右上角放「桃園動起來！」去背插畫，下面一場行程一張白卡（時間、活動、地點、地址；車隊掃街另列路線），字級和大字版圖卡差不多大。
-// 車隊掃街另外有一張路線圖卡（RouteCard），地圖資料由 tools/route-map/build.py 產生。
+// 車隊掃街另外有路線圖卡（RouteMapCard）與路線清單卡（RouteListCard），地圖資料由 tools/route-map/build.py 產生。
 
 const LABEL = "行程預告";
 const ROUTE_LABEL = "車掃路線圖";
+const LIST_LABEL = "車掃路線";
 const START_LABEL = "起點・終點";
 const EYEBROW = "杰伴出發・下一站，和世杰一起！";
 const voteDayText = () => `投票日：${voteDay()}`;
@@ -42,6 +43,8 @@ const GLYPHS = [
   "起點終點",
   ROUTE_NOTE,
   ROUTE_LEGEND,
+  LIST_LEGEND,
+  LIST_LABEL,
   "→",
   ...Object.values(routeMaps).flatMap((m) => [...m.landmarks, ...m.stations, ...m.labels].map((l) => l.text)),
   ...schedule.flatMap((d) => [...Object.values(scheduleDate(d.date)), ...d.items.flatMap((it) => [it.title, routePlaceLine(it), finishText(it), routeText(it)])]),
@@ -212,23 +215,44 @@ function Pin({ x, y, label, color }: { x: number; y: number; label: string; colo
   );
 }
 
-/**
- * 車隊掃街路線圖卡：時間、活動、起終點，下面是路線圖和路線清單。
- * 圖上疊：起點、每條路的順序號碼（和下面清單的號碼一樣，照號碼走就知道方向）、有查到地點的加油打氣站、地標、路名。
- */
-export function RouteCard({ date, item: it, map }: { date: string; item: ScheduleItem; map: RouteMap }) {
+/** 路線圖卡與路線清單卡的開頭：時間、活動、起終點 */
+function RouteHead({ item: it }: { item: ScheduleItem }) {
   const u = U;
-  const { mapH } = routeCardLayout(it, map);
+  return (
+    <>
+      <div style={{ display: "flex", fontFamily: "Fredoka", fontSize: ROUTE.time * u, lineHeight: 1, fontWeight: 600, color: CARD.red }}>{timeText(it)}</div>
+      <div style={{ display: "flex", marginTop: 1 * u, fontSize: ROUTE.title * u, lineHeight: 1.3, fontWeight: 900 }}>{it.title}</div>
+      <div style={{ display: "flex", marginTop: 1.4 * u, fontSize: ROUTE.place * u, lineHeight: 1.4, fontWeight: 900, color: CARD.teal }}>{routePlaceLine(it)}</div>
+    </>
+  );
+}
+
+/** 圖例：一個號碼圓圈＋說明 */
+function Legend({ text, size }: { text: string; size: number }) {
+  const u = U;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 1 * u, fontSize: size * u, lineHeight: 1.4, fontWeight: 900, color: CARD.ink }}>
+      <StepNumber n={1} size={size * 1.2 * u} />
+      {text}
+    </div>
+  );
+}
+
+/**
+ * 車隊掃街路線圖卡（/trail/schedule/日期/route/時間）：時間、活動、起終點，下面是地圖；完整路線在另一張路線清單卡。
+ * 圖上疊：起點、終點、每條路的順序號碼（和路線清單卡的號碼一樣，照號碼走就知道方向）、有查到地點的打氣站、地標、路名。
+ */
+export function RouteMapCard({ date, item: it, map }: { date: string; item: ScheduleItem; map: RouteMap }) {
+  const u = U;
+  const { mapH } = routeMapLayout(it, map);
   const k = (ROUTE.map * u) / map.width; // 地圖座標 → 圖卡像素
   const [sx, sy] = map.start;
-  const step = ROUTE.num * u;
+  const step = ROUTE.step * u;
   return (
     <div style={frame}>
       <CardHead date={date} label={ROUTE_LABEL} />
       <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 7 * u, right: 7 * u, top: ITEMS_TOP * u }}>
-        <div style={{ display: "flex", fontFamily: "Fredoka", fontSize: ROUTE.time * u, lineHeight: 1, fontWeight: 600, color: CARD.red }}>{timeText(it)}</div>
-        <div style={{ display: "flex", marginTop: 1 * u, fontSize: ROUTE.title * u, lineHeight: 1.3, fontWeight: 900 }}>{it.title}</div>
-        <div style={{ display: "flex", marginTop: 1.4 * u, fontSize: ROUTE.place * u, lineHeight: 1.4, fontWeight: 900, color: CARD.teal }}>{routePlaceLine(it)}</div>
+        <RouteHead item={it} />
         <div
           style={{
             display: "flex",
@@ -337,11 +361,28 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 1 * u, marginTop: 1.6 * u, fontSize: ROUTE.legend * u, lineHeight: 1.4, fontWeight: 900, color: CARD.ink }}>
-          <StepNumber n={1} size={ROUTE.legend * 1.2 * u} />
-          {ROUTE_LEGEND}
+        <div style={{ display: "flex", marginTop: 1.6 * u }}>
+          <Legend text={ROUTE_LEGEND} size={ROUTE.legend} />
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", rowGap: 1.2 * u, marginTop: 2.2 * u, fontSize: ROUTE.chip * u, lineHeight: 1.2 }}>
+        <div style={{ display: "flex", marginTop: 1.8 * u, fontSize: ROUTE.note * u, lineHeight: 1.45, fontWeight: 700, color: CARD.soft }}>{ROUTE_NOTE}</div>
+      </div>
+      <CardFooter />
+    </div>
+  );
+}
+
+/** 車隊掃街路線清單卡（/trail/schedule/日期/route/時間/list）：照號碼列出完整路線，號碼和路線圖卡一樣；★ 是圖上有標的打氣站 */
+export function RouteListCard({ date, item: it, map }: { date: string; item: ScheduleItem; map: RouteMap }) {
+  const u = U;
+  return (
+    <div style={frame}>
+      <CardHead date={date} label={LIST_LABEL} />
+      <div style={{ display: "flex", flexDirection: "column", position: "absolute", left: 7 * u, right: 7 * u, top: ITEMS_TOP * u }}>
+        <RouteHead item={it} />
+        <div style={{ display: "flex", marginTop: 3 * u }}>
+          <Legend text={LIST_LEGEND} size={ROUTE.legend} />
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", rowGap: ROUTE.rowGap * u, marginTop: 2.4 * u, fontSize: ROUTE.chip * u, lineHeight: 1.2 }}>
           {map.chips.map((c, i) => (
             <div key={`${i}-${c.text}`} style={{ display: "flex", alignItems: "center" }}>
               {c.mapped && (
@@ -360,7 +401,6 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", marginTop: 1.8 * u, fontSize: ROUTE.note * u, lineHeight: 1.45, fontWeight: 700, color: CARD.soft }}>{ROUTE_NOTE}</div>
       </div>
       <CardFooter />
     </div>

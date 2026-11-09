@@ -48,12 +48,22 @@ export function scheduleCardSize(day: ScheduleDay) {
   return { width: SCHEDULE_CARD_WIDTH, height: Math.round(scheduleLayout(day).height * u) };
 }
 
-/** 車隊掃街路線圖卡（/trail/schedule/日期/route/時間）：上方和行程預告圖卡相同，下面是時間、活動、起終點、地圖、路線文字 */
-export const ROUTE = { time: 6.4, title: 5.8, place: 3.8, map: 86, legend: 2.8, chip: 3.1, num: 3.4, note: 2.6 };
-export const ROUTE_LEGEND = "照號碼順序前進，白色箭頭是行進方向";
+/**
+ * 車隊掃街分成兩張圖卡（地圖和文字放在同一張太長）：
+ * 路線圖卡（/trail/schedule/日期/route/時間）是地圖；路線清單卡（…/route/時間/list）照號碼列出完整路線，號碼和地圖一致。
+ * 兩張的上方都和行程預告圖卡相同，接著是時間、活動、起終點。
+ */
+export const ROUTE = { time: 6.4, title: 5.8, place: 3.8, map: 86, step: 3.4, legend: 2.8, note: 2.6, chip: 3.8, num: 4.2, rowGap: 1.6 };
+export const ROUTE_LEGEND = "照號碼順序前進，白色箭頭是行進方向；完整路線見路線清單";
+export const LIST_LEGEND = "號碼和路線圖上的號碼一樣，照號碼順序前進";
 export const ROUTE_NOTE = "路線示意：依公告的路名順序沿道路畫出，實際行經路段以現場為準。地圖資料 © OpenStreetMap 貢獻者";
+export const routePlaceLine = (it: ScheduleItem) => (it.finish ? `起點：${placeText(it)}；終點：${it.finish}` : `起點・終點：${placeText(it)}`);
 
-/** 路線清單一列一列排下去會排成幾列（和 RouteCard 的 chip 寬度算法一致） */
+/** 時間、活動、起終點的高度 */
+const routeHead = (it: ScheduleItem) =>
+  ROUTE.time + 1 + lineCount(it.title, ROUTE.title, 86) * ROUTE.title * 1.3 + 1.4 + lineCount(routePlaceLine(it), ROUTE.place, 86) * ROUTE.place * 1.4;
+
+/** 路線清單一列一列排下去會排成幾列（和 RouteListCard 的寬度算法一致；寧可估多） */
 export function chipRows(chips: RouteMap["chips"]) {
   let rows = 1;
   let x = 0;
@@ -67,17 +77,20 @@ export function chipRows(chips: RouteMap["chips"]) {
   });
   return rows;
 }
-export const routePlaceLine = (it: ScheduleItem) => (it.finish ? `起點：${placeText(it)}；終點：${it.finish}` : `起點・終點：${placeText(it)}`);
 
-export function routeCardLayout(it: ScheduleItem, map: RouteMap) {
+const pixels = (h: number) => ({ width: SCHEDULE_CARD_WIDTH, height: Math.round((h * SCHEDULE_CARD_WIDTH) / 100) });
+
+export function routeMapLayout(it: ScheduleItem, map: RouteMap) {
   const mapH = (ROUTE.map * map.height) / map.width;
-  const head = ROUTE.time + 1 + lineCount(it.title, ROUTE.title, 86) * ROUTE.title * 1.3 + 1.4 + lineCount(routePlaceLine(it), ROUTE.place, 82) * ROUTE.place * 1.4;
-  const chips = chipRows(map.chips) * (ROUTE.num + 0.3) + (chipRows(map.chips) - 1) * 1.2;
-  const body = 3 + mapH + 0.6 + 1.6 + ROUTE.legend * 1.4 + 2.2 + chips + 1.8 + lineCount(ROUTE_NOTE, ROUTE.note, 86) * ROUTE.note * 1.45;
-  return { mapH, height: ITEMS_TOP + head + body + FOOTER };
+  const body = 3 + mapH + 0.6 + 1.6 + lineCount(ROUTE_LEGEND, ROUTE.legend, 82) * ROUTE.legend * 1.4 + 1.8 + lineCount(ROUTE_NOTE, ROUTE.note, 86) * ROUTE.note * 1.45;
+  return { mapH, height: ITEMS_TOP + routeHead(it) + body + FOOTER };
 }
 
-export function routeCardSize(it: ScheduleItem, map: RouteMap) {
-  const u = SCHEDULE_CARD_WIDTH / 100;
-  return { width: SCHEDULE_CARD_WIDTH, height: Math.round(routeCardLayout(it, map).height * u) };
+export function routeListLayout(it: ScheduleItem, map: RouteMap) {
+  const rows = chipRows(map.chips);
+  const body = 3 + ROUTE.legend * 1.4 + 2.4 + rows * (ROUTE.num + 0.4) + (rows - 1) * ROUTE.rowGap;
+  return { height: Math.max(MIN_H, ITEMS_TOP + routeHead(it) + body + FOOTER) };
 }
+
+export const routeMapCardSize = (it: ScheduleItem, map: RouteMap) => pixels(routeMapLayout(it, map).height);
+export const routeListCardSize = (it: ScheduleItem, map: RouteMap) => pixels(routeListLayout(it, map).height);

@@ -47,16 +47,19 @@
 
 ### 杰伴出發：行程預告與車隊掃街路線圖（`/trail`）
 
-最上面是接下來的行程預告，整理自候選人 LINE 官方帳號與 Threads 的公告，只顯示今天以後的日子。每天一張行程圖卡；車隊掃街另有路線圖卡，可以直接分享或下載。
+最上面是接下來的行程預告，整理自候選人 LINE 官方帳號與 Threads 的公告，只顯示今天以後的日子。每天一張行程圖卡；車隊掃街另有「路線圖」和「路線清單」兩張圖卡（地圖和文字分開，圖片不會太長），都可以直接分享或下載。
 
-![行程預告：當天行程、行程圖卡與路線圖卡](docs/screenshots/trail-schedule.jpg)
+![行程預告：當天行程、行程圖卡、路線圖與路線清單](docs/screenshots/trail-schedule.jpg)
 
-路線圖依公告的路名順序沿 OpenStreetMap 的道路畫出：號碼是行進順序，和圖下的路線清單一致；另外標出起點、終點、打氣站和車站、公園等地標。
+路線圖依公告的路名順序沿 OpenStreetMap 的道路畫出：號碼是行進順序，另外標出起點、終點、打氣站和車站、公園等地標；路線清單照同樣的號碼列出完整路線。
 
 <p>
   <img src="docs/screenshots/card-schedule.jpg" alt="行程預告圖卡" width="31%">
   <img src="docs/screenshots/card-route.jpg" alt="楊梅區車隊掃街路線圖卡" width="31%">
-  <img src="docs/screenshots/card-route-taoyuan.jpg" alt="桃園區車隊掃街路線圖卡" width="31%">
+  <img src="docs/screenshots/card-route-list.jpg" alt="楊梅區車隊掃街路線清單卡" width="31%">
+</p>
+<p>
+  <img src="docs/screenshots/card-route-taoyuan.jpg" alt="桃園區車隊掃街路線圖卡（號碼、地標、黃瓊慧服務處）" width="31%">
 </p>
 
 ### 杰伴出發：行程地圖
