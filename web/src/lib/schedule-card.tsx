@@ -39,6 +39,7 @@ const GLYPHS = [
   site.stance,
   ROUTE_LABEL,
   START_LABEL,
+  "起點終點",
   ROUTE_NOTE,
   ROUTE_LEGEND,
   "→",
@@ -172,6 +173,45 @@ function StepNumber({ n, size }: { n: number; size: number }) {
   );
 }
 
+/** 起點、終點：圓點＋右邊的標籤（太靠右就把標籤往左收）；x、y 是圖卡像素 */
+function Pin({ x, y, label, color }: { x: number; y: number; label: string; color: string }) {
+  const u = U;
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          left: x - 2 * u,
+          top: y - 2 * u,
+          width: 4 * u,
+          height: 4 * u,
+          borderRadius: 999,
+          border: `${0.8 * u}px solid #FFFFFF`,
+          background: color,
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          left: Math.min(x + 2.6 * u, ROUTE.map * u - pillWidth(label, 2.8 * u) - u),
+          top: y - 2.2 * u,
+          padding: `${0.5 * u}px ${1.2 * u}px`,
+          borderRadius: 999,
+          background: color,
+          fontSize: 2.8 * u,
+          lineHeight: 1.2,
+          fontWeight: 900,
+          color: "#FFFFFF",
+        }}
+      >
+        {label}
+      </div>
+    </>
+  );
+}
+
 /**
  * 車隊掃街路線圖卡：時間、活動、起終點，下面是路線圖和路線清單。
  * 圖上疊：起點、每條路的順序號碼（和下面清單的號碼一樣，照號碼走就知道方向）、有查到地點的加油打氣站、地標、路名。
@@ -289,36 +329,8 @@ export function RouteCard({ date, item: it, map }: { date: string; item: Schedul
               </div>
             </div>
           ))}
-          <div
-            style={{
-              display: "flex",
-              position: "absolute",
-              left: sx * k - 2 * u,
-              top: sy * k - 2 * u,
-              width: 4 * u,
-              height: 4 * u,
-              borderRadius: 999,
-              border: `${0.8 * u}px solid #FFFFFF`,
-              background: ROUTE_COLORS.start,
-            }}
-          />
-          <div
-            style={{
-              display: "flex",
-              position: "absolute",
-              left: Math.min(sx * k + 2.6 * u, ROUTE.map * u - pillWidth(START_LABEL, 2.8 * u) - u),
-              top: sy * k - 2.2 * u,
-              padding: `${0.5 * u}px ${1.2 * u}px`,
-              borderRadius: 999,
-              background: ROUTE_COLORS.start,
-              fontSize: 2.8 * u,
-              lineHeight: 1.2,
-              fontWeight: 900,
-              color: "#FFFFFF",
-            }}
-          >
-            {START_LABEL}
-          </div>
+          <Pin x={sx * k} y={sy * k} label={map.finish ? "起點" : START_LABEL} color={ROUTE_COLORS.start} />
+          {map.finish && <Pin x={map.finish[0] * k} y={map.finish[1] * k} label="終點" color={CARD.red} />}
           {map.steps.map((s) => (
             <div key={s.n} style={{ display: "flex", position: "absolute", left: s.x * k - step / 2, top: s.y * k - step / 2 }}>
               <StepNumber n={s.n} size={step} />

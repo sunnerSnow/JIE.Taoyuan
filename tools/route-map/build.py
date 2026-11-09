@@ -3,8 +3,10 @@
 資料：OpenStreetMap 的道路（© OpenStreetMap 貢獻者，ODbL），經 Overpass API 下載。
 用法：python build.py [--cache 目錄]
   讀 web/src/data/schedule.ts 裡有 route 的場次，依公告的路名順序沿著道路走：
-  從起點所在的路出發 → 每條路走到和下一條路交會的路口（取沿路最近的那個）→ 最後回到起點。
-  「加油打氣站」不是路名，畫路線時略過；有查到地點的（STATIONS）在圖上另外標出來。
+  從起點所在的路出發 → 每條路走到和下一條路交會的路口（取沿路最近的那個）→ 最後到終點（有 finish 時），沒有就回到起點。
+  公告把同一條路的幾段寫在一起（「南山路一段、二段、三段」）時，取第一段的路名、各段都算。
+  路線裡不是路名的點（打氣站、競總、火車站、宮廟）畫路線時略過；有查到地點的（STATIONS）在圖上另外標出來。
+  每場只下載起點、終點附近的路網（各往外約 6 公里），快取依範圍分檔。
   公告的路名和 OSM 寫法不同時，在 ALIASES 對照；起點座標寫在 PLACES；看圖認路用的地標寫在 LANDMARKS。
 輸出：每場一張圖的 SVG 路徑（背景道路分三級、鐵路、路線、行進方向的箭頭），以及要疊在圖上的東西：
   起點、每條路的順序號碼（和路線清單的號碼一致）、加油打氣站、地標、路名標籤；路線清單（chips）。
@@ -25,8 +27,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEDULE = ROOT / "web/src/data/schedule.ts"
 OUT = ROOT / "web/src/data/route-maps.ts"
 
-# 桃園區附近（南、西、北、東）
-BBOX = (24.955, 121.270, 25.030, 121.345)
+# 每場的路網範圍：起點、終點各往外這麼多度（約 6～7 公里）
+MARGIN = (0.06, 0.07)
+LAT0 = math.radians(24.95)  # 桃園的緯度，用來把經度換算成公尺
 WIDTH = 1000  # viewBox 寬度
 UA = "JIE.Taoyuan-route-map/1.0 (https://github.com/sunnerSnow/JIE.Taoyuan)"
 
@@ -35,14 +38,21 @@ ALIASES = {
     "春日路橋": "春日路",  # OSM 沒有獨立的橋名，跨鐵路那段就是春日路
     "民族路橋": "民族陸橋",  # 11/4 路線更新貼文也寫「民族陸橋」
     "金門二路": "金門二街",  # 延平路與保羅街之間只有金門二街
+    "南崁路四段": "南竹路四段",  # 11/6 路線寫「南崁路四段、五段」，OSM 的南崁路只有一、二段；接在南竹路三段後、通往大竹路的是南竹路四、五段（推測）
 }
 # 公告當成同一條路、OSM 分成不同路名的延續段
 EXTENSIONS = {
     "民光東路": ["民光路", "民光橋"],  # 民光東路西端接民光橋、民光路，才到中正路
 }
-# 起點（OSM 地址點）：場次的 place → (緯度, 經度, 起點所在的路)
+# 起點、終點（座標取自 OSM）：場次的 place 或 finish 的名稱 → (緯度, 經度, 所在的路)
 PLACES = {
     "北桃園競選總部": (24.9995472, 121.3092859, "三民路"),  # 桃園區三民路二段300號
+    "南崁五福宮": (25.053736, 121.295393, "五福路"),  # 蘆竹區五福路1號
+    "蘆竹德林寺": (25.005815, 121.258602, "龍安街"),  # 龍安街二段985號
+    "平鎮區民族路二段219號前": (24.956843, 121.202636, "民族路"),
+    "平鎮區中豐路山頂段469巷": (24.8944, 121.2120, "中豐路"),
+    "平鎮南天宮": (24.953444, 121.177344, "雙榮路"),  # 楊梅區雙榮路226號
+    "奉天宮": (24.948736, 121.117093, "中華南路二段480巷"),  # 楊梅奉天宮（官方路線圖寫「楊梅奉天宮（終點）」）
 }
 
 # 加油打氣站：公告的站名 → (圖上的名字, 緯度, 經度)。有查到地點的才畫，其他只寫在路線清單裡
@@ -62,6 +72,22 @@ LANDMARKS = [
     ("中正公園", 25.02304, 121.29838),
     ("陽明運動公園", 24.98229, 121.30813),
     ("桃園展演中心", 25.0173, 121.2992),
+    ("台茂購物中心", 25.05341, 121.2884),
+    ("蘆竹區公所", 25.04694, 121.29519),
+    ("光明河濱公園", 25.04596, 121.2872),
+    ("山腳國小", 25.0888, 121.28817),
+    ("大竹國小", 25.02513, 121.25887),
+    ("高鐵桃園站", 25.0128, 121.2148),
+    ("楊梅車站", 24.914352, 121.146507),
+    ("埔心車站", 24.919609, 121.18353),
+    ("富岡車站", 24.93409, 121.082822),
+    ("中壢車站", 24.95332, 121.22616),
+    ("平鎮區公所", 24.94573, 121.21836),
+    ("新勢公園", 24.95181, 121.21667),
+    ("平鎮褒忠祠", 24.94744, 121.205),
+    ("忠貞市場", 24.9289, 121.25296),
+    ("平鎮高中", 24.93904, 121.21906),
+    ("南勢國小", 24.91387, 121.21145),
 ]
 
 MAJOR = {"motorway", "trunk", "primary", "secondary", "motorway_link", "trunk_link", "primary_link", "secondary_link"}
@@ -69,10 +95,11 @@ MID = {"tertiary", "tertiary_link", "unclassified"}
 MINOR = {"residential", "living_street"}
 
 
-def overpass(cache: Path | None):
-    if cache and (cache / "osm.json").exists():
-        return json.loads((cache / "osm.json").read_text(encoding="utf-8"))
-    s, w, n, e = BBOX
+def overpass(cache: Path | None, bbox):
+    s, w, n, e = bbox
+    name = f"osm-{s:.2f}-{w:.2f}-{n:.2f}-{e:.2f}.json"
+    if cache and (cache / name).exists():
+        return json.loads((cache / name).read_text(encoding="utf-8"))
     kinds = "|".join(sorted(MAJOR | MID | MINOR))
     query = f'[out:json][timeout:90];(way["highway"~"^({kinds})$"]({s},{w},{n},{e});way["railway"="rail"]({s},{w},{n},{e}););out tags geom;'
     data = urllib.parse.urlencode({"data": query}).encode()
@@ -92,8 +119,20 @@ def overpass(cache: Path | None):
         sys.exit("Overpass 一直失敗，稍後再試")
     if cache:
         cache.mkdir(parents=True, exist_ok=True)
-        (cache / "osm.json").write_text(json.dumps(osm, ensure_ascii=False), encoding="utf-8")
+        (cache / name).write_text(json.dumps(osm, ensure_ascii=False), encoding="utf-8")
     return osm
+
+
+def route_bbox(route):
+    """起點、終點各往外 MARGIN，取兩者的外框；小數點後兩位，同一區的場次共用快取"""
+    pts = [PLACES[route["place"]]] + ([PLACES[route["finish"]]] if route["finish"] else [])
+    dl, dw = MARGIN
+    return (
+        math.floor((min(p[0] for p in pts) - dl) * 100) / 100,
+        math.floor((min(p[1] for p in pts) - dw) * 100) / 100,
+        math.ceil((max(p[0] for p in pts) + dl) * 100) / 100,
+        math.ceil((max(p[1] for p in pts) + dw) * 100) / 100,
+    )
 
 
 def read_routes():
@@ -110,11 +149,12 @@ def read_routes():
                 continue
             time_ = re.match(r'time: "(\d\d:\d\d)"', item).group(1)
             place = re.search(r'place: "([^"]+)"', item).group(1)
-            routes.append({"key": f"{date} {time_}", "place": place, "stops": re.findall(r'"([^"]+)"', route.group(1))})
+            finish = re.search(r'finish: "([^"（(]+)', item)
+            routes.append(
+                {"key": f"{date} {time_}", "place": place, "finish": finish and finish.group(1), "stops": re.findall(r'"([^"]+)"', route.group(1))}
+            )
     return routes
 
-
-LAT0 = math.radians((BBOX[0] + BBOX[2]) / 2)
 
 
 def meters(a, b):
@@ -123,13 +163,24 @@ def meters(a, b):
     return math.hypot(dx, dy)
 
 
+def is_road(stop):
+    """路線裡的一站是不是路名（路、街、段、巷、弄、道、橋結尾）；不是的就是打氣站、競總、火車站、宮廟這類地點"""
+    return bool(re.search(r"(路|街|段|巷|弄|道|橋)$", stop.split("、")[0]))
+
+
+def road_key(name):
+    """公告的路名 → 比對用的路名：去掉開頭的區名（「中壢區康樂路」），多段寫在一起取第一段（「南山路一段、二段」→「南山路一段」），再查 ALIASES"""
+    name = re.sub(r"^\S{2}區", "", name.split("、")[0])
+    return ALIASES.get(name, name)
+
+
 def road_matcher(name):
     # 公告寫「大興西路一段」，實際會接著走到二段：同一條路的各段都算
-    target = re.sub(r"[一二三四五六七八九]段$", "", ALIASES.get(name, name))
+    target = re.sub(r"[一二三四五六七八九]段$", "", road_key(name))
     # 過河的那段常另外叫「X橋」（例如南平路的南平橋），也算同一條路
     bridge = [re.sub(r"[路街]$", "橋", target)] if re.search(r"[路街]$", target) else []
     names = "|".join(re.escape(t) for t in [target, *bridge, *EXTENSIONS.get(target, [])])
-    pat = re.compile(rf"(?:{names})([一二三四五六七八九]段)?$")
+    pat = re.compile(rf"(?:{names})([一二三四五六七八九]段|[^路街巷、]{{1,3}}段)?$")  # 也接受「中豐路山頂段」這種路段名
     return lambda n: bool(n) and bool(pat.match(n))
 
 
@@ -196,16 +247,23 @@ def shortest(graph, start, targets):
     return None
 
 
-def trace(ways, network, route):
-    lat, lon, start_road = PLACES[route["place"]]
-    # 起點所在的路 → 公告的路名（略過加油打氣站，連續同名的合併）→ 回到起點所在的路
-    seq = [start_road] + [s for s in route["stops"] if "加油打氣站" not in s] + [start_road]
-    names = [n for i, n in enumerate(seq) if i == 0 or ALIASES.get(n, n) != ALIASES.get(seq[i - 1], seq[i - 1])]
+def same_road(a, b):
+    return re.sub(r"[一二三四五六七八九]段$", "", road_key(a)) == re.sub(r"[一二三四五六七八九]段$", "", road_key(b))
+
+
+def trace(ways, network, route, missing):
+    if route["place"] not in PLACES or (route["finish"] and route["finish"] not in PLACES):
+        sys.exit(f"{route['key']}：PLACES 沒有「{route['place']}」或「{route['finish']}」的座標")
+    slat, slon, start_road = PLACES[route["place"]]
+    lat, lon, end_road = PLACES[route["finish"]] if route["finish"] else (slat, slon, start_road)
+    # 起點所在的路 → 公告的路名（略過打氣站，連續同一條路的合併）→ 終點所在的路（沒有終點就回到起點）
+    seq = [start_road] + [s for s in route["stops"] if is_road(s) and s not in missing] + [end_road]
+    names = [n for i, n in enumerate(seq) if i == 0 or not same_road(n, seq[i - 1])]
     graphs = [build_graph(ways, road_matcher(n)) for n in names]
     for n, g in zip(names, graphs):
         if not g:
             sys.exit(f"{route['key']}：OSM 找不到「{n}」")
-    here = min(graphs[0], key=lambda p: meters(p, (lat, lon)))
+    here = min(graphs[0], key=lambda p: meters(p, (slat, slon)))
     path = [here]
     legs = []
     for i, (name, g) in enumerate(zip(names, graphs)):
@@ -235,14 +293,18 @@ def trace(ways, network, route):
             targets = {min(g, key=lambda p: meters(p, (lat, lon)))}
         found = shortest(g, here, targets)
         if not found:
-            sys.exit(f"{route['key']}：沿「{name}」走不到「{names[i + 1] if i + 1 < len(names) else '終點'}」")
+            # 同一條路在 OSM 斷成相距較遠的幾段（例如坑菓路中間是另外命名的便橋）：沿一般道路接過去
+            found = shortest(network, here, targets)
+            if not found:
+                sys.exit(f"{route['key']}：沿「{name}」走不到「{names[i + 1] if i + 1 < len(names) else '終點'}」")
+            print(f"  ※ {name} 在 OSM 斷成幾段，中間沿一般道路接 {found[0]:.0f} 公尺", file=sys.stderr)
         d, seg = found
         if seg[-1] in jump:
             seg = seg + [jump[seg[-1]]]
         legs.append((name, d, seg))
         path += seg[1:]
         here = seg[-1]
-    return (lat, lon), path, legs
+    return (slat, slon), (lat, lon), path, legs
 
 
 def simplify(points, tol):
@@ -293,7 +355,11 @@ def arrows(points, every, size):
 def render(osm, network, route):
     ways = [e for e in osm["elements"] if e["type"] == "way"]
     roads = [w for w in ways if "highway" in w["tags"]]
-    start, path, legs = trace(roads, network, route)
+    # OSM 沒有名字的小巷（例如環南路309巷）畫不出來：略過，路線清單照列但不編號
+    missing = {st for st in route["stops"] if is_road(st) and not any(road_matcher(st)(w["tags"].get("name", "")) for w in roads)}
+    for st in sorted(missing):
+        print(f"  ※ OSM 找不到「{st}」，路線圖略過這段", file=sys.stderr)
+    start, end, path, legs = trace(roads, network, route, missing)
     total = sum(d for _, d, _ in legs)
     print(f"{route['key']}：{len(legs)} 段，共 {total / 1000:.1f} 公里", file=sys.stderr)
     for name, d, _ in legs:
@@ -328,7 +394,11 @@ def render(osm, network, route):
     line = simplify([xy(p) for p in path], 0.6)
 
     sx, sy = xy(start)
-    boxes = [(sx - 40, sy - 40, sx + 240, sy + 40)]  # 起點的圓點和右邊的「起點・終點」標籤先佔位
+    ex, ey = xy(end)
+    loop = route["finish"] is None
+    boxes = [(sx - 40, sy - 40, sx + (240 if loop else 140), sy + 40)]  # 起點的圓點和右邊的「起點・終點」（或「起點」）標籤先佔位
+    if not loop:
+        boxes.append((ex - 40, ey - 40, ex + 140, ey + 40))
 
     def overlaps(box):
         return sum(not (box[2] < b[0] or box[0] > b[2] or box[3] < b[1] or box[1] > b[3]) for b in boxes)
@@ -352,28 +422,17 @@ def render(osm, network, route):
         return xy(seg[-1])
 
     # 路線清單與順序號碼：每換一條路加一號（連續同一條路、加油打氣站不加號）；第 0 段是從起點出發的那條路，不編號
-    chips, k, prev = [], 0, ALIASES.get(PLACES[route["place"]][2], PLACES[route["place"]][2])
+    chips, k, prev = [], 0, PLACES[route["place"]][2]
     for stop in route["stops"]:
-        if "加油打氣站" in stop:
+        if not is_road(stop) or stop in missing:
             chips.append({"text": stop, "station": True, "mapped": stop in STATIONS})
             continue
-        key = ALIASES.get(stop, stop)
-        if key != prev:
+        if not same_road(stop, prev):
             k += 1
             chips.append({"n": k, "text": stop})
         else:
             chips.append({"text": stop})
-        prev = key
-
-    # 號碼圓圈放在那條路的中間；和已放的東西重疊就往前或往後挪，都會重疊時取重疊最少的位置（號碼一定要放）
-    steps = []
-    for n in range(1, k + 1):
-        seg = legs[n][2]
-        spots = [along(seg, t) for t in (0.5, 0.35, 0.65, 0.2, 0.8, 0.1, 0.9)]
-        x, y = min(spots, key=lambda q: overlaps((q[0] - 26, q[1] - 26, q[0] + 26, q[1] + 26)))
-        box = (x - 26, y - 26, x + 26, y + 26)
-        boxes.append(box)
-        steps.append({"n": n, "x": round(x, 1), "y": round(y, 1)})
+        prev = stop
 
     # 加油打氣站：有地點的才畫；離路線太遠代表地點或路線有問題
     stations = []
@@ -388,7 +447,7 @@ def render(osm, network, route):
         boxes.append((x - 30, y - 30, x + 30 + len(text) * 34 + 30, y + 30))
         stations.append({"x": round(x, 1), "y": round(y, 1), "text": text})
 
-    # 地標：點在原位，名字放右邊或左邊（優先選不會蓋到路線的那邊；都放不下就不放）
+    # 地標：點在原位，名字放右邊或左邊（優先選不會蓋到路線的那邊；都放不下就不放）。地標比號碼先放，號碼再避開地標
     landmarks = []
     for text, llat, llon in LANDMARKS:
         x, y = xy((llat, llon))
@@ -400,12 +459,25 @@ def render(osm, network, route):
             boxes.append(box)
             landmarks.append({"x": round(x, 1), "y": round(y, 1), "text": text, "side": side})
 
+    # 號碼圓圈放在那條路的中間；和已放的東西重疊就往前或往後挪。都會重疊時：600 公尺以上的路取重疊最少的位置照放，
+    # 更短的路（市區連續轉彎）就不畫在圖上，只留在路線清單，免得號碼疊成一團
+    steps = []
+    for n in range(1, k + 1):
+        _, dist, seg = legs[n]
+        spots = [along(seg, t) for t in (0.5, 0.35, 0.65, 0.2, 0.8, 0.1, 0.9)]
+        x, y = min(spots, key=lambda q: overlaps((q[0] - 26, q[1] - 26, q[0] + 26, q[1] + 26)))
+        box = (x - 26, y - 26, x + 26, y + 26)
+        if overlaps(box) and dist < 600:
+            continue
+        boxes.append(box)
+        steps.append({"n": n, "x": round(x, 1), "y": round(y, 1)})
+
     # 路名標籤：每條路取走最長的那段，放在四分之一處（中間留給號碼）；放不下就跳過
     labels = []
-    shown = {ALIASES.get(n, n): n for n in route["stops"] if "加油打氣站" not in n}
+    shown = {road_key(n): n.split("、")[0] for n in route["stops"] if is_road(n)}
     best = {}
     for name, d, seg in legs:
-        key = ALIASES.get(name, name)
+        key = road_key(name)
         if d > best.get(key, (0, None))[0]:
             best[key] = (d, seg)
     for key, (d, seg) in sorted(best.items(), key=lambda kv: -kv[1][0]):
@@ -432,6 +504,7 @@ def render(osm, network, route):
         "route": svg_path([line]),
         "arrows": arrows(line, 80, 13),
         "start": [round(sx, 1), round(sy, 1)],
+        **({} if loop else {"finish": [round(ex, 1), round(ey, 1)]}),
         "steps": steps,
         "stations": stations,
         "landmarks": landmarks,
@@ -447,17 +520,25 @@ def main():
     routes = read_routes()
     if not routes:
         sys.exit("schedule.ts 裡沒有路線")
-    osm = overpass(cache)
-    # 所有道路（不分路名、不補連線），用來接公告裡沒有相交的兩條路
-    network = build_graph([e for e in osm["elements"] if e["type"] == "way" and "highway" in e["tags"]], lambda n: True, bridge=False)
-    maps = {r["key"]: render(osm, network, r) for r in routes}
+    maps, loaded = {}, {}
+    for r in routes:
+        for name in (r["place"], r["finish"]):
+            if name and name not in PLACES:
+                sys.exit(f"{r['key']}：PLACES 沒有「{name}」的座標")
+        bbox = route_bbox(r)
+        if bbox not in loaded:
+            osm = overpass(cache, bbox)
+            # 所有道路（不分路名、不補連線），用來接公告裡沒有相交的兩條路
+            network = build_graph([e for e in osm["elements"] if e["type"] == "way" and "highway" in e["tags"]], lambda n: True, bridge=False)
+            loaded[bbox] = (osm, network)
+        maps[r["key"]] = render(*loaded[bbox], r)
     body = json.dumps(maps, ensure_ascii=False, indent=2)
     OUT.write_text(
         "// 由 tools/route-map/build.py 產生，請勿手動修改（改了路線就重跑：python tools/route-map/build.py）。\n"
         "// 車隊掃街的路線圖：鍵是「日期 時間」；座標是 viewBox 單位（寬 1000）。路網：© OpenStreetMap 貢獻者（ODbL）。\n\n"
         "export type RouteMap = {\n  width: number;\n  height: number;\n  /** 沿路線量出的總長（公里） */\n  km: number;\n"
         "  major: string;\n  mid: string;\n  minor: string;\n  rail: string;\n  route: string;\n  arrows: string;\n"
-        "  start: [number, number];\n"
+        "  start: [number, number];\n  /** 終點：和起點不同時才有 */\n  finish?: [number, number];\n"
         "  /** 每條路的順序號碼，和 chips 的 n 一致 */\n  steps: { n: number; x: number; y: number }[];\n"
         "  /** 有查到地點的加油打氣站 */\n  stations: { x: number; y: number; text: string }[];\n"
         "  /** 地標：side 是名字放在點的哪一邊 */\n  landmarks: { x: number; y: number; text: string; side: \"left\" | \"right\" }[];\n"

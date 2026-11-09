@@ -32,6 +32,106 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-08-daxi-support",
+    date: "2026-11-08",
+    kind: "event",
+    district: "大溪區",
+    place: "大溪後援會",
+    title: "大溪後援會成立",
+    summary:
+      "貼文寫：「大溪後援會正式成立！」提到未來會加速推動捷運綠線延伸大溪、整合地方意見找出一條可行的路，改革公車系統，滿足市民通勤需求與觀光接駁效率，並務實引進專業經營團隊、完善醫療照護體系。感謝陳治文議員、大溪後援會江朝宗主委等人力挺。",
+    policies: ["three-hubs-six-lines", "bus-network-reform", "better-healthcare"],
+    sources: [{ outlet: "黃世杰 Threads", title: "大溪後援會正式成立！", url: "https://www.threads.com/@schuanglawyer/post/Dfe_8SDE_8_", date: "2026-11-08" }],
+  },
+  {
+    id: "2026-11-08-show",
+    date: "2026-11-08",
+    kind: "media",
+    place: "年代電視、YouTube「數字台灣」",
+    title: "上謝金河的節目「數字台灣」",
+    summary:
+      "節目預告寫，和國際政經專家譚耀南同台，跟謝金河社長聊全球經濟與AI浪潮下的挑戰，並探討桃園的潛力與未來藍圖；播出時間是 11/8 晚上 20:00，收看平台是 50 台年代電視與 YouTube 頻道「數字台灣」。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "今晚20:00，請鎖定「數字台灣」！世杰準備登場", url: "https://www.threads.com/@schuanglawyer/post/DfeS3V1GlPf", date: "2026-11-08" },
+      { outlet: "YouTube", title: "數字台灣#HD640 洋流牽動選局 國門城市新篇章 謝金河 黃世杰 譚耀南", url: "https://www.youtube.com/watch?v=F1d12R5AFho", date: "2026-11-08" },
+    ],
+  },
+  {
+    id: "2026-11-08-danan-market",
+    date: "2026-11-08",
+    kind: "visit",
+    district: "八德區",
+    place: "大湳市場",
+    title: "到大湳市場向攤商、市民問好",
+    summary:
+      "前一天預告早上 08:30 到大湳市場，跟攤商朋友、採買的市民請安問好；當天貼文寫：「今天是我第三次來到大湳市場」，有年輕人託付他解決八德的問題，也有客家鄉親用客語告訴他「愛支持自家人」。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "今天是我第三次來到大湳市場", url: "https://www.threads.com/@schuanglawyer/post/Dfd_YnYo4r-", date: "2026-11-08" },
+      { outlet: "黃世杰 Threads", title: "倒數20天，感謝大湳市場給我滿滿熱情！", url: "https://www.threads.com/@schuanglawyer/post/Dfd1tq0iL9L", date: "2026-11-08" },
+      { outlet: "黃世杰 Threads", title: "八德的市民朋友，明天大湳市場見（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/Dfa0Fb1Go8f", date: "2026-11-07" },
+    ],
+  },
+  {
+    id: "2026-11-07-medical-support",
+    date: "2026-11-07",
+    kind: "event",
+    title: "醫藥團體後援會成立",
+    summary:
+      "貼文寫，醫師、中醫師、牙醫師、藥師、藥劑生及中西藥商等七大醫藥團體相挺，黃世杰醫藥團體後援會成立，開出「市政處方箋」：推動醫護安居專案、跟各醫事團體建立溝通平台、積極布局第二座醫學中心。",
+    policies: ["better-healthcare"],
+    sources: [{ outlet: "黃世杰 Threads", title: "醫界藥界大團結，開立市政處方箋", url: "https://www.threads.com/@schuanglawyer/post/DfcgM9qo-Nv", date: "2026-11-07" }],
+  },
+  {
+    id: "2026-11-07-religious-support",
+    date: "2026-11-07",
+    kind: "event",
+    title: "宗教後援會成立",
+    summary:
+      "貼文寫：「我的宗教後援會今天正式成立！」提到未來市府要做宗教團體最堅實的後盾，支持各地有特色的宗教活動與民俗祭典，協助無形文化資產的保存與傳承，也要結合宗教特色、地方觀光與城市行銷。",
+    sources: [{ outlet: "黃世杰 Threads", title: "我的宗教後援會今天正式成立！", url: "https://www.threads.com/@schuanglawyer/post/DfcO-AnErXZ", date: "2026-11-07" }],
+  },
+  {
+    id: "2026-11-07-you-wu-he",
+    date: "2026-11-07",
+    kind: "event",
+    place: "游吾和議員聯合競選總部",
+    title: "出席游吾和議員聯合競選總部成立大會",
+    summary:
+      "貼文寫，未來要繼續推進航空城建設，堅持三低一高原則與先建後遷原則，用專案解決搬遷各項問題；也要重新推動清大醫院BOT，積極導入醫療資源，全面提升大園整體醫療品質與急重症照顧能力。",
+    policies: ["industry-four", "better-healthcare"],
+    sources: [{ outlet: "黃世杰 Threads", title: "今天出席游吾和議員聯合競選總部成立大會", url: "https://www.threads.com/@schuanglawyer/post/Dfbqb7OklqS", date: "2026-11-07" }],
+  },
+  {
+    id: "2026-11-06-night",
+    date: "2026-11-06",
+    kind: "event",
+    title: "參加「沈麼啦！這慧贏！戒慎恐懼之夜」",
+    summary:
+      "晚上參加「沈麼啦！這慧贏！#戒慎恐懼之夜」並同步直播；隔天貼文寫，他在現場問大家知不知道什麼是幽靈馬車，「有搭過大眾運輸的桃園人，幾乎都知道什麼是幽靈公車」。",
+    policies: ["bus-network-reform"],
+    sources: [
+      { outlet: "黃世杰 Threads", title: "現此時我在「沈麼啦！這慧贏！#戒慎恐懼之夜」", url: "https://www.threads.com/@schuanglawyer/post/DfZeRWzGqKX", date: "2026-11-06" },
+      { outlet: "YouTube", title: "【直播】沈麼啦！這慧贏！戒慎恐懼之夜", url: "https://www.youtube.com/live/cUTXscd9vps", date: "2026-11-06" },
+      { outlet: "黃世杰 Threads", title: "昨天我在戒慎恐懼之夜，問大家知不知道什麼是幽靈馬車？", url: "https://www.threads.com/@schuanglawyer/post/DfbPTC9iF1a", date: "2026-11-07" },
+    ],
+  },
+  {
+    id: "2026-11-06-sweep-luzhu",
+    date: "2026-11-06",
+    kind: "visit",
+    district: "蘆竹區",
+    place: "蘆竹區",
+    title: "在蘆竹區車隊掃街",
+    summary:
+      "貼文寫，蘆竹區車掃時有市民帶著自己DIY的「4J號」宣傳車來加油；提到蘆竹從南崁、大竹到山腳、海湖，站出來的年輕人比例很高，未來要增加托育量能、升級捷運綠線周邊配套（整合接駁、公車、停車與共享運具），並強化南崁交流道周邊交通跟通學安全。",
+    policies: ["friendly-childcare", "three-hubs-six-lines"],
+    sources: [
+      { outlet: "黃世杰 Threads", title: "衝刺最後一哩路，團杰讓桃園不一樣！", url: "https://www.threads.com/@schuanglawyer/post/DfY_Ee1iQ8L", date: "2026-11-06" },
+      { outlet: "黃世杰 Threads", title: "蘆竹車掃出發囉！", url: "https://www.threads.com/@schuanglawyer/post/DfYa-kCCcWE", date: "2026-11-06" },
+      { outlet: "黃世杰 Threads", title: "今日路線（車掃路線）", url: "https://www.threads.com/@schuanglawyer/post/DfYbGQjCQ9E", date: "2026-11-06" },
+    ],
+  },
+  {
     id: "2026-11-05-sweep-pm",
     date: "2026-11-05",
     kind: "visit",
