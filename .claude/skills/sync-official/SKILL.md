@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # 整理官方新貼文
 
-GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，把本站還沒收錄的官方貼文寫進「官方新貼文待整理」Issue。這個 skill 讀那些 Issue，判斷每則貼文要不要進網站，更新資料後交給使用者確認 commit。工具都在 `tools/official-watch/`（第一次用先 `npm ci`、`npx playwright install chromium`）。
+GitHub Actions（`.github/workflows/official-watch.yml`）每 3 小時偵測一次，把本站還沒收錄的官方貼文寫進「官方新貼文待整理」Issue。這個 skill 讀那些 Issue，判斷每則貼文要不要進網站，更新資料後交給使用者確認 commit。工具都在 `tools/official-watch/`（第一次用先 `npm ci`、`npx playwright install chromium`）。
 
 ## 步驟
 
@@ -23,7 +23,7 @@ GitHub Actions（`.github/workflows/official-watch.yml`）每天偵測兩次，�
    - 與政見無關（造勢、拉票、站台、問候、號次宣傳）：不收錄
    完成條件：每則貼文都有分類和一句理由。
 4. **更新資料**：政見、來源與過去的貢獻，每項新增或修改都在 `web/src/data/changelog.ts` 最前面加一筆更新紀錄。行程紀錄不用另外加，杰伴出發頁本身就是依日期的紀錄。
-5. **驗證**：在 `web/` 跑 `npx eslint`、`npx next build`、`npx tsc --noEmit`（build 會產生路由型別，所以 tsc 放最後）。新政見要用 `npx next start -p 3341` 打開政見頁、所屬島嶼頁與 `/explore` 看一次。
+5. **驗證**：在 `web/` 跑 `npx eslint`、`npx next build`、`npx tsc --noEmit`（build 會產生路由型別，所以 tsc 放最後）。新政見要用 `npx next start -p 3351` 打開政見頁、所屬島嶼頁與 `/explore` 看一次。
 6. **回報與 commit**：列表回報每則貼文的分類與處理方式，貼出繁體中文 commit 訊息（不加 Co-Authored-By），最後每個處理完的 Issue 各一行 `Closes #編號`。使用者同意後才 commit、push。如果整批都不收錄，就不用 commit，請使用者到 GitHub 手動關閉 Issue。
 
 ## 整理規則
