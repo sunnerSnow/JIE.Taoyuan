@@ -9,8 +9,32 @@ export const NOTE_STYLE: Record<WishType, { paper: string; tag: string; tagText:
   proposal: { paper: "#FFFFFF", tag: "#007A74", tagText: "#FFFFFF" },
 };
 
-/** 便利貼輕微歪斜，排起來像貼在牆上 */
-export const NOTE_TILT = [-1.2, 0.9, -0.5, 1.3, -0.9, 0.4];
+/** 由留言代碼算出固定的亂數（同一則每次排起來都一樣，伺服器和瀏覽器也一致） */
+function seeded(id: string) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+  return () => {
+    h = Math.imul(h ^ (h >>> 15), 2246822507);
+    h = Math.imul(h ^ (h >>> 13), 3266489909);
+    h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * 願望牆上每張便利貼的位置：歪一點、錯開一點、寬窄不一，一張疊一張貼上去。
+ * 越新的疊在越上面（zIndex 由呼叫端依順序給）。
+ */
+export function pileLayout(id: string) {
+  const r = seeded(id);
+  return {
+    tilt: (r() * 2 - 1) * 3.4,
+    dx: Math.round((r() * 2 - 1) * 6),
+    dy: Math.round((r() * 2 - 1) * 7),
+    width: 264 + Math.round(r() * 44),
+    stickerTilt: (r() * 2 - 1) * 14,
+  };
+}
 
 export function TypeIcon({ type, className = "h-4 w-4" }: { type: WishType; className?: string }) {
   const common = { fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };

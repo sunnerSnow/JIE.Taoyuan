@@ -8,7 +8,7 @@ import { PageHead } from "@/components/site/page-head";
 import { LikeButton } from "@/components/wish/like-button";
 import { ReportButton } from "@/components/wish/report-button";
 import { NOTE_STYLE } from "@/components/wish/wish-art";
-import { ResponseBadge, TypeTag, wishDate } from "@/components/wish/wish-note";
+import { ResponseBadge, TypeTag, WishSticker, wishDate } from "@/components/wish/wish-note";
 import { wishConfig } from "@/lib/wish/config";
 import { ANONYMOUS_NAME, isWishId, REPLY_NAME, topicLabel } from "@/lib/wish/options";
 import { getPublicWish } from "@/lib/wish/store";
@@ -51,15 +51,16 @@ async function WishDetail({ params, open, readable }: { params: PageProps<"/wish
     <>
       <article className="relative rounded-[14px] border-2 border-edge px-6 pb-6 pt-8 shadow-soft sm:px-9" style={{ background: NOTE_STYLE[w.type].paper }}>
         <span aria-hidden="true" className="absolute -top-3 left-1/2 h-6 w-24 -translate-x-1/2 -rotate-2 rounded-[3px] bg-white/75 shadow-[0_1px_3px_rgb(0_90_85/0.15)]" />
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        {w.sticker && <WishSticker sticker={w.sticker} size={104} tilt={10} className="-right-5 -top-12 h-[104px] w-[104px]" />}
+        <div className="flex flex-wrap items-center gap-2">
           <TypeTag type={w.type} />
-          {w.district && <span className="text-[14px] font-black text-ink-soft">{w.district}</span>}
         </div>
         {w.title && <h2 className="mt-4 text-[clamp(22px,3vw,28px)] font-black leading-snug tracking-[0.04em]">{w.title}</h2>}
         <p className="mt-4 whitespace-pre-line text-[17px] leading-[2] text-ink">{w.content}</p>
         {w.topic && <p className="mt-4 text-[14px] font-bold text-teal-deep">#{topicLabel(w.topic)}</p>}
         <p className="mt-2 text-[14px] font-bold text-ink-soft">
           {w.displayName ?? ANONYMOUS_NAME} · <time dateTime={w.createdAt}>{wishDate(w.createdAt)}</time>
+          {w.district && ` · ${w.district}`}
         </p>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-ink/10 pt-4">
           <LikeButton id={w.id} count={w.likeCount} disabled={!open} large />

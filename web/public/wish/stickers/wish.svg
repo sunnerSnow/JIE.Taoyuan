@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160"><title>小企鵝貼圖：許願</title><defs>
+  <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="sticker" x="-15%" y="-15%" width="130%" height="130%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="fat"/>
+    <feGaussianBlur in="fat" stdDeviation="2.4" result="blur"/>
+    <feOffset in="blur" dy="2.5" result="drop"/>
+    <feFlood flood-color="#0B3D3A" flood-opacity="0.22"/>
+    <feComposite in2="drop" operator="in" result="shadow"/>
+    <feFlood flood-color="#FFFFFF"/>
+    <feComposite in2="fat" operator="in" result="outline"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="outline"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs><g filter="url(#sticker)"><g filter="url(#rough)"><ellipse cx="80" cy="114" rx="30" ry="27" fill="#2E2B2A"/><ellipse cx="80" cy="119" rx="21" ry="19" fill="#9FD6C4"/><ellipse cx="68" cy="141" rx="9.5" ry="5" fill="#F4A43C"/><ellipse cx="92" cy="141" rx="9.5" ry="5" fill="#F4A43C"/><circle cx="63" cy="44" r="9.5" fill="#2E2B2A"/><circle cx="76" cy="38" r="11" fill="#2E2B2A"/><circle cx="90" cy="40" r="9.5" fill="#2E2B2A"/><circle cx="100" cy="47" r="7" fill="#2E2B2A"/><path d="M68 39 q6 -7 13 -1 M84 37 q6 -6 12 1" fill="none" stroke="#6A625E" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="72" r="36" fill="#2E2B2A"/><ellipse cx="80" cy="80" rx="28.5" ry="24" fill="#FFFDF7"/><circle cx="69" cy="74" r="9.5" fill="#FFFFFF" stroke="#3B3634" stroke-width="2.4"/><circle cx="91" cy="74" r="9.5" fill="#FFFFFF" stroke="#3B3634" stroke-width="2.4"/><path d="M78.5 74 q1.5 -2.2 3 0" fill="none" stroke="#3B3634" stroke-width="2.2"/><path d="M64.5 74 q4.5 4.5 9 0" fill="none" stroke="#2E2B2A" stroke-width="2.6" stroke-linecap="round"/><path d="M86.5 74 q4.5 4.5 9 0" fill="none" stroke="#2E2B2A" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="59" cy="88" rx="6" ry="3.6" fill="#F4A0A0" opacity="0.85"/><ellipse cx="101" cy="88" rx="6" ry="3.6" fill="#F4A0A0" opacity="0.85"/><path d="M71 85 Q80 79 89 85 Q84 93 80 93 Q76 93 71 85Z" fill="#F4A43C"/><path d="M55 102 Q80 113 105 102 L104 109 Q80 120 56 109Z" fill="#3E9B5F"/><path d="M71 113 L81 128 L88 113Z" fill="#3E9B5F"/><path d="M53 104 Q60 120 74 120 Q70 110 58 100Z" fill="#2E2B2A"/><path d="M107 104 Q100 120 86 120 Q90 110 102 100Z" fill="#2E2B2A"/><polygon points="126.0,22.0 128.6,28.4 135.5,28.9 130.3,33.4 131.9,40.1 126.0,36.5 120.1,40.1 121.7,33.4 116.5,28.9 123.4,28.4" fill="#F9D53A" stroke="#2E2B2A" stroke-width="1.2" stroke-linejoin="round"/><path d="M34 34 Q35.08 38.92 40 40 Q35.08 41.08 34 46 Q32.92 41.08 28 40 Q32.92 38.92 34 34Z" fill="#F9D53A"/><path d="M140 57.5 Q140.81 61.19 144.5 62 Q140.81 62.81 140 66.5 Q139.19 62.81 135.5 62 Q139.19 61.19 140 57.5Z" fill="#F9D53A"/></g></g></svg>

@@ -61,6 +61,7 @@ tools/
   taoyuan-map/build.py    產生桃園 13 區地圖（web/src/data/taoyuan-map.ts，平常不用動）
   indexnow/submit.mjs     部署後通知搜尋引擎
   wish-filter/check.ts    杰個願望關鍵字過濾的範例檢查
+  wish-stickers/build.py  產生杰個願望的小企鵝貼圖（web/public/wish/stickers/）
 .claude/skills/
   sync-official/SKILL.md  整理官方新貼文的規則
   line-schedule/SKILL.md  整理行程預告與車掃路線圖的規則
@@ -166,6 +167,8 @@ python tools/route-map/build.py --cache ~/.cache/jie-route-map
 - **檢舉**：被 3 個不同來源檢舉會自動下架，等後台確認。有心人換 3 個網路也能下架正常留言，所以後台要看檢舉原因判斷；恢復公開後只算之後的新檢舉。「這是我寫的，想刪除」無法確認真的是作者，請看內容再決定。
 - **回覆**：一律以「杰伴桃園志工團隊」名義顯示。不能用候選人本人的名義，也不能承諾候選人或競選團隊沒說過的事。
 - 「只給團隊參考」的留言不會出現在願望牆，只有後台看得到。
+- **小企鵝貼圖**：留言時可以選一張貼在便利貼右下角。圖檔在 `web/public/wish/stickers/`，由 `python tools/wish-stickers/build.py` 產生（造型參考分享卡與吉普車插畫上的小企鵝）；要加新貼圖，在 build.py 加一張、再到 `web/src/lib/wish/options.ts` 的 `STICKERS` 加名稱。
+- **願望牆**：便利貼依留言代碼固定歪斜、錯開，越新的疊在越上面（`web/src/components/wish/wish-art.tsx` 的 `pileLayout`）。
 
 ### 後台（`/admin/wishes`）
 

@@ -59,7 +59,7 @@ export function LikeButton({ id, count, disabled = false, large = false }: { id:
         onClick={toggle}
         disabled={disabled || pending}
         aria-pressed={liked}
-        className={`inline-flex items-center gap-1.5 rounded-full border-2 font-black transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+        className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border-2 font-black transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
           large ? "px-5 py-2.5 text-[16px]" : "px-3 py-1.5 text-[14px]"
         } ${liked ? "border-coral bg-coral text-paper" : "border-coral/40 bg-paper text-coral hover:bg-peach"}`}
       >

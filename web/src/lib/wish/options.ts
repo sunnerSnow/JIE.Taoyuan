@@ -71,6 +71,22 @@ export type ReportReason = (typeof REPORT_REASONS)[number]["key"];
 export const REPLY_NAME = "杰伴桃園志工團隊";
 export const ANONYMOUS_NAME = "匿名桃園市民";
 
+/** 小企鵝貼圖：圖檔由 tools/wish-stickers/build.py 產生在 public/wish/stickers/ */
+export const STICKERS = [
+  { key: "cheer", label: "加油" },
+  { key: "love", label: "比心" },
+  { key: "wish", label: "許願" },
+  { key: "good", label: "讚" },
+  { key: "thanks", label: "謝謝" },
+  { key: "happy", label: "開心" },
+  { key: "idea", label: "好點子" },
+  { key: "vote", label: "凍蒜" },
+] as const;
+
+export type StickerKey = (typeof STICKERS)[number]["key"];
+export const stickerSrc = (k: StickerKey) => `/wish/stickers/${k}.svg`;
+export const stickerLabel = (k: string | null) => STICKERS.find((s) => s.key === k)?.label ?? "";
+
 export const LIMITS = { title: 40, contentMin: 10, contentMax: 500, name: 20 };
 
 /** 被不同來源檢舉幾次就先下架，等團隊確認 */
@@ -93,6 +109,7 @@ export type WishInput = {
   district: string | null;
   displayName: string;
   visibility: "public" | "team_only";
+  sticker: StickerKey | null;
 };
 
 export type FieldErrors = Partial<Record<"type" | "title" | "content" | "district" | "displayName" | "visibility" | "agree", string>>;
@@ -130,5 +147,7 @@ export function parseWishInput(raw: unknown): { input: WishInput; errors: FieldE
 
   if (r.agree !== true) errors.agree = "請先確認留言規範";
 
-  return { input: { type, title, content, topic, district, displayName, visibility: visibility ?? "public" }, errors };
+  const sticker = STICKERS.find((s) => s.key === r.sticker)?.key ?? null;
+
+  return { input: { type, title, content, topic, district, displayName, visibility: visibility ?? "public", sticker }, errors };
 }

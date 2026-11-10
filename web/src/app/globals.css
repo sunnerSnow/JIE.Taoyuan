@@ -368,6 +368,28 @@ html[data-menu-open="true"] {
   animation: wish-drop 1.5s var(--ease-out-soft) 0.2s both;
 }
 
+/* 杰個願望：願望牆的底板（點點格線）與便利貼一張張貼上去 */
+.wish-board {
+  background-color: #fffdf7;
+  background-image: radial-gradient(rgb(0 122 116 / 0.14) 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+
+@keyframes wish-pin {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.wish-pin {
+  animation: wish-pin 0.5s var(--ease-out-soft) both;
+}
+
 /*
  * 探索地圖上走動的市民（側面）：前腳、後腳從髖部交替前後擺；前腳往前時後手也往前（手腳對側擺），每跨一步身體上下晃一次。
  * --half 是跨一步的時間，由畫面依移動速度與地圖縮放算出來，腳步才會跟上身體、不會滑步。

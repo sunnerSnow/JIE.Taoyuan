@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { WISH_DISTRICTS, WISH_TYPES, type WishType } from "@/lib/wish/options";
 import { getWall, getWallStats, type WallQuery } from "@/lib/wish/store";
+import { pileLayout } from "./wish-art";
 import { WishNote } from "./wish-note";
 
 const PAGE = 24;
@@ -136,12 +137,26 @@ export async function WishWall({ searchParams, open, readable }: { searchParams:
           )}
         </PenguinSays>
       ) : (
-        <ul className="mt-8 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((item, i) => (
-            <li key={item.id}>
-              <WishNote wish={item} index={i} open={open} />
-            </li>
-          ))}
+        // 願望牆：便利貼歪歪的、錯開一點、邊緣互相壓住；越新的疊在越上面，滑過或聚焦時拿到最上層
+        <ul className="wish-board mt-8 flex flex-wrap items-start justify-center rounded-[28px] border-2 border-edge px-3 pb-14 pt-10 sm:px-6">
+          {data.items.map((item, i) => {
+            const p = pileLayout(item.id);
+            return (
+              <li
+                key={item.id}
+                className="wish-pin relative -my-2 mx-1 max-w-[calc(100vw-64px)] transition-[rotate,translate] duration-300 hover:!z-[300] focus-within:!z-[300] motion-safe:hover:!rotate-0 sm:-my-3 sm:mx-0"
+                style={{
+                  width: p.width,
+                  zIndex: data.items.length - i,
+                  rotate: `${p.tilt}deg`,
+                  translate: `${p.dx}px ${p.dy}px`,
+                  animationDelay: `${Math.min(i, 12) * 45}ms`,
+                }}
+              >
+                <WishNote wish={item} open={open} stickerTilt={p.stickerTilt} />
+              </li>
+            );
+          })}
         </ul>
       )}
 

@@ -3,7 +3,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { db, type Row } from "./db";
 import { newId } from "./security";
-import { REPORT_HIDE_AT, type ModerationStatus, type ReportReason, type ResponseStatus, type WishInput, type WishTopic, type WishType } from "./options";
+import { REPORT_HIDE_AT, STICKERS, type ModerationStatus, type ReportReason, type ResponseStatus, type StickerKey, type WishInput, type WishTopic, type WishType } from "./options";
 
 /** 願望牆的快取標籤：有新的公開留言、下架、回覆時更新 */
 export const WISHES_TAG = "wishes";
@@ -21,6 +21,7 @@ export type PublicWish = {
   topic: WishTopic | null;
   district: string | null;
   displayName: string | null;
+  sticker: StickerKey | null;
   likeCount: number;
   responseStatus: ResponseStatus;
   createdAt: string;
@@ -40,6 +41,7 @@ function toWish(r: Row): PublicWish {
     topic: text(r.topic) as WishTopic | null,
     district: text(r.district),
     displayName: text(r.display_name),
+    sticker: STICKERS.find((s) => s.key === r.sticker)?.key ?? null,
     likeCount: Number(r.like_count),
     responseStatus: r.response_status as ResponseStatus,
     createdAt: iso(r.created_at),
@@ -54,7 +56,7 @@ const toReply = (r: Row): WishReply => ({
   createdAt: iso(r.created_at),
 });
 
-const WISH_COLUMNS = "id, type, title, content, topic, district, display_name, like_count, response_status, created_at";
+const WISH_COLUMNS = "id, type, title, content, topic, district, display_name, sticker, like_count, response_status, created_at";
 
 /* ---------- 前台（有快取） ---------- */
 
@@ -126,9 +128,9 @@ export async function insertWish(input: WishInput, status: Extract<ModerationSta
   const q = await db();
   const id = newId();
   await q(
-    `insert into wishes (id, type, title, content, topic, district, display_name, visibility, moderation_status, moderation_reason)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-    [id, input.type, input.title || null, input.content, input.topic, input.district, input.displayName || null, input.visibility, status, reason],
+    `insert into wishes (id, type, title, content, topic, district, display_name, sticker, visibility, moderation_status, moderation_reason)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+    [id, input.type, input.title || null, input.content, input.topic, input.district, input.displayName || null, input.sticker, input.visibility, status, reason],
   );
   if (status === "rejected") await log(id, "auto_reject", reason);
   return id;

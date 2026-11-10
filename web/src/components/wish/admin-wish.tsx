@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { removeWish, setModeration, setResponse } from "@/app/admin/wishes/actions";
 import { BLOCK_REASON_LABEL, type BlockReason } from "@/lib/wish/filter";
-import { ANONYMOUS_NAME, MODERATION_STATUS, RESPONSE_STATUS, topicLabel, typeLabel } from "@/lib/wish/options";
+import { ANONYMOUS_NAME, MODERATION_STATUS, RESPONSE_STATUS, stickerLabel, topicLabel, typeLabel } from "@/lib/wish/options";
 import type { AdminWish } from "@/lib/wish/store";
 import { ConfirmButton } from "./admin-client";
 
@@ -23,6 +23,7 @@ export function AdminWishCard({ wish: w, detail = false }: { wish: AdminWish; de
         <span>{typeLabel(w.type)}</span>
         {w.topic && <span>#{topicLabel(w.topic)}</span>}
         {w.district && <span>{w.district}</span>}
+        {w.sticker && <span>貼圖：{stickerLabel(w.sticker)}</span>}
         <span className="text-ink-soft">{w.displayName ?? ANONYMOUS_NAME}</span>
         <span className="text-ink-soft">{adminTime(w.createdAt)}</span>
         <span className="text-ink-soft">讚 {w.likeCount}</span>

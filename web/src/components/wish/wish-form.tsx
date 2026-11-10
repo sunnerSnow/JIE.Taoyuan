@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
@@ -10,10 +11,13 @@ import {
   charCount,
   LIMITS,
   parseWishInput,
+  STICKERS,
+  stickerSrc,
   WISH_DISTRICTS,
   WISH_TOPICS,
   WISH_TYPES,
   type FieldErrors,
+  type StickerKey,
   type WishType,
 } from "@/lib/wish/options";
 import { NOTE_STYLE, TypeIcon, WishBox } from "./wish-art";
@@ -27,9 +31,10 @@ type Draft = {
   displayName: string;
   visibility: "public" | "team_only";
   agree: boolean;
+  sticker: StickerKey | "";
 };
 
-const EMPTY: Draft = { type: "", title: "", content: "", topic: "", district: "", displayName: "", visibility: "public", agree: false };
+const EMPTY: Draft = { type: "", title: "", content: "", topic: "", district: "", displayName: "", visibility: "public", agree: false, sticker: "" };
 
 declare global {
   interface Window {
@@ -100,7 +105,7 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
   const [message, setMessage] = useState("");
   const [token, setToken] = useState("");
   const [resetSignal, setResetSignal] = useState(0);
-  const [done, setDone] = useState<{ id: string; visibility: "public" | "team_only" } | null>(null);
+  const [done, setDone] = useState<{ id: string; visibility: "public" | "team_only"; sticker: StickerKey | "" } | null>(null);
   const [pending, start] = useTransition();
   const honeypot = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLParagraphElement>(null);
@@ -150,7 +155,7 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
       setToken("");
       setResetSignal((n) => n + 1);
       if (r.ok) {
-        setDone({ id: r.id, visibility: r.visibility });
+        setDone({ id: r.id, visibility: r.visibility, sticker: raw.sticker });
         setD(EMPTY);
         setErrors({});
       } else {
@@ -165,7 +170,9 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
     return (
       <div className="rounded-[28px] border-2 border-edge bg-paper p-6 text-center shadow-soft sm:p-10" role="status">
         <div className="relative mx-auto h-44 w-52">
-          <span className="wish-drop absolute left-1/2 top-0 block h-14 w-14 rounded-[6px] shadow-soft" style={{ background: "#FFF5C4" }} aria-hidden="true" />
+          <span className="wish-drop absolute left-1/2 top-0 block h-14 w-14 rounded-[6px] shadow-soft" style={{ background: "#FFF5C4" }} aria-hidden="true">
+            {done.sticker && <Image src={stickerSrc(done.sticker)} alt="" width={40} height={40} unoptimized className="absolute -right-4 -top-4 h-10 w-10" />}
+          </span>
           <WishBox className="absolute bottom-0 left-0 w-full" />
         </div>
         <h3 className="mt-4 text-[26px] font-black tracking-[0.08em]">願望已送出！</h3>
@@ -277,6 +284,36 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
           </p>
           <ErrorText id="err-content" text={errors.content} />
         </div>
+
+        <fieldset>
+          <legend className={labelText}>
+            貼一張小企鵝<span className="ml-1 text-[13px] font-bold text-ink-soft">（選填）</span>
+          </legend>
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
+            {[{ key: "" as const, label: "不貼" }, ...STICKERS].map((o) => {
+              const on = d.sticker === o.key;
+              return (
+                <label key={o.key || "none"} className="relative block cursor-pointer">
+                  <input type="radio" name="sticker" value={o.key} checked={on} onChange={() => set("sticker", o.key)} className="peer sr-only" />
+                  <span
+                    className={`flex h-full flex-col items-center gap-1 rounded-2xl border-2 px-1 pb-2 pt-1.5 transition-[border-color,background-color] peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-teal-deep ${
+                      on ? "border-ink bg-sun-soft" : "border-edge bg-paper hover:border-teal-deep/50"
+                    }`}
+                  >
+                    {o.key ? (
+                      <Image src={stickerSrc(o.key)} alt="" width={56} height={56} unoptimized className="h-14 w-14" />
+                    ) : (
+                      <span className="grid h-14 w-14 place-items-center text-[22px] text-ink-soft" aria-hidden="true">
+                        ✕
+                      </span>
+                    )}
+                    <span className="text-[13px] font-black">{o.label}</span>
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
 
         <div className="grid gap-5 sm:grid-cols-2">
           {d.type !== "encouragement" && (

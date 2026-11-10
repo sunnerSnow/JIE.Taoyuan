@@ -25,6 +25,7 @@ const SCHEMA = [
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
   )`,
+  `alter table wishes add column if not exists sticker text`,
   `create index if not exists wishes_public_created on wishes (created_at desc) where moderation_status = 'approved' and visibility = 'public'`,
   `create index if not exists wishes_created on wishes (created_at desc)`,
   `create table if not exists wish_replies (
