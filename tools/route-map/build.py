@@ -53,6 +53,8 @@ PLACES = {
     "平鎮區中豐路山頂段469巷": (24.8944, 121.2120, "中豐路"),
     "平鎮南天宮": (24.953444, 121.177344, "雙榮路"),  # 楊梅區雙榮路226號
     "奉天宮": (24.948736, 121.117093, "中華南路二段480巷"),  # 楊梅奉天宮（官方路線圖寫「楊梅奉天宮（終點）」）
+    "南競辦公室": (24.9660243, 121.240583, "中華路二段"),  # 中壢區中華路二段128號（OSM 地址點）
+    "南方莊園飯店": (24.9678279, 121.1780223, "樹籽路"),  # 中壢區樹籽路8號（OSM 地址點）
 }
 
 # 加油打氣站：公告的站名 → (圖上的名字, 緯度, 經度)。有查到地點的才畫，其他只寫在路線清單裡
@@ -88,6 +90,7 @@ LANDMARKS = [
     ("忠貞市場", 24.9289, 121.25296),
     ("平鎮高中", 24.93904, 121.21906),
     ("南勢國小", 24.91387, 121.21145),
+    ("內壢車站", 24.97256, 121.25835),
 ]
 
 MAJOR = {"motorway", "trunk", "primary", "secondary", "motorway_link", "trunk_link", "primary_link", "secondary_link"}
@@ -448,7 +451,7 @@ def render(osm, network, route):
         stations.append({"x": round(x, 1), "y": round(y, 1), "text": text})
 
     # 地標：點在原位，名字放右邊或左邊（優先選不會蓋到路線的那邊；都放不下就不放）。地標比號碼先放，號碼再避開地標
-    landmarks = []
+    landmarks, landmark_boxes = [], []
     for text, llat, llon in LANDMARKS:
         x, y = xy((llat, llon))
         bw = len(text) * 28 + 36
@@ -458,6 +461,7 @@ def render(osm, network, route):
             side, box = min(sides, key=lambda sd: on_route(sd[1]))
             boxes.append(box)
             landmarks.append({"x": round(x, 1), "y": round(y, 1), "text": text, "side": side})
+            landmark_boxes.append((landmarks[-1], box))
 
     # 號碼圓圈放在那條路的中間；和已放的東西重疊就往前或往後挪。都會重疊時：600 公尺以上的路取重疊最少的位置照放，
     # 更短的路（市區連續轉彎）就不畫在圖上，只留在路線清單，免得號碼疊成一團
@@ -471,6 +475,21 @@ def render(osm, network, route):
             continue
         boxes.append(box)
         steps.append({"n": n, "x": round(x, 1), "y": round(y, 1)})
+
+    # 長路段的號碼一定要畫，還是蓋到地標名字時，把名字換到另一邊；另一邊也放不下就照舊（不拿掉地標）
+    step_boxes = [(st["x"] - 26, st["y"] - 26, st["x"] + 26, st["y"] + 26) for st in steps]
+    hit = lambda a, b: not (a[2] < b[0] or a[0] > b[2] or a[3] < b[1] or a[1] > b[3])  # noqa: E731
+    for lm, box in landmark_boxes:
+        if not any(hit(box, sb) for sb in step_boxes):
+            continue
+        boxes.remove(box)
+        x, bw = lm["x"], len(lm["text"]) * 28 + 36
+        flipped = (x - bw, box[1], x + 14, box[3]) if lm["side"] == "right" else (x - 14, box[1], x + bw, box[3])
+        if free(flipped) and not any(hit(flipped, sb) for sb in step_boxes):
+            lm["side"] = "left" if lm["side"] == "right" else "right"
+            boxes.append(flipped)
+        else:
+            boxes.append(box)
 
     # 路名標籤：每條路取走最長的那段，放在四分之一處（中間留給號碼）；放不下就跳過
     labels = []
