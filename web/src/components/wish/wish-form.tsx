@@ -12,6 +12,7 @@ import {
   LIMITS,
   parseWishInput,
   STICKERS,
+  stickerIsSvg,
   stickerSrc,
   WISH_DISTRICTS,
   WISH_TOPICS,
@@ -171,7 +172,9 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
       <div className="rounded-[28px] border-2 border-edge bg-paper p-6 text-center shadow-soft sm:p-10" role="status">
         <div className="relative mx-auto h-44 w-52">
           <span className="wish-drop absolute left-1/2 top-0 block h-14 w-14 rounded-[6px] shadow-soft" style={{ background: "#FFF5C4" }} aria-hidden="true">
-            {done.sticker && <Image src={stickerSrc(done.sticker)} alt="" width={40} height={40} unoptimized className="absolute -right-4 -top-4 h-10 w-10" />}
+            {done.sticker && (
+              <Image src={stickerSrc(done.sticker)} alt="" width={40} height={40} unoptimized={stickerIsSvg(done.sticker)} className="absolute -right-4 -top-4 h-10 w-10 object-contain" />
+            )}
           </span>
           <WishBox className="absolute bottom-0 left-0 w-full" />
         </div>
@@ -289,7 +292,7 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
           <legend className={labelText}>
             貼一張小企鵝<span className="ml-1 text-[13px] font-bold text-ink-soft">（選填）</span>
           </legend>
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
             {[{ key: "" as const, label: "不貼" }, ...STICKERS].map((o) => {
               const on = d.sticker === o.key;
               return (
@@ -301,7 +304,7 @@ export function WishForm({ siteKey, open }: { siteKey: string; open: boolean }) 
                     }`}
                   >
                     {o.key ? (
-                      <Image src={stickerSrc(o.key)} alt="" width={56} height={56} unoptimized className="h-14 w-14" />
+                      <Image src={stickerSrc(o.key)} alt="" width={56} height={56} unoptimized={stickerIsSvg(o.key)} className="h-14 w-14 object-contain" />
                     ) : (
                       <span className="grid h-14 w-14 place-items-center text-[22px] text-ink-soft" aria-hidden="true">
                         ✕

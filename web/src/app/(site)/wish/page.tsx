@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Penguin } from "@/components/art/penguin";
 import { PenguinSays } from "@/components/art/speech";
 import { Breadcrumbs } from "@/components/site/page-head";
 import { ArrowCurve, Squiggle } from "@/components/ui/decor";
-import { FloatingNote, NOTE_STYLE, TypeIcon, WishBox } from "@/components/wish/wish-art";
+import { FloatingNote, NOTE_STYLE, TypeIcon } from "@/components/wish/wish-art";
 import { WishForm } from "@/components/wish/wish-form";
 import { WishWall, WishWallSkeleton } from "@/components/wish/wish-wall";
 import { pageMetadata } from "@/lib/metadata";
@@ -57,13 +57,20 @@ export default function WishPage({ searchParams }: PageProps<"/wish">) {
               </a>
             </div>
           </div>
-          <div className="relative mx-auto h-[260px] w-full max-w-[400px] sm:h-[300px]" aria-hidden="true">
-            <FloatingNote color="#FFF5C4" className="anim-bob left-[46%] top-0 h-16 w-16" style={{ rotate: "-8deg" }} />
-            <FloatingNote color="#FBE4D8" className="anim-bob right-[4%] top-[12%] h-14 w-14 [animation-delay:-1.2s]" style={{ rotate: "10deg" }} />
-            <FloatingNote color="#D3EEEC" className="anim-bob left-[22%] top-[16%] h-12 w-12 [animation-delay:-2.4s]" style={{ rotate: "6deg" }} />
-            <FloatingNote color="#FFFFFF" className="anim-bob right-[30%] top-[30%] h-11 w-11 [animation-delay:-0.6s]" style={{ rotate: "-12deg" }} />
-            <WishBox className="absolute bottom-0 right-0 w-[64%]" />
-            <Penguin pose="point" className="absolute bottom-0 left-0 h-40 w-32 sm:h-44 sm:w-36" />
+          <div className="relative mx-auto h-[300px] w-full max-w-[400px] sm:h-[340px]" aria-hidden="true">
+            <FloatingNote color="#FFF5C4" className="anim-bob left-[6%] top-[2%] h-14 w-14" style={{ rotate: "-8deg" }} />
+            <FloatingNote color="#FBE4D8" className="anim-bob right-[6%] top-0 h-12 w-12 [animation-delay:-1.2s]" style={{ rotate: "10deg" }} />
+            <FloatingNote color="#D3EEEC" className="anim-bob left-[38%] top-[-2%] h-10 w-10 [animation-delay:-2.4s]" style={{ rotate: "6deg" }} />
+            {/* 插畫「小企鵝開吉普車」（使用者提供，tools/wish-stickers/cutout.py 去背） */}
+            <Image
+              src="/wish/jeep-hero.png"
+              alt=""
+              width={720}
+              height={572}
+              loading="eager"
+              sizes="(min-width: 1024px) 380px, 320px"
+              className="absolute bottom-0 left-1/2 w-[86%] max-w-[380px] -translate-x-1/2"
+            />
           </div>
         </div>
       </div>
@@ -129,7 +136,7 @@ export default function WishPage({ searchParams }: PageProps<"/wish">) {
         </div>
       </section>
 
-      <section id="wall" aria-labelledby="wall-title" className="scroll-mt-24 border-t-2 border-edge bg-paper py-14 sm:py-20">
+      <section id="wall" aria-labelledby="wall-title" className="scroll-mt-24 overflow-x-clip border-t-2 border-edge bg-paper py-14 sm:py-20">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
           <h2 id="wall-title" className="section-title !text-[clamp(24px,3.2vw,34px)]">
             大家的願望

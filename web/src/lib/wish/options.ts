@@ -71,20 +71,29 @@ export type ReportReason = (typeof REPORT_REASONS)[number]["key"];
 export const REPLY_NAME = "杰伴桃園志工團隊";
 export const ANONYMOUS_NAME = "匿名桃園市民";
 
-/** 小企鵝貼圖：圖檔由 tools/wish-stickers/build.py 產生在 public/wish/stickers/ */
+/**
+ * 小企鵝貼圖（public/wish/stickers/）：
+ * 吉普車三張是使用者提供的插畫去背（tools/wish-stickers/cutout.py），其餘由 tools/wish-stickers/build.py 產生。
+ */
 export const STICKERS = [
-  { key: "cheer", label: "加油" },
-  { key: "love", label: "比心" },
-  { key: "wish", label: "許願" },
-  { key: "good", label: "讚" },
-  { key: "thanks", label: "謝謝" },
-  { key: "happy", label: "開心" },
-  { key: "idea", label: "好點子" },
-  { key: "vote", label: "凍蒜" },
+  { key: "jeep-go", label: "出發！", file: "jeep-go.png" },
+  { key: "jeep-one", label: "一號", file: "jeep-one.png" },
+  { key: "jeep-wave", label: "嗨！", file: "jeep-wave.png" },
+  { key: "cheer", label: "加油", file: "cheer.svg" },
+  { key: "love", label: "比心", file: "love.svg" },
+  { key: "wish", label: "許願", file: "wish.svg" },
+  { key: "good", label: "讚", file: "good.svg" },
+  { key: "thanks", label: "謝謝", file: "thanks.svg" },
+  { key: "happy", label: "開心", file: "happy.svg" },
+  { key: "idea", label: "好點子", file: "idea.svg" },
+  { key: "vote", label: "凍蒜", file: "vote.svg" },
 ] as const;
 
 export type StickerKey = (typeof STICKERS)[number]["key"];
-export const stickerSrc = (k: StickerKey) => `/wish/stickers/${k}.svg`;
+const stickerFile = (k: StickerKey) => STICKERS.find((s) => s.key === k)?.file ?? "cheer.svg";
+export const stickerSrc = (k: StickerKey) => `/wish/stickers/${stickerFile(k)}`;
+/** SVG 直接用原檔；PNG 交給 next/image 縮成需要的大小 */
+export const stickerIsSvg = (k: StickerKey) => stickerFile(k).endsWith(".svg");
 export const stickerLabel = (k: string | null) => STICKERS.find((s) => s.key === k)?.label ?? "";
 
 export const LIMITS = { title: 40, contentMin: 10, contentMax: 500, name: 20 };

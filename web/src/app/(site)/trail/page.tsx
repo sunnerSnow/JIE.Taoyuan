@@ -81,15 +81,15 @@ export default function TrailPage() {
           </>
         }
       >
-        {/* 插畫「桃園動起來！」（已去背）：寬螢幕放在標題右邊的空位，窄螢幕接在導言下面 */}
+        {/* 插畫「小企鵝開吉普車出發！」（使用者提供，tools/wish-stickers/cutout.py 去背）：寬螢幕放在標題右邊的空位，窄螢幕接在導言下面 */}
         <Image
-          src="/lab/trail-hero.png"
+          src="/trail/jeep-go.png"
           alt=""
-          width={640}
-          height={641}
+          width={720}
+          height={806}
           loading="eager"
-          sizes="(min-width: 1024px) 340px, 240px"
-          className="pointer-events-none ml-auto mt-6 block w-60 sm:w-64 lg:absolute lg:bottom-0 lg:right-6 lg:mt-0 lg:w-[340px]"
+          sizes="(min-width: 1024px) 300px, 220px"
+          className="pointer-events-none ml-auto mt-6 block w-52 sm:w-60 lg:absolute lg:bottom-2 lg:right-6 lg:mt-0 lg:w-[300px]"
         />
       </PageHead>
       <div className="mx-auto max-w-[1080px] px-4 py-12 sm:px-6 sm:py-16">

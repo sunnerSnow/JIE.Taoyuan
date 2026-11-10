@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ANONYMOUS_NAME, RESPONSE_STATUS, stickerLabel, stickerSrc, topicLabel, typeLabel, type ResponseStatus, type StickerKey } from "@/lib/wish/options";
+import { ANONYMOUS_NAME, RESPONSE_STATUS, stickerIsSvg, stickerLabel, stickerSrc, topicLabel, typeLabel, type ResponseStatus, type StickerKey } from "@/lib/wish/options";
 import type { PublicWish } from "@/lib/wish/store";
 import { LikeButton } from "./like-button";
 import { NOTE_STYLE, TypeIcon } from "./wish-art";
@@ -38,8 +38,8 @@ export function WishSticker({ sticker, size = 72, tilt = 8, className = "" }: { 
       alt={`小企鵝貼圖：${stickerLabel(sticker)}`}
       width={size}
       height={size}
-      unoptimized
-      className={`pointer-events-none absolute select-none ${className}`}
+      unoptimized={stickerIsSvg(sticker)}
+      className={`pointer-events-none absolute select-none object-contain ${className}`}
       style={{ rotate: `${tilt}deg` }}
     />
   );
