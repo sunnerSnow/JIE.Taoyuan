@@ -23,11 +23,12 @@ function itemHeight(it: ScheduleDay["items"][number], s: number) {
   const inner = 86 - 2 * ITEM.padX * s - 2 * ITEM.border;
   const placeWidth = inner - ITEM.pin * s - 1.6 * s;
   const title = lineCount(it.title, ITEM.title * s, inner) * ITEM.title * s * 1.3;
-  const place = lineCount(it.place, ITEM.place * s, placeWidth) * ITEM.place * s * 1.35;
+  const place = it.place ? lineCount(it.place, ITEM.place * s, placeWidth) * ITEM.place * s * 1.35 : 0;
+  const placeRow = it.place || it.address || it.finish ? 1.4 * s : 0;
   const address = it.address ? 0.4 * s + lineCount(it.address, ITEM.address * s, placeWidth) * ITEM.address * s * 1.4 : 0;
   const finish = it.finish ? 0.4 * s + lineCount(finishText(it), ITEM.address * s, placeWidth) * ITEM.address * s * 1.4 : 0;
   const route = it.route ? 1.6 * s + lineCount(routeText(it), ITEM.route * s, inner) * ITEM.route * s * 1.5 : 0;
-  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + 1.4 * s + place + address + finish + route;
+  return 2 * ITEM.padY * s + 2 * ITEM.border + ITEM.time * s + 1 * s + title + placeRow + place + address + finish + route;
 }
 
 const listHeight = (day: ScheduleDay, s: number) => day.items.reduce((n, it) => n + itemHeight(it, s), 0) + (day.items.length - 1) * ITEM.gap * s;

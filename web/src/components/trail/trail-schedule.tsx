@@ -93,19 +93,21 @@ export function TrailSchedule({ days, note, lineUrl }: { days: ScheduleCardDay[]
                           </p>
                           <div className="min-w-0">
                             <p className="text-[17px] font-black leading-snug">{it.title}</p>
-                            <p className="mt-1.5 text-[15px] font-bold leading-snug text-teal-deep">{it.place}</p>
+                            {it.place && <p className="mt-1.5 text-[15px] font-bold leading-snug text-teal-deep">{it.place}</p>}
                             {it.address && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{it.address}</p>}
                             {it.finish && <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{finishText(it)}</p>}
                             {it.route && <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{routeText(it)}</p>}
-                            <a
-                              href={it.url ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="link-ink mt-1.5 inline-block text-[13.5px] font-bold"
-                            >
-                              {it.url ? "觀看直播" : "在 Google 地圖上看"} <span aria-hidden="true">↗</span>
-                              <span className="sr-only">（另開新視窗）</span>
-                            </a>
+                            {(it.url || it.place) && (
+                              <a
+                                href={it.url ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${it.place} ${it.address ?? ""}`.trim())}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link-ink mt-1.5 inline-block text-[13.5px] font-bold"
+                              >
+                                {it.url ? "觀看直播" : "在 Google 地圖上看"} <span aria-hidden="true">↗</span>
+                                <span className="sr-only">（另開新視窗）</span>
+                              </a>
+                            )}
                             {it.routeCards && <RouteCards cards={it.routeCards} files={files} title={`${d.day} ${it.title}`} />}
                           </div>
                         </li>

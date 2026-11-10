@@ -53,6 +53,8 @@
 
 路線圖依公告的路名順序沿 OpenStreetMap 的道路畫出：號碼是行進順序，另外標出起點、終點、打氣站和車站、公園等地標；路線清單照同樣的號碼列出完整路線。
 
+行程預告下面是車隊掃街專區：13 區哪些已經跑過、接下來要去哪裡，以及每一場的路線圖和行程紀錄。
+
 <p>
   <img src="docs/screenshots/card-schedule.jpg" alt="行程預告圖卡" width="31%">
   <img src="docs/screenshots/card-route.jpg" alt="楊梅區車隊掃街路線圖卡" width="31%">

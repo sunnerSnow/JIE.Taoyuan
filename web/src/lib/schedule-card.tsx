@@ -125,11 +125,13 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
           >
             <div style={{ display: "flex", fontFamily: "Fredoka", fontSize: ITEM.time * s * u, lineHeight: 1, fontWeight: 600, color: CARD.red }}>{timeText(it)}</div>
             <div style={{ display: "flex", marginTop: 1 * s * u, fontSize: ITEM.title * s * u, lineHeight: 1.3, fontWeight: 900, color: CARD.ink }}>{it.title}</div>
+            {/* 只有時間和活動的公告（例如「杰伴週報」）沒有地點這一列 */}
+            {(it.place || it.address || it.finish) && (
             <div style={{ display: "flex", gap: 1.6 * s * u, marginTop: 1.4 * s * u }}>
               {/* eslint-disable-next-line @next/next/no-img-element -- next/og 只支援 img */}
               <img src={PIN} width={ITEM.pin * s * u} height={ITEM.pin * s * u} alt="" style={{ marginTop: ITEM.place * s * u * 0.2 }} />
               <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                <div style={{ display: "flex", fontSize: ITEM.place * s * u, lineHeight: 1.35, fontWeight: 900, color: CARD.teal }}>{it.place}</div>
+                {it.place && <div style={{ display: "flex", fontSize: ITEM.place * s * u, lineHeight: 1.35, fontWeight: 900, color: CARD.teal }}>{it.place}</div>}
                 {it.address && (
                   <div style={{ display: "flex", marginTop: 0.4 * s * u, fontSize: ITEM.address * s * u, lineHeight: 1.4, fontWeight: 700, color: CARD.soft }}>{it.address}</div>
                 )}
@@ -138,6 +140,7 @@ export function ScheduleCard({ day }: { day: ScheduleDay }) {
                 )}
               </div>
             </div>
+            )}
             {it.route && (
               <div style={{ display: "flex", marginTop: 1.6 * s * u, fontSize: ITEM.route * s * u, lineHeight: 1.5, fontWeight: 700, color: CARD.soft }}>{routeText(it)}</div>
             )}

@@ -13,8 +13,8 @@ export type ScheduleItem = {
   end?: string;
   /** 公告的「活動」 */
   title: string;
-  /** 公告的「地點」括號前的部分；車隊掃街是起點（也是終點時只寫一次） */
-  place: string;
+  /** 公告的「地點」括號前的部分；車隊掃街是起點（也是終點時只寫一次）。只有時間和活動的公告（例如「杰伴週報」）不填 */
+  place?: string;
   /** 公告「地點」括號裡的地址 */
   address?: string;
   /** 終點：和起點不同時才填（例如「蘆竹德林寺（龍安街二段985號）」） */
@@ -39,6 +39,44 @@ export type ScheduleDay = {
 const line: ScheduleSource = { outlet: "LINE 官方帳號公告" };
 
 export const schedule: ScheduleDay[] = [
+  {
+    date: "2026-11-15",
+    items: [
+      { time: "08:30", end: "10:30", title: "龜山市場掃街" },
+      { time: "14:00", end: "16:30", title: "龜山區車隊掃街" },
+    ],
+    sources: [{ outlet: "官方「杰伴週報」圖卡" }],
+  },
+  {
+    date: "2026-11-14",
+    items: [
+      { time: "09:00", end: "11:00", title: "中壢區車隊掃街" },
+      { time: "17:00", end: "19:00", title: "龍潭區車隊掃街" },
+    ],
+    sources: [{ outlet: "官方「杰伴週報」圖卡" }],
+  },
+  {
+    date: "2026-11-13",
+    items: [
+      { time: "16:30", end: "17:30", title: "中壢區車隊掃街" },
+      { time: "17:30", end: "20:30", title: "中壢區車隊掃街" },
+    ],
+    sources: [{ outlet: "官方「杰伴週報」圖卡" }],
+  },
+  {
+    date: "2026-11-12",
+    items: [
+      { time: "09:00", end: "11:30", title: "南崁市場掃街" },
+    ],
+    sources: [{ outlet: "官方「杰伴週報」圖卡" }],
+  },
+  {
+    date: "2026-11-11",
+    items: [
+      { time: "16:00", end: "18:00", title: "中壢區車隊掃街" },
+    ],
+    sources: [{ outlet: "官方「杰伴週報」圖卡" }],
+  },
   {
     date: "2026-11-10",
     items: [
@@ -329,7 +367,7 @@ export function scheduleDate(iso: string) {
 export const timeText = (it: ScheduleItem) => (it.end ? `${it.time}~${it.end}` : it.time);
 
 /** 一場行程的地點全文，例如「北富里集會所（平鎮區金陵路三段197巷1弄50號）」 */
-export const placeText = (it: ScheduleItem) => (it.address ? `${it.place}（${it.address}）` : it.place);
+export const placeText = (it: ScheduleItem) => (it.place ? (it.address ? `${it.place}（${it.address}）` : it.place) : "");
 
 /** 終點：和起點不同時才有 */
 export const finishText = (it: ScheduleItem) => (it.finish ? `終點：${it.finish}` : "");

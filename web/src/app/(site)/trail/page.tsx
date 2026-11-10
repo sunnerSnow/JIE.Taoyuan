@@ -3,6 +3,7 @@ import Image from "next/image";
 import { PageHead } from "@/components/site/page-head";
 import { type TrailItem, TrailExplorer } from "@/components/trail/trail-explorer";
 import { type ScheduleCardDay, TrailSchedule } from "@/components/trail/trail-schedule";
+import { type SweepItem, TrailSweeps } from "@/components/trail/trail-sweeps";
 import { formatDay, policies, shortTitle } from "@/data/policies";
 import { routeMaps } from "@/data/route-maps";
 import { finishText, placeText, routeSlug, routeText, schedule, scheduleDate, scheduleNote, timeText } from "@/data/schedule";
@@ -13,6 +14,7 @@ import { candidateFull } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 // 杰伴出發（JIE GO!）：最上面是官方帳號公告的行程預告（data/schedule.ts，整理規則見 /line-schedule），
+// 接著是車隊掃街專區（行程預告裡的掃街場次＋路線圖＋行程紀錄），
 // 下面是已經發生的行程，畫在桃園 13 區地圖上（去過的區放企鵝腳丫；data/trail.ts，整理規則見 /sync-official）。
 
 export const metadata: Metadata = pageMetadata({
@@ -68,6 +70,44 @@ const scheduleDays: ScheduleCardDay[] = schedule.map((d) => ({
 }));
 const lineUrl = site.candidate.socials.find((s) => s.key === "line")!.url;
 
+/** 活動名稱看得出的行政區：「楊梅區車隊掃街」「龜山市場掃街」；「南崁市場掃街」看不出來 */
+const sweepDistrict = (title: string) => districts.find((d) => title.includes(d) || title.startsWith(d.slice(0, -1))) ?? null;
+
+/**
+ * 車隊掃街專區：行程預告裡活動名稱有「掃街」的場次。
+ * 行程紀錄（trail.ts）裡同一天、同一區的車掃依時間先後對上，對上的附「行程紀錄」連結。
+ */
+const sweeps: SweepItem[] = schedule.flatMap((d) => {
+  const items = d.items.filter((it) => it.title.includes("掃街")).sort((a, b) => a.time.localeCompare(b.time));
+  return items.map((it) => {
+    const district = sweepDistrict(it.title);
+    const sameDay = items.filter((x) => sweepDistrict(x.title) === district);
+    const records = trail.filter((t) => t.date === d.date && t.title.includes("掃街") && t.district === district).sort((a, b) => a.id.localeCompare(b.id));
+    const record = records.length === sameDay.length ? records[sameDay.indexOf(it)]?.id : records.length === 1 && sameDay.length === 1 ? records[0].id : undefined;
+    const map = routeMaps[`${d.date} ${it.time}`];
+    const slug = routeSlug(it.time);
+    return {
+      key: `${d.date}-${slug}`,
+      date: d.date,
+      day: formatDay(d.date),
+      short: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8))}`,
+      time: it.time,
+      end: it.end,
+      title: it.title,
+      district,
+      start: placeText(it) || undefined,
+      finish: it.finish,
+      map: map && {
+        image: `/trail/schedule/${d.date}/route/${slug}`,
+        list: `/trail/schedule/${d.date}/route/${slug}/list`,
+        ...routeMapCardSize(it, map),
+        alt: `${formatDay(d.date)} ${timeText(it)} ${it.title}路線圖`,
+      },
+      record,
+    };
+  });
+});
+
 export default function TrailPage() {
   return (
     <>
@@ -94,6 +134,7 @@ export default function TrailPage() {
       </PageHead>
       <div className="mx-auto max-w-[1080px] px-4 py-12 sm:px-6 sm:py-16">
         <TrailSchedule days={scheduleDays} note={scheduleNote} lineUrl={lineUrl} />
+        <TrailSweeps sweeps={sweeps} districts={districts} />
         <p className="mt-12 rounded-2xl border-2 border-dashed border-teal-deep/40 px-5 py-4 text-[14.5px] font-bold leading-relaxed text-ink-soft">
           下面的地圖與行程紀錄整理自候選人官方帳號與主流媒體報導中、已經發生的行程，不代表全部行程。地點後面的區名是本站依地點歸類。
         </p>
