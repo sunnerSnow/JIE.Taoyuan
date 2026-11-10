@@ -12,3 +12,5 @@ npx next start -p 3351 # 用建置結果在本機檢查
 ```
 
 內容資料都在 `src/data/`，分享圖的排版在 `src/lib/`。
+
+杰個願望（`/wish`）需要資料庫與 Turnstile 的環境變數，見維護手冊第 5 節。本機測試在指令前加 `WISH_DEV_DB=pglite ADMIN_PASSWORD=<12 字以上>`，改用記憶體裡的資料庫與 Cloudflare 的測試金鑰。

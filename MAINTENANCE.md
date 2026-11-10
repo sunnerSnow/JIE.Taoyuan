@@ -30,6 +30,8 @@
 | `/record` | 過去的貢獻 | `record.ts` |
 | `/progress` | 政見追蹤 | `policies.ts`、`record.ts` |
 | `/trail` | 杰伴出發：行程預告、車掃路線圖、桃園 13 區行程地圖 | `schedule.ts`、`route-maps.ts`、`trail.ts` |
+| `/wish`、`/wish/[代碼]` | 杰個願望：留言專區與單則留言（見第 5 節） | 資料庫（Neon Postgres） |
+| `/admin/wishes` | 杰個願望後台（要登入，不讓搜尋引擎收錄） | 資料庫 |
 | `/updates` | 更新紀錄 | `changelog.ts` |
 | `/about`、`/faq`、`/privacy` | 關於本站、常見問題、隱私說明 | 文字寫在頁面本身 |
 
@@ -51,12 +53,14 @@
 web/                      Next.js 網站
   src/data/               所有內容資料（改內容幾乎都在這裡）
   src/lib/                分享圖排版、地圖繪製、SEO 等
+  src/lib/wish/           杰個願望：資料庫、關鍵字過濾、防濫用、後台登入
   public/                 插畫、圖示
 tools/
   official-watch/         偵測候選人官方 Threads、YouTube 新貼文（GitHub Actions 用）
   route-map/build.py      產生車隊掃街路線圖（web/src/data/route-maps.ts）
   taoyuan-map/build.py    產生桃園 13 區地圖（web/src/data/taoyuan-map.ts，平常不用動）
   indexnow/submit.mjs     部署後通知搜尋引擎
+  wish-filter/check.ts    杰個願望關鍵字過濾的範例檢查
 .claude/skills/
   sync-official/SKILL.md  整理官方新貼文的規則
   line-schedule/SKILL.md  整理行程預告與車掃路線圖的規則
@@ -150,7 +154,63 @@ python tools/route-map/build.py --cache ~/.cache/jie-route-map
 
 ---
 
-## 5. 本機驗證
+## 5. 杰個願望（留言專區）
+
+`/wish` 讓訪客留下加油、心願、想說的話和城市提案，`/admin/wishes` 是後台。這是全站唯一用到資料庫的功能（Neon Postgres），程式在 `web/src/lib/wish/`。
+
+### 怎麼運作
+
+- **不做人工審核**：送出時跑關鍵字過濾（`web/src/lib/wish/filter.ts`），通過就直接貼上願望牆；沒通過的存成「自動擋下」，不公開，後台看得到原因，誤擋的可以恢復。
+- **擋下的內容**：髒話辱罵、攻擊與負評（也包含提到其他候選人）、仇恨歧視用語、網址與廣告、個人資料（電話、身分證字號、email、LINE ID）、冒用候選人／官方／團隊名義的顯示名稱、洗版。
+- **防灌水**：Cloudflare Turnstile 人機驗證；同一來源 10 分鐘最多 3 則、一天最多 10 則；24 小時內一模一樣的內容不收；「認同」同一個瀏覽器一則只算一次。
+- **檢舉**：被 3 個不同來源檢舉會自動下架，等後台確認。有心人換 3 個網路也能下架正常留言，所以後台要看檢舉原因判斷；恢復公開後只算之後的新檢舉。「這是我寫的，想刪除」無法確認真的是作者，請看內容再決定。
+- **回覆**：一律以「杰伴桃園志工團隊」名義顯示。不能用候選人本人的名義，也不能承諾候選人或競選團隊沒說過的事。
+- 「只給團隊參考」的留言不會出現在願望牆，只有後台看得到。
+
+### 後台（`/admin/wishes`）
+
+- 用 `ADMIN_PASSWORD` 登入，12 小時後要重新登入。
+- 公開中的留言可以「下架」；自動擋下或已下架的可以「恢復」；「刪除」是永久刪除（連同認同、檢舉、回覆）。
+- 「回覆與紀錄」可以新增、撤下回覆，看檢舉原因和處理紀錄。回應狀態（已收到、團隊已回覆、持續追蹤、有新進展）照實際處理情形設定，不要為了好看全部設成有進度。
+- 上方統計都是資料庫裡的真實數字。
+
+### 調整過濾規則
+
+- 在 `filter.ts` 加詞。單字很容易誤擋正常的句子（例如「垃圾分類」「能幹」「狗大便」），要寫成具體的罵人句型。
+- 改完執行 `node --experimental-strip-types tools/wish-filter/check.ts`，該擋的和不該擋的範例都要通過。遇到誤擋或漏擋，把那句加進這支檔案。
+
+### 第一次設定（Vercel）
+
+1. **資料庫**：Vercel 專案 → Storage → 建立 Neon Postgres 並連到這個專案（會自動加入 `DATABASE_URL`）。資料表在第一次使用時自動建立。
+2. **人機驗證**：Cloudflare 後台 → Turnstile → 新增 widget，網域填 `jie-taoyuan.vercel.app`（之後有自訂網域也要加），取得 site key 與 secret key。
+3. **環境變數**：Vercel 專案 → Settings → Environment Variables，加到 Production：
+
+   | 變數 | 內容 |
+   |---|---|
+   | `DATABASE_URL` | Neon 整合自動加入 |
+   | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Turnstile 的 site key |
+   | `TURNSTILE_SECRET_KEY` | Turnstile 的 secret key |
+   | `WISH_SECRET` | 32 字以上的隨機字串，例如 `openssl rand -base64 48` 的結果 |
+   | `ADMIN_PASSWORD` | 後台密碼，12 字以上 |
+
+4. **重新部署**：環境變數在建置時讀入，加完要重新部署。沒設好時 `/wish` 會顯示「準備中」，表單不能送出。
+
+- 密鑰只放在 Vercel，不要寫進程式、貼到 Issue 或對話裡。
+- 換 `ADMIN_PASSWORD` 會讓所有後台登入失效；換 `WISH_SECRET` 會讓後台登入與舊的 IP 雜湊失效（留言不受影響）。
+
+### 本機測試
+
+```bash
+WISH_DEV_DB=pglite ADMIN_PASSWORD=local-admin-pass-123 npx next build
+WISH_DEV_DB=pglite ADMIN_PASSWORD=local-admin-pass-123 npx next start -p 3351
+```
+
+- `WISH_DEV_DB=pglite` 改用記憶體裡的 Postgres（PGlite），伺服器關掉資料就清空；Turnstile 改用 Cloudflare 的測試金鑰（一律通過）。這個設定在 Vercel 上無效。
+- 測試留言要寫明「測試資料」，不要寫得像真實市民的留言。
+
+---
+
+## 6. 本機驗證
 
 在 `web/` 執行：
 
@@ -169,7 +229,7 @@ npx next start -p 3351 # 啟動，打開 http://localhost:3351 檢查
 
 ---
 
-## 6. 上線流程
+## 7. 上線流程
 
 1. commit 訊息用**繁體中文**，先列給負責人確認，同意後才 commit。
 2. 用 Claude Code 維護時，commit／push 前要過審查關卡 `/review-gate`（這是維護者電腦上的 Claude Code 全域設定，不在 repo 裡；接手的人要另外設定，或照下面的順序人工把關）：
@@ -181,7 +241,7 @@ npx next start -p 3351 # 啟動，打開 http://localhost:3351 檢查
 
 ---
 
-## 7. 已知限制
+## 8. 已知限制
 
 | 限制 | 影響與因應 |
 |---|---|
@@ -192,10 +252,12 @@ npx next start -p 3351 # 啟動，打開 http://localhost:3351 檢查
 | OpenStreetMap 路名不完整 | 車掃路線圖是示意，小巷、對不上的路名會略過或改走附近道路 |
 | Overpass API 偶爾忙碌 | `build.py` 會自動退避重試；一直失敗就晚點再跑 |
 | build 偶爾因 Google Fonts 逾時失敗 | 分享圖的字型從 Google Fonts 下載，網路不穩時重跑 build 即可 |
+| 杰個願望的關鍵字過濾 | 換句話說的負評擋不到，少數正常句子也可能被誤擋；靠檢舉、後台下架與恢復處理 |
+| Neon 免費方案有用量上限 | 流量大時資料庫可能變慢或暫停，到 Neon 後台看用量，需要時升級方案 |
 
 ---
 
-## 8. 相關文件
+## 9. 相關文件
 
 - `.claude/skills/sync-official/SKILL.md`：整理官方新貼文的完整步驟與規則
 - `.claude/skills/line-schedule/SKILL.md`：行程預告與車掃路線圖的完整步驟與規則

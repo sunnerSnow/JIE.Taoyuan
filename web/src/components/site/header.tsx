@@ -75,7 +75,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-full px-4 py-2 text-[15px] font-bold tracking-[0.08em] transition-colors ${
+                className={`whitespace-nowrap rounded-full px-2.5 py-2 text-[14px] font-bold tracking-[0.06em] transition-colors xl:px-4 xl:text-[15px] xl:tracking-[0.08em] ${
                   active ? "bg-teal-deep text-paper" : "hover:bg-mint"
                 }`}
               >
@@ -86,8 +86,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="pointer-events-auto flex items-center gap-2">
-          {/* 主選單、大字版與 3 分鐘探索都在時，1360 以下放不下倒數（首頁首屏與頁尾也有倒數） */}
-          <span className="hidden min-[1360px]:block">
+          {/* 主選單、大字版與 3 分鐘探索都在時，1440 以下放不下倒數（首頁首屏與頁尾也有倒數） */}
+          <span className="hidden min-[1440px]:block">
             <ElectionCountdown />
           </span>
           <Link
@@ -97,7 +97,7 @@ export function SiteHeader() {
           >
             {easyNav.label}
           </Link>
-          <Link href={labNav.href} className="btn btn-sun btn-sm hidden sm:inline-flex">
+          <Link href={labNav.href} className="btn btn-sun btn-sm hidden whitespace-nowrap sm:inline-flex">
             {labNav.label}
             <ArrowCurve className="h-4 w-4" />
           </Link>

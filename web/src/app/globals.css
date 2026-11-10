@@ -345,6 +345,29 @@ html[data-menu-open="true"] {
   animation: bob 4s ease-in-out infinite;
 }
 
+/* 杰個願望：送出後，便利貼投進願望箱（箱子畫在便利貼上層） */
+@keyframes wish-drop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -28px) rotate(-12deg);
+  }
+  25% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, 34px) rotate(6deg) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 56px) rotate(0deg) scale(0.5);
+  }
+}
+
+.wish-drop {
+  animation: wish-drop 1.5s var(--ease-out-soft) 0.2s both;
+}
+
 /*
  * 探索地圖上走動的市民（側面）：前腳、後腳從髖部交替前後擺；前腳往前時後手也往前（手腳對側擺），每跨一步身體上下晃一次。
  * --half 是跨一步的時間，由畫面依移動速度與地圖縮放算出來，腳步才會跟上身體、不會滑步。

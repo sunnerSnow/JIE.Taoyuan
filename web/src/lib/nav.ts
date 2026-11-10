@@ -5,6 +5,7 @@ export const mainNav = [
   { href: "/progress", label: "政見追蹤", en: "Tracker" },
   { href: "/record", label: "過去貢獻", en: "Record" },
   { href: "/trail", label: "杰伴出發", en: "JIE GO!" },
+  { href: "/wish", label: "杰個願望", en: "JIE WISH" },
   { href: "/faq", label: "常見問題", en: "FAQ" },
 ] as const;
 
