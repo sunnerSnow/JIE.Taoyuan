@@ -32,6 +32,35 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-10-sweep-yangmei",
+    date: "2026-11-10",
+    kind: "visit",
+    district: "楊梅區",
+    place: "楊梅區",
+    title: "在楊梅區車隊掃街",
+    summary: "直播貼文寫：「2026黃世杰 楊梅區車隊掃街」直播中。行程預告寫，這是回到他的戶籍地、也是他服務超過四年的楊梅車隊掃街。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 楊梅區車隊掃街", url: "https://www.threads.com/@schuanglawyer/post/DfisG93j4BZ", date: "2026-11-10" },
+      { outlet: "黃世杰 Threads", title: "杰伴大車掃下一站！楊梅接力，一路衝刺！（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDudo97y", date: "2026-11-09" },
+      { outlet: "黃世杰 Threads", title: "楊梅區車掃路線規劃（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDNDo4Te", date: "2026-11-09" },
+    ],
+  },
+  {
+    id: "2026-11-09-sweep-pingzhen",
+    date: "2026-11-09",
+    kind: "visit",
+    district: "平鎮區",
+    place: "平鎮區",
+    title: "和張雅琳在平鎮區車隊掃街",
+    summary:
+      "貼文寫：「感謝平鎮的市民朋友，在風雨中杰伴同行」，早上的車掃路線途經他的母校中壢國小、復旦中學；有市民朋友請他在結婚書約上簽名；張雅琳委員前一天才從荷蘭回國，返台第一個行程就來陪同車掃。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "感謝平鎮的市民朋友，在風雨中杰伴同行", url: "https://www.threads.com/@schuanglawyer/post/DfgpxcKCRkL", date: "2026-11-09" },
+      { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 平鎮區車隊掃街", url: "https://www.threads.com/@schuanglawyer/post/DfgG97oI5em", date: "2026-11-09" },
+      { outlet: "黃世杰 Threads", title: "平鎮區杰伴大車掃，大家共下來！（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfdeS6jko_8", date: "2026-11-08" },
+    ],
+  },
+  {
     id: "2026-11-08-daxi-support",
     date: "2026-11-08",
     kind: "event",

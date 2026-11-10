@@ -264,7 +264,16 @@ function environment(g: Iso) {
   g.building(null);
   g.pine(13.2, 21.4, 0, 0.85);
   g.tree(14.6, 23, 0, 0.8);
-  g.tree(22.5, 23.2, 0, 1);
+
+  // 田地＋冷鏈倉庫與搬貨的農友（農業三箭）
+  g.building(6);
+  g.flat(16.4, 20.8, 0, 6, 4.2, "#C9E3A0", { sw: 0.8 });
+  for (let i = 0; i < 4; i++) g.line([[16.9, 21.5 + i, 0.03], [21.9, 21.5 + i, 0.03]], "#7FAF55", 1.2);
+  g.box(23.2, 20.6, 0, 4, 3.4, 3, { top: "#F4F8F8", left: "#E2EEF2", right: "#CBDDE4" });
+  g.winL(24, 24.2, 26.4, 0, 1.9, "#7FB0D6");
+  g.box(22.4, 24.4, 0, 0.9, 0.8, 0.7, WOOD);
+  g.person(21.6, 25, 0, TEAL, { h: 0.9 });
+  g.building(null);
 }
 
 function future(g: Iso) {
@@ -367,7 +376,7 @@ export const islandDefs: Record<CategorySlug, IslandDef> = {
     d: 26,
     screen: [70, -4],
     anchor: [17, 9, 11],
-    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5], [22.8, 12.4, 4.4], [8.5, 22.2, 7]],
+    spots: [[23, 4.5, 4.8], [9.5, 9.5, 0.5], [24, 18.3, 2.8], [17, 13.6, 5.5], [22.8, 12.4, 4.4], [8.5, 22.2, 7], [25.2, 22.3, 3.4]],
     draw: environment,
   },
   future: {

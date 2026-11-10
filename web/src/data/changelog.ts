@@ -26,6 +26,15 @@ export const changeTypeInfo: Record<ChangeType, { label: string; desc: string }>
 
 export const changelog: ChangeEntry[] = [
   {
+    id: "2026-11-10-agriculture",
+    date: "2026-11-10",
+    type: "added",
+    title: "新增政見「農業三箭」",
+    summary:
+      "候選人 11 月 9 日在 Threads 正式提出「農業三箭」：國際級冷鏈建置、智慧科技助生產、桃園品牌拓市場。三箭的具體做法依貼文附的 4 張圖卡整理，包括加速果菜批發市場與肉品市場遷建、提升新式技術農機補助比例、擴大培育在地精緻農業等。",
+    policies: ["agriculture-three-arrows"],
+  },
+  {
     id: "2026-11-10-jie-wish",
     date: "2026-11-10",
     type: "added",
