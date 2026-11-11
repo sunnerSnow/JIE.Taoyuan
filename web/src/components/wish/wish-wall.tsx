@@ -2,12 +2,10 @@ import Form from "next/form";
 import Link from "next/link";
 import { PenguinSays } from "@/components/art/speech";
 import { WISH_DISTRICTS, WISH_TYPES, type WishType } from "@/lib/wish/options";
-import { getWall, getWallStats, type WallQuery } from "@/lib/wish/store";
+import { getWall, getWallStats, WALL_PAGE, type WallQuery } from "@/lib/wish/store";
+import { PagedBoard } from "./paged-board";
 import { pileLayout } from "./wish-art";
 import { WishNote } from "./wish-note";
-
-const PAGE = 24;
-const MAX = 240;
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -15,25 +13,26 @@ function parseWall(sp: SearchParams): WallQuery {
   const one = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string).trim() : "");
   const type = WISH_TYPES.find((t) => t.key === one("type"))?.key ?? null;
   const district = (WISH_DISTRICTS as readonly string[]).includes(one("district")) ? one("district") : null;
-  const n = Number(one("n"));
+  const page = Number(one("p"));
   return {
     sort: one("sort") === "hot" ? "hot" : "new",
     type,
     district,
     q: Array.from(one("q")).slice(0, 30).join(""),
-    limit: Number.isInteger(n) && n > PAGE ? Math.min(MAX, Math.ceil(n / PAGE) * PAGE) : PAGE,
+    page: Number.isInteger(page) && page > 1 ? Math.min(page, 1000) : 1,
   };
 }
 
-/** 願望牆的網址：只帶非預設的條件 */
-function wallHref(w: WallQuery, patch: Partial<WallQuery>) {
-  const next = { ...w, limit: PAGE, ...patch };
+/** 願望牆的網址：只帶非預設的條件；換條件就回到第一面，h=2 表示手機從這一頁的後半開始看 */
+function wallHref(w: WallQuery, patch: Partial<WallQuery>, secondHalf = false) {
+  const next = { ...w, page: 1, ...patch };
   const p = new URLSearchParams();
   if (next.sort === "hot") p.set("sort", "hot");
   if (next.type) p.set("type", next.type);
   if (next.district) p.set("district", next.district);
   if (next.q) p.set("q", next.q);
-  if (next.limit > PAGE) p.set("n", String(next.limit));
+  if (next.page > 1) p.set("p", String(next.page));
+  if (secondHalf) p.set("h", "2");
   const qs = p.toString();
   return qs ? `/wish?${qs}` : "/wish";
 }
@@ -45,7 +44,8 @@ const chip = (on: boolean) =>
 
 /** 願望牆：最新／熱門、類型、行政區、關鍵字。條件都在網址上，可以直接分享 */
 export async function WishWall({ searchParams, open, readable }: { searchParams: Promise<SearchParams>; open: boolean; readable: boolean }) {
-  const w = parseWall(await searchParams);
+  const sp = await searchParams;
+  const w = parseWall(sp);
 
   if (!readable) {
     return (
@@ -68,6 +68,7 @@ export async function WishWall({ searchParams, open, readable }: { searchParams:
   }
 
   const filtered = Boolean(w.type || w.district || w.q);
+  const pages = Math.max(1, Math.ceil(data.total / WALL_PAGE));
   const typeCount = (k: WishType | null) => (k ? (stats.byType[k] ?? 0) : stats.total);
 
   return (
@@ -127,7 +128,14 @@ export async function WishWall({ searchParams, open, readable }: { searchParams:
         {filtered ? `符合條件的願望有 ${data.total} 則` : `目前有 ${stats.total} 則公開的願望`}
       </p>
 
-      {data.items.length === 0 ? (
+      {data.items.length === 0 && data.total > 0 ? (
+        <PenguinSays pose="point" className="mt-8" bubbleClassName="max-w-md">
+          這一面沒有願望了。
+          <Link href={`${wallHref(w, { page: 1 })}#wall`} className="link-ink mt-2 block text-teal-deep">
+            回到第一面
+          </Link>
+        </PenguinSays>
+      ) : data.items.length === 0 ? (
         <PenguinSays pose="point" className="mt-8" bubbleClassName="max-w-md">
           {filtered ? "找不到符合條件的願望，換個條件看看吧。" : "還沒有人貼上願望。當第一個吧！"}
           {!filtered && open && (
@@ -137,8 +145,18 @@ export async function WishWall({ searchParams, open, readable }: { searchParams:
           )}
         </PenguinSays>
       ) : (
-        // 願望牆：便利貼歪歪的、錯開一點、邊緣互相壓住；越新的疊在越上面，滑過或聚焦時拿到最上層
-        <ul className="wish-board mt-8 flex flex-wrap items-start justify-center rounded-[28px] border-2 border-edge px-3 pb-14 pt-10 sm:px-6">
+        // 願望牆：一面 12 張（手機 6 張），便利貼歪歪的、錯開一點、邊緣互相壓住；越新的疊在越上面，滑過或聚焦時拿到最上層
+        <PagedBoard
+          key={`${wallHref(w, { page: w.page })}-${sp.h === "2" ? 2 : 1}`}
+          page={w.page}
+          pages={pages}
+          total={data.total}
+          count={data.items.length}
+          initialHalf={sp.h === "2" ? 1 : 0}
+          prevHref={w.page > 1 ? wallHref(w, { page: w.page - 1 }) : null}
+          prevHalfHref={w.page > 1 ? wallHref(w, { page: w.page - 1 }, true) : null}
+          nextHref={w.page < pages ? wallHref(w, { page: w.page + 1 }) : null}
+        >
           {data.items.map((item, i) => {
             const p = pileLayout(item.id);
             return (
@@ -157,15 +175,7 @@ export async function WishWall({ searchParams, open, readable }: { searchParams:
               </li>
             );
           })}
-        </ul>
-      )}
-
-      {data.items.length < data.total && w.limit < MAX && (
-        <div className="mt-10 text-center">
-          <Link href={wallHref(w, { limit: w.limit + PAGE })} scroll={false} className="btn">
-            載入更多
-          </Link>
-        </div>
+        </PagedBoard>
       )}
     </>
   );

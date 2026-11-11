@@ -174,7 +174,7 @@ python tools/route-map/build.py --cache ~/.cache/jie-route-map
   - 其餘八張是程式畫的：`python tools/wish-stickers/build.py`（造型參考分享卡與吉普車插畫上的小企鵝）。
   - 新增貼圖後，到 `web/src/lib/wish/options.ts` 的 `STICKERS` 加上代碼、名稱和檔名。
 - **頁首插畫**：杰伴出發（`web/public/trail/jeep-go.png`）和杰個願望（`web/public/wish/jeep-hero.png`）用同一支 cutout.py 的 `hero` 模式去背。
-- **願望牆**：便利貼依留言代碼固定歪斜、錯開，越新的疊在越上面（`web/src/components/wish/wish-art.tsx` 的 `pileLayout`）。
+- **願望牆**：便利貼依留言代碼固定歪斜、錯開，越新的疊在越上面（`web/src/components/wish/wish-art.tsx` 的 `pileLayout`）。一面 12 張、手機一面 6 張，用「上一面／下一面」翻頁（網址的 `p` 是第幾頁，`h=2` 是手機從那一頁的後半開始），頁面不會因為留言變多而一直變長。
 
 ### 後台（`/admin/wishes`）
 

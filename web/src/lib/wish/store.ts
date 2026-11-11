@@ -60,7 +60,11 @@ const WISH_COLUMNS = "id, type, title, content, topic, district, display_name, s
 
 /* ---------- 前台（有快取） ---------- */
 
-export type WallQuery = { sort: "new" | "hot"; type: WishType | null; district: string | null; q: string; limit: number };
+/** 願望牆一面（一頁）幾張；手機再拆成前後兩半，一面 6 張 */
+export const WALL_PAGE = 12;
+const MAX_WALL_PAGE = 1000;
+
+export type WallQuery = { sort: "new" | "hot"; type: WishType | null; district: string | null; q: string; page: number };
 
 /** 願望牆；關鍵字可以任意輸入，有關鍵字時不進快取，避免產生數不完的快取項目 */
 export async function getWall(w: WallQuery) {
@@ -85,12 +89,15 @@ async function queryWall(w: WallQuery) {
     const p = add(w.q);
     where.push(`(strpos(content, ${p}) > 0 or strpos(coalesce(title, ''), ${p}) > 0 or strpos(coalesce(display_name, ''), ${p}) > 0)`);
   }
-  const order = w.sort === "hot" ? "like_count desc, created_at desc" : "created_at desc";
+  const order = w.sort === "hot" ? "like_count desc, created_at desc, id" : "created_at desc, id";
+  const page = Math.min(Math.max(1, Math.floor(w.page)), MAX_WALL_PAGE);
   const rows = await q(
-    `select ${WISH_COLUMNS}, count(*) over ()::int as total from wishes where ${where.join(" and ")} order by ${order} limit ${Math.min(Math.max(1, Math.floor(w.limit)), 240)}`,
+    `select ${WISH_COLUMNS} from wishes where ${where.join(" and ")} order by ${order} limit ${WALL_PAGE} offset ${(page - 1) * WALL_PAGE}`,
     params,
   );
-  return { items: rows.map(toWish), total: Number(rows[0]?.total ?? 0) };
+  // 總數另外算：翻到超過最後一面時 rows 是空的，還是要知道共有幾面
+  const [count] = await q(`select count(*)::int as n from wishes where ${where.join(" and ")}`, params);
+  return { items: rows.map(toWish), total: Number(count?.n ?? 0) };
 }
 
 /** 各類型的公開留言數（真實資料，沒有就是 0） */

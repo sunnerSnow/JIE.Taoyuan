@@ -390,6 +390,14 @@ html[data-menu-open="true"] {
   animation: wish-pin 0.5s var(--ease-out-soft) both;
 }
 
+/* 手機一面只放 6 張：這一頁的前半或後半（PagedBoard 切換 data-half） */
+@media (max-width: 639.98px) {
+  .wish-board[data-half="0"] > li:nth-child(n + 7),
+  .wish-board[data-half="1"] > li:nth-child(-n + 6) {
+    display: none;
+  }
+}
+
 /*
  * 探索地圖上走動的市民（側面）：前腳、後腳從髖部交替前後擺；前腳往前時後手也往前（手腳對側擺），每跨一步身體上下晃一次。
  * --half 是跨一步的時間，由畫面依移動速度與地圖縮放算出來，腳步才會跟上身體、不會滑步。
