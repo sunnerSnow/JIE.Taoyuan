@@ -78,8 +78,8 @@ export const schedule: ScheduleDay[] = [
         end: "18:00",
         title: "中壢區車隊掃街",
         place: "南競辦公室",
-        address: "中華路二段128號",
-        finish: "南方莊園飯店（樹籽路8號）",
+        address: "中壢區中華路二段128號",
+        finish: "南方莊園飯店（中壢區樹籽路8號）",
         route: [
           "南園路口",
           "中華路二段",
@@ -107,6 +107,7 @@ export const schedule: ScheduleDay[] = [
     sources: [
       { outlet: "官方「杰伴週報」圖卡" },
       { outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DfjFLaYj05c" },
+      { outlet: "Threads 路線", url: "https://www.threads.com/@schuanglawyer/post/DfjFMHxD80p" },
     ],
   },
   {

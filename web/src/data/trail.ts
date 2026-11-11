@@ -38,8 +38,10 @@ export const trail: TrailEntry[] = [
     district: "楊梅區",
     place: "楊梅區",
     title: "在楊梅區車隊掃街",
-    summary: "直播貼文寫：「2026黃世杰 楊梅區車隊掃街」直播中。行程預告寫，這是回到他的戶籍地、也是他服務超過四年的楊梅車隊掃街。",
+    summary:
+      "貼文寫：「楊梅的路我很熟悉，經過每一個地方，心裡都有市政藍圖浮現。」車掃途經幼獅工業區，想到未來要加速幼擴二期開發，帶動產業升級；車行過大成路，想起市場攤商朋友的託付，還有許多市民對於公車系統、軌道建設的期待；來到富岡，想起許多長輩殷切的眼神、許多想返鄉打拚的年輕人臉孔。",
     sources: [
+      { outlet: "黃世杰 Threads", title: "楊梅的路我很熟悉，經過每一個地方，心裡都有市政藍圖浮現", url: "https://www.threads.com/@schuanglawyer/post/DfjVatdj0_t", date: "2026-11-10" },
       { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 楊梅區車隊掃街", url: "https://www.threads.com/@schuanglawyer/post/DfisG93j4BZ", date: "2026-11-10" },
       { outlet: "黃世杰 Threads", title: "杰伴大車掃下一站！楊梅接力，一路衝刺！（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDudo97y", date: "2026-11-09" },
       { outlet: "黃世杰 Threads", title: "楊梅區車掃路線規劃（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDNDo4Te", date: "2026-11-09" },
