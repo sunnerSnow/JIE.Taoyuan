@@ -32,6 +32,16 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    // 貼文沒寫活動日期，使用者同意以發文日期（11/10）收錄
+    id: "2026-11-10-tongji",
+    date: "2026-11-10",
+    kind: "event",
+    title: "同濟會挺世杰大團結",
+    summary:
+      "貼文寫：「同舟共濟，杰伴同行！同濟會挺世杰大團結」，特別感謝後援會曾增賢主委、呂清祺副主委、廖敏榮榮譽主委、宋玉雲榮譽主委、商圈總會張永隆總會長以及所有同濟先進夥伴們，一起站出來給世杰力量。",
+    sources: [{ outlet: "黃世杰 Threads", title: "同舟共濟，杰伴同行！同濟會挺世杰大團結", url: "https://www.threads.com/@schuanglawyer/post/DfkEU2fj44h", date: "2026-11-10" }],
+  },
+  {
     id: "2026-11-10-sweep-yangmei",
     date: "2026-11-10",
     kind: "visit",
@@ -46,6 +56,15 @@ export const trail: TrailEntry[] = [
       { outlet: "黃世杰 Threads", title: "杰伴大車掃下一站！楊梅接力，一路衝刺！（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDudo97y", date: "2026-11-09" },
       { outlet: "黃世杰 Threads", title: "楊梅區車掃路線規劃（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfgBDNDo4Te", date: "2026-11-09" },
     ],
+  },
+  {
+    // 貼文沒寫活動日期，使用者同意以發文日期（11/9）收錄
+    id: "2026-11-09-jci",
+    date: "2026-11-09",
+    kind: "event",
+    title: "和青商夥伴同行",
+    summary: "貼文寫：「青商夥伴投入社會公益的熱情，和世杰投身公共事務的初衷一致。」青年的力量，將是桃園向前衝刺的關鍵燃料。",
+    sources: [{ outlet: "黃世杰 Threads", title: "青商夥伴投入社會公益的熱情，和世杰投身公共事務的初衷一致", url: "https://www.threads.com/@schuanglawyer/post/DfhgWtVCGvq", date: "2026-11-09" }],
   },
   {
     id: "2026-11-09-sweep-pingzhen",
