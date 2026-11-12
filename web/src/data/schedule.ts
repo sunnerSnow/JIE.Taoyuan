@@ -58,15 +58,42 @@ export const schedule: ScheduleDay[] = [
   {
     date: "2026-11-13",
     items: [
-      { time: "16:30", end: "17:30", title: "中壢區車隊掃街" },
-      // 週報寫 17:30-20:30；11/11 的「洋流號 X 團杰號｜中壢杰伴同行」貼文公告 18:00-20:00 與路線、打氣站，以貼文為準。
-      // 公告的打氣站有編號 ①～⑳，這裡照順序列出、不加編號；「三光路→中央西路二段」這類寫在一行的路段拆成兩條
+      {
+        time: "16:30",
+        end: "17:30",
+        title: "中壢區車隊掃街",
+        place: "青昇宮",
+        address: "中壢區青溪路二段35號",
+        finish: "南競辦公室（中壢區中華路二段128號）",
+        route: [
+          "青溪路二段",
+          "青昇路",
+          "領航南路四段",
+          "領航北路四段",
+          "大成路二段",
+          "高鐵北路二段",
+          "青昇路",
+          "領航北路三段",
+          "青埔路二段",
+          "高鐵南路一段",
+          "公園路一段",
+          "領航南路二段",
+          "新生路三段",
+          "新生路",
+          "南園二路",
+          "南園路",
+          "中華路二段",
+        ],
+      },
+      // 週報寫 17:30-20:30；11/11 的「洋流號 X 團杰號｜中壢杰伴同行」貼文公告 18:00-20:00，以貼文為準。
+      // 路線與打氣站照 11/11 21:00 的路線文字貼文（圖卡的打氣站有編號 ①～⑳，這裡照順序列出、不加編號）；
+      // 「三光路→中央西路二段」這類寫在一行的路段拆成兩條；終點照海報與貼文寫「中壢圖書館前」（路線文字最後一行寫「中壢圖書館」）
       {
         time: "18:00",
         end: "20:00",
         title: "中壢區車隊掃街",
         place: "南競辦公室",
-        address: "中華路二段128號",
+        address: "中壢區中華路二段128號",
         finish: "中壢圖書館前",
         route: [
           "中華路",
@@ -82,8 +109,8 @@ export const schedule: ScheduleDay[] = [
           "新生路",
           "元化路",
           "銀河廣場",
-          "元化路-中正公園",
-          "元化路-公七公園",
+          "元化路－中正公園",
+          "元化路－公七公園",
           "中山路",
           "中山路-光南前廣場",
           "中正路",
@@ -105,7 +132,7 @@ export const schedule: ScheduleDay[] = [
           "民權路",
           "環北路",
           "中豐北路",
-          "南競總（中豐北路5號）",
+          "南競總（中壢區中豐北路5號）",
           "中豐路",
           "中美路二段",
           "復興路",
@@ -114,8 +141,10 @@ export const schedule: ScheduleDay[] = [
     ],
     sources: [
       { outlet: "官方「杰伴週報」圖卡" },
-      { outlet: "Threads 貼文", url: "https://www.threads.com/@schuanglawyer/post/DflQMmFmgyw" },
-      { outlet: "Threads 路線", url: "https://www.threads.com/@schuanglawyer/post/DflwS7HiWJ9" },
+      { outlet: "Threads 16:30 車掃", url: "https://www.threads.com/@schuanglawyer/post/DfmcDMYknBi" },
+      { outlet: "Threads 18:00 車掃", url: "https://www.threads.com/@schuanglawyer/post/DflQMmFmgyw" },
+      { outlet: "Threads 18:00 路線圖", url: "https://www.threads.com/@schuanglawyer/post/DflwS7HiWJ9" },
+      { outlet: "Threads 18:00 路線", url: "https://www.threads.com/@schuanglawyer/post/DfmihQYgOEZ" },
     ],
   },
   {

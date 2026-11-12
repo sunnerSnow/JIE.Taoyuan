@@ -32,6 +32,23 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    // 路線從中壢的南競辦公室出發、終點在中壢的南方莊園飯店，途經平鎮；地圖上依起終點歸中壢區
+    id: "2026-11-11-sweep-zhongli",
+    date: "2026-11-11",
+    kind: "visit",
+    district: "中壢區",
+    place: "中壢區、平鎮區",
+    title: "和莊瑞雄在中壢區、平鎮區車隊掃街",
+    summary:
+      "貼文寫：「今天下午來到中壢、平鎮，車隊行進的過程中，街道兩旁有許多用力揮手、大聲應援的市民朋友，整路幾乎都沒有少過。」感謝雄讚委員莊瑞雄幹事長相挺，他也注意到，除了支持者很熱情外，青年朋友比例非常多，其中更有不少年輕家長，特別帶著小朋友來為世杰加油。",
+    sources: [
+      { outlet: "黃世杰 Threads", title: "今天下午來到中壢、平鎮", url: "https://www.threads.com/@schuanglawyer/post/DfmxbDliVbb", date: "2026-11-11" },
+      { outlet: "黃世杰 Threads", title: "直播中：2026黃世杰 中壢區、平鎮區車隊掃街", url: "https://www.threads.com/@schuanglawyer/post/DfmAp1ciUqV", date: "2026-11-11" },
+      { outlet: "黃世杰 Threads", title: "杰伴大車掃明天來到中壢、平鎮，繼續衝刺！（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfjFLaYj05c", date: "2026-11-10" },
+      { outlet: "黃世杰 Threads", title: "車掃路線：南競辦公室→南方莊園飯店（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/DfjFMHxD80p", date: "2026-11-10" },
+    ],
+  },
+  {
     // 貼文沒寫活動日期，使用者同意以發文日期（11/10）收錄
     id: "2026-11-10-tongji",
     date: "2026-11-10",
