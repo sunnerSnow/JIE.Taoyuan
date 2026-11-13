@@ -32,6 +32,21 @@ export type TrailEntry = {
 
 export const trail: TrailEntry[] = [
   {
+    id: "2026-11-12-nankan-market",
+    date: "2026-11-12",
+    kind: "visit",
+    district: "蘆竹區",
+    place: "南崁市場",
+    title: "到南崁市場向攤商、市民問好",
+    summary:
+      "前一天預告 11/12 早上 09:00-11:30 到南崁市場跟大家問好；當天貼文寫：「大選倒數16天，早上在南崁市場，感謝蘆竹市民跟攤商夥伴的熱烈支持」，一位大姊走近他說「加油，我家有十票」，也謝謝新住民姐妹帶路，認識許多在這片土地打拚的新住民頭家。他提到未來要升級蘆竹交通，加速完善捷運、公車與道路路網，提前規劃捷運綠線與南崁市區的接駁配套，還要擴充南崁市場周邊停車空間。",
+    policies: ["three-hubs-six-lines", "bus-network-reform"],
+    sources: [
+      { outlet: "黃世杰 Threads", title: "大選倒數16天，早上在南崁市場", url: "https://www.threads.com/@schuanglawyer/post/Dfodzl0oyoz", date: "2026-11-12" },
+      { outlet: "黃世杰 Threads", title: "南崁市場明天見（行程預告）", url: "https://www.threads.com/@schuanglawyer/post/Dflbu9rmqUk", date: "2026-11-11" },
+    ],
+  },
+  {
     // 路線從中壢的南競辦公室出發、終點在中壢的南方莊園飯店，途經平鎮；地圖上依起終點歸中壢區
     id: "2026-11-11-sweep-zhongli",
     date: "2026-11-11",
